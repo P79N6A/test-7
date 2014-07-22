@@ -6,3 +6,4 @@ git tracks changes of files
 branch dev created
 
 create a new branch is quick and simple
+so let's learn how to manage branches
