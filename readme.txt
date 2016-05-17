@@ -9,3 +9,6 @@ create a new branch is quick and simple
 so let's learn how to manage branches
 hello source-tree is useful..
 is it better than tortoiseGit?
+
+commit to master..
+it is so cool~~
