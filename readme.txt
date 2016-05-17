@@ -10,5 +10,6 @@ so let's learn how to manage branches
 hello source-tree is useful..
 is it better than tortoiseGit?
 
+commit this to branchFromMaster...
 commit to master..
 it is so cool~~
