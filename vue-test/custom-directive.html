@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>自定义指令</title>
+</head>
+<body>
+	<h1>自定义指令</h1>
+	<p>看来在vue中， 指令和组件不是同一个概念</p>
+	<div id="app">
+		<div v-your-directive="msg"></div>
+	</div>
+
+
+	<script src="/bower_components/vue/dist/vue.js"></script>
+	<script>
+
+	/**
+	 * Vue.directive(id, definition) //注册一个全局的指令
+	 * { directives: {...} } //注册局部的指令
+	 */
+
+	 /**
+	  * 钩子函数 bind update unbind
+	  * bind 只调用一次，指令第一次绑定到元素上时调用
+	  * update:  在bind之后以初始值为参数第一次调用 之后每当有绑定值变化时调用 类似 ng $watch
+	  * unbind: 指令从元素上解绑时
+	  */
+
+	  Vue.directive('my-directive', {
+	  	bind: function () {
+	  		// 在这里绑定事件等
+	  	},
+	  	update: function (newVal, oldVal) {
+	  		// this 指向指令对象
+	  		//bind first time or binding value changed
+	  	},
+	  	unbind: function () {
+	  		// do some clear 删除事件绑定等..
+	  	}
+	  });
+
+	  //语法糖： 当只需指定update参数时，可以直接传入函数
+	  Vue.directive('your-directive', function (v) {
+	  	console.log('[your-directive], in update:', arguments);
+	  	// value changed
+	  });
+
+	 /**
+	  * 指令实例的属性
+	  * el: 指令绑定的元素
+	  * vm: 拥有该指令的上下文viewModel
+	  * expression: 指令的表达式 不包括 参数和过滤器
+	  * arg: 指令的参数
+	  * name: 指令名 不包括前缀
+	  * modifiers: 一个对象 包括指令的修饰符
+	  * descriptor: 一个对象 包括指令的解析结果
+	  */
+	 
+	 // 注册全局指令
+	 Vue.directive('demo', {
+	 	bind: function () {
+	 		console.log('demo bound!');
+	 	},
+	 	update: function  (val) {
+	 			this.el.innerHTML = 
+	 			'name - ' + this.name + '<br/>' ;
+	 	}
+	 });
+
+	 var vm = new Vue({
+	 	el: '#app',
+	 	data: {
+	 		msg: 'hello'
+	 	}
+	 });
+		
+	</script>
+</body>
+</html>
