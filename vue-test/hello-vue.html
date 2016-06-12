@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>hello vue</title>
+</head>
+<body>
+	<div id="app">
+		<!-- 模板插值 -->
+		<h3>{{message}}</h3>
+		<!-- 双向绑定 -->
+		<input type="text" v-model="message">
+		<!-- 处理列表 -->
+		<ul>
+			<li v-for="todo in todos">
+				{{todo.text}}
+			</li>
+		</ul>
+
+		<!-- 用户交互 -->
+		<button v-on:click="reverseMessage">Reverse Message</button>
+	</div>
+
+	<script src="/bower_components/vue/dist/vue.js"></script>
+	<script>
+	var vm = new Vue({
+		el: '#app', //视图范围
+		data: { //数据
+			message: 'hello vue.js',
+			todos: [
+				{text: 'running'},
+				{text: 'reading'},
+				{text: 'thinking'},
+				{text: 'coding'}
+			]
+
+		},
+		methods: {
+			reverseMessage: function () {//this 指向viewModel
+				this.message = this.message.split('').reverse().join('');
+			}
+		}
+	});
+	</script>
+</body>
+</html>

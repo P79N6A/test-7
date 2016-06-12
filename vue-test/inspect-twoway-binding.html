@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>深入响应式原理</title>
+</head>
+<body>
+	<h1>了解vuejs双向数据绑定的原理</h1>
+	<div id="app">{{name}}</div>
+
+	<div id="app2">
+		<example>this is example</example>
+	</div>
+
+	<script src="/bower_components/vue/dist/vue.js"></script>
+	<script>
+	/**
+	 *干货时间
+	 *把一个普通对象传给data选项，vue将遍历它的属性，用 ES5的 Object.defineProperty(..) 将属性转换为getter/setter 
+	 *受Es5所限 vuejs不能检测到对象属性的添加或删除
+	 */
+	var data = {
+			name: 'idle',
+			age: 20
+		};
+
+	var vm = new Vue({
+		el: '#app',
+		data: data
+	});
+
+	// vm.name 和 data.name是响应的
+	// vm.home = 'some place'; //vm.home不是响应的
+
+	/*在vue实例创建后添加响应的属性，如：*/
+	vm.$set('b', 2); //vm.b data.b都是响应的
+
+	// 对于普通数据对象 Vue.set(object, key, value);
+	var car = {name: 'volv', color: 'blue'};
+	Vue.set(vm.$data, 'color', 'pink');
+
+	/*向已有对象添加属性 如: Object.assign()  ,  _.extend() , 不会触发更新，因为对象的引用没变*/
+	// 不使用 Object.assign(this.someObj, {a:1});
+	// this.someObject = Object.assign({}, this.someObject, {a: 1});
+
+
+	/**
+	 * 异步更新队列
+	 * vuejs默认异步更新dom, 观察到数据改变，在下一次事件循环中执行更新
+	 * 观察到数据变化，就会开始一个队列，watcher放入队列
+	 */
+	vm.name = 'windy'; //修改数据
+	console.log('vm.$el.textContent === \'windy\' =>', vm.$el.textContent === 'windy'); // false 因为异步更新dom, nextTick更新dom
+	Vue.nextTick(function () {
+		console.log('vm.$el.textContent === \'windy\' =>', vm.$el.textContent === 'windy'); //nextTick的nextTick dom已更新
+	}); 
+
+	/*vm.$nextTick(callback)*/
+	Vue.component('example', {
+		template: '<span v-on:click="updateMessage">{{msg}}</span>',
+		data: function () {
+			return {
+				msg: 'not updated'
+			};
+		},
+		methods: {
+			updateMessage: function () {
+				this.msg = 'updated',
+				console.log(this.$el.textContent); //=> 'not updated'
+				this.$nextTick(function () {
+					// this 自动绑定到vue实例
+					console.log(this.$el.textContent); //=> 'updated'  
+				});
+			}
+		},
+		computed: {
+			foo: function () {
+				return Date.now() + this.msg;//计算属性 vm.foo会被缓存，所以多次访问vm.foo发现时间戳没变
+			},
+			bar:{//用对象的形式 cache: false 指定该计算属性不缓存  ;  但是数据绑定到vm.bar的元素还是依赖驱动的
+				cache: false,
+				get: function () {
+					return Date.now() + this.msg;
+				}
+			}
+		}
+	});
+
+	var vm2 = new Vue({
+		el: '#app2'
+	});
+
+	/**
+	 * 计算属性
+	 * 计算属性不是简单的getter,它会持续跟踪它的响应依赖，缓存计算结果，当依赖变化时才重新计算
+	 */
+		
+
+	console.log(vm.name);
+	vm.$log('name');
+	</script>
+</body>
+</html>

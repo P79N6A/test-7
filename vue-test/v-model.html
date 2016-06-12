@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>表单控件绑定</title>
+	<style>
+	hr{border: 0; border-bottom: 1px dashed #ccc; margin: 20px 0;}
+	input[type=text],select{display: block; margin-top: 20px;}
+	</style>
+</head>
+<body>
+	<h2>表单控件绑定</h2>
+	<div id="app">
+		<span>Message is: {{message}}</span>
+		<input type="text" v-model="message" placeholder="edit me">
+		
+		<hr>
+
+		<!-- checkbox 默认值为true/false -->
+		<input type="checkbox" id="chk" v-model="checked" >
+		<label for="chk">{{checked}}</label>
+
+		<!-- checkbox切换选中状态 传递给checkedPerson的还是true/false -->
+		<input type="checkbox" id="chk"  value="wendy" v-model="checkedPerson" >
+		<p>checkedPerson: <input type="text" name="checkedPerson" id="chkperson" v-model="checkedPerson">{{checkedPerson}}</p>
+		<hr>
+
+		<!-- 多个checkbox绑定到同一个数组 选中则加入数组 不选则从数组删除 -->
+		<input type="checkbox" name="jack" id="jack" value="Jack" v-model="checkedNames">
+		<label for="jack">Jack</label>
+		<input type="checkbox" name="john" id="john" value="John" v-model="checkedNames">
+		<label for="john">John</label>
+		<input type="checkbox" name="mike" id="mike" value="Mike" v-model="checkedNames">
+		<label for="mike">Mike</label>
+		<p></p>
+		<span>Checked names: {{ checkedNames | json }} </span>
+
+		<hr>
+
+		<!-- radio 组， 当radio.value和绑定数据相等则 checked-->
+		<input type="radio" name="one" id="one" value="One" v-model="picked">
+		<label for="one">One</label>
+		<input type="radio" name="two" id="two" value="Two" v-model="picked">
+		<label for="two">Two</label>
+		<span>Picked: {{picked}}</span>
+		
+		<hr>
+
+		<!-- select option的值和绑定数据同步 , option.value 默认等于 option.text-->
+		<select name="sel" id="sel" v-model="selected">
+			<option selected="">A</option>
+			<option >B</option>
+			<option >C</option>
+		</select>
+		<span>Selected: {{ selected  }}</span>
+
+		<hr>
+
+		<!-- select多选 绑定到一个数组-->
+		<select name="msel" id="msel" v-model="mselected" multiple>
+			<option selected>A</option>
+			<option>B</option>
+			<option>C</option>
+		</select>
+		<span>Selected: {{mselected | json}}</span>
+
+		<hr>
+
+		<!-- 动态的option 用v-for -->
+		<select name="dynsel" id="dynsel" v-model="dselected">
+			<option  v-for="option in options" v-bind:value="option.value">
+				{{ option.text }}
+			</option>
+		</select>
+		<span>Selected: {{ dselected }}</span>
+
+		<hr>
+
+		<!-- 动态的控件值 checkbox radio option-->
+		<!-- 选中时， vm.toggle === vm.a,  没选时 vm.toggle == vm.b -->
+		<input type="checkbox" name="chk1" id="chk1" v-model="toggle" v-bind:true-value="a" v-bind:false-value="b">{{toggle}}
+		<input type="radio" name="rd1" id="rd1" v-model="pick" v-bind:value="a">{{pick}}
+		<select name="sel1" id="sel1" v-model="oselected">
+			<!-- 绑定一个对象作为select的值 -->
+			<option  v-bind:value="{number: 123}">123</option>
+		</select>
+		<span>Selected: {{ oselected | json }} </span>
+	
+		<hr>
+
+		<!-- lazy  让v-model在change事件 而不是input事件中同步 -->
+		<input type="text" v-model="message" lazy />
+		<span>lazy sync Message: {{ message }}</span>
+
+		<!-- number 自动将用户输入转换为Number类型 在赋值给vm.age, 若转换为NaN则返回原值 -->
+		<input type="text" v-model="age"  number>
+		<span>age: {{ typeof age}}</span>
+
+		<!-- debounce 设置同步数据的延时 ,  debounce不会延迟input事件 它延迟的是写入底层数据-->
+		<input type="text" v-model="msg" debounce="500">
+		<span>Msg: {{ msg }}</span>
+	</div>
+	<script src="/bower_components/vue/dist/vue.js"></script>
+	<script>
+	var vm = new Vue({
+		el: '#app',
+		data: {
+			msg: '',
+			message: '',
+			checkedNames: [],
+			checkedPerson: 'wendy',
+			options: [
+				{ text: 'One', value: 'A'},
+				{ text: 'Two', value: 'B'},
+				{ text: 'Three', value: 'C'}
+			],
+			selected: '',
+			mselected: [],
+			dselected:'',
+			oselected: {},
+			a: 'hello',
+			b:'world',
+			toggle:'',
+			pick:'',
+			age: 22
+		}
+	});
+	</script>
+</body>
+</html>

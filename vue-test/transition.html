@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>过渡动画</title>
+	<style>
+	/*必需*/
+	.expand-transition{
+		transition: all .3s ease;
+		height: 30px;
+		padding: 10px;
+		background-color: #eee;
+		overflow: hidden;
+	}
+
+	.expand-enter, .expand-leave{
+		height: 0;
+		padding: 0 10px;
+		opacity: 0;
+	}
+	/*插入元素时过渡动画  .expand-enter -> .expand-transition*/
+	/*删除元素时 从 .expand-transition -> .expand-leave*/
+
+	.fade-transition{
+		transition: all .5s ease;
+		opacity: 1;
+		background-color: #eee;
+		padding: 10px;
+		height: 50px;
+		font-size: 20px;
+	}
+	.fade-enter, .fade-leave{
+		opacity: 0;
+	}
+
+
+	hr{border: 0; border-bottom: 1px dashed #eee; margin: 20px 0;}
+
+
+	.bounce-transition{
+		display: inline-block;  /* scale动画不能作用于inline元素 */
+	}
+	/* 元素插入dom时 加入.bounce-enter  animationend时删掉 */
+	.bounce-enter{
+		animation: bounce-in .5s;
+	}
+	.bounce-leave{
+		animation: bounce-out .5s;
+	}
+
+	@-webkit-keyframes bounce-in{
+		0% { transform: scale(0);}
+		50% { transform: scale(1.5); }
+		100% { transform: scale(1); }
+	}
+	@-webkit-keyframes bounce-out{
+		0% { transfrom: scale(1);}
+		50% { transform: scale(1.5);}
+		100% {transform: scale(0);}
+	}
+
+	.staggered-transition{
+		transition: all .5s ease;
+		overflow: hidden;
+		margin: 0;
+		height: 20px;
+	}
+	.staggered-enter, .staggered-leave{
+		opacity: 0;
+		height: 0;
+	}
+	
+	</style>
+</head>
+<body>
+	<div id="app">
+		<!-- 元素插入dom或从中删除时，应用过渡动画 相关指令 v-if  v-show v-for -->
+		<div v-if="show" transition="expand">hello</div>
+		show: <input type="checkbox" name="chk" id="chk" v-model="show" /> <span>{{show}}</span>
+		
+		<hr>
+
+		<!-- 动态绑定不同的过渡 -->
+		<div v-if="show" :transition="transitionName">hello</div>
+		<select name="sel" id="sel" v-model="transitionName">
+			<option selected>expand</option>
+			<option >fade</option>
+		</select>
+
+		<hr>
+
+		<!-- js事件钩子 -->
+		<div v-if="show" transition="expand2">hello expand2</div>
+		<button v-on:click="show=!show">toggle test expand2</button>
+
+		<hr>
+		<!-- animation动画 -->
+		<span v-show="show" transition="bounce">Look at me!</span>
+
+		<hr>
+		<!-- js过渡动画 -->
+		<p v-if="show2" transition="fade2" >hello world~~</p>
+		<button @click="show2 = !show2">toggle show2</button>
+
+		<hr>
+		<!-- 渐进过渡 v-for transition  stagger -->
+		<input type="text" v-model="query">
+		<ul>
+			<!-- 过滤器函数和参数之间用空格 -->
+			<li v-for="item in list | filterBy query" transition="staggered" stagger="100">{{item.msg}}</li>	
+		</ul>
+		
+	</div>
+
+	<script src="/bower_components/vue/dist/vue.js"></script>
+	<script src="/bower_components/jquery/dist/jquery.js"></script>
+	<script>
+	var vm = new Vue({
+		el: '#app',
+		data: {
+			show: true,
+			show2: true,
+			transitionName: '',
+			query: '',
+			list: [
+		            { msg: 'Bruce Lee' },
+		            { msg: 'Jackie Chan' },
+		            { msg: 'Chuck Norris' },
+		            { msg: 'Jet Li' },
+		            { msg: 'Kung Fury' }
+		        ]
+		}
+	});
+
+	// js过渡动画事件钩子定义
+	Vue.transition('expand2', {
+		beforeEnter: function (el) {
+			el.textContent = 'beforeEnter';
+		},
+		enter: function (el, done) {
+			console.log('in enter expand2..');
+			el.textContent = 'enter';
+			// done(); //手动控制动画结束 而不是等待transitionend事件触发
+		},
+		afterEnter: function (el) {
+			el.textContent = 'afterEnter';
+		},
+		enterCancelled: function (el) {
+			//handle cancel
+		},
+		beforeLeave: function (el) {
+			el.textContent = 'beforeLeave';
+		},
+		leave: function (el, done) {
+			el.textContent = 'leave';
+			// done();
+		},
+		afterLeave: function (el) {
+			el.textContent = 'afterLeave';
+		},
+		leaveCancelled: function (el) {
+			// handle cancel
+		}
+	});
+
+	/*
+	 * <div v-show="ok" class="animated"  transition="bounce">watch me bounce</div>
+	 * 修改过渡的class名  方便与第三方css动画库对接
+	 * 侦听过渡的结束 transitionend,  animationend
+	*/
+	Vue.transition('bounce', {
+		enterClass: 'bounceLeft',
+		leaveClass: 'bounceRight',
+		//该过渡只侦听 animation 事件
+		type: 'animation'
+	});
+
+	
+
+	/*
+	 * 纯js的过渡动画
+	*/
+	Vue.transition('fade2', {
+		css: false, //不使用css动画
+		enter: function  (el, done) {
+			console.log('in enter..');
+			$(el).css('opacity', 0)
+			       .animate({opacity: 1}, 2000, done); //需显式调用done 通知动画结束
+		},
+		enterCancelled: function (el) {
+			$(el).stop();
+		},
+		leave: function (el, done) {
+			$(el).animate({opacity: 0}, 2000, done);
+		},
+		leaveCancelled: function (el) {
+			$(el).stop();
+		}
+	});
+	</script>
+</body>
+</html>

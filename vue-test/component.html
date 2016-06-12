@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>组件</title>
+</head>
+<body>
+	<h1>组件</h1>
+	<p>组件是vue.js最强大的功能之一。 组件即指令？</p>
+	
+	<div id="app">
+		<!-- 使用组件 -->
+		<my-component></my-component>
+
+		<!-- props -->
+		<input type="text" v-model="pmsg">
+		<!-- props 默认单向绑定 -->
+		<bird msg="hello" my-message="can fly in sky"  v-bind:parent-msg="pmsg"></bird>
+		<!-- 双向绑定 -->
+		<!-- <bird :parent-msg.sync="pmsg"></bird> -->
+		<!-- 单次绑定 -->
+		<bird :parent-msg.once="pmsg"></bird>
+	</div>
+
+	<script src="/bower_components/vue/dist/vue.js"></script>
+	<script>
+	// Vue.extend() 创建组件构造器
+	var MyComponent = Vue.extend({
+		template: '<div> A custom component</div>'
+	});
+
+	// Vue.component(tag, constructor);  把构造器注册为组件
+	//全局注册组件
+	Vue.component('my-component', MyComponent); 
+
+	
+	//-------------
+	// 局部注册组件
+	var Child = Vue.extend({ template: '<div>child component</div>'});
+	var Parent = Vue.extend({
+		template: '<div> parent component</div>',
+		components: {
+			// <my-component> 只能用在父Parent组件的模板内
+			'my-component': Child
+		}
+	});
+
+	// 注册组件的语法糖
+	/*Vue.component(tag, Vue.extend(options));*/
+	//=> Vue.component(tag, options);
+	Vue.component('my-component2', {
+		template: '<div> A custom component two</div>'
+	});
+
+	// 局部注册组件的语法糖
+	/*var Parent = Vue.extend({
+		template: '<div> hello </div>',
+		components: {
+			tag: Vue.extend(options)
+		}
+	});*/
+	/*=>
+	var Parent = Vue.extend({
+		template: '<div> hello world</div>',
+		components: {
+			tag: options
+		}
+	});*/
+
+	var Parent2 = Vue.extend({
+		template: '<div> hello</div>',
+		components: {
+			'my-component': {
+				template: '<div> A custom component!</div>'
+			}
+		}
+	});
+
+	/**
+	* props
+	 *组件实例的作用域是孤立的
+	 *不能或不应在子组件的模板中直接引用父组件的数据，而应该用props把数据传给子组件 
+	 * props默认是单向绑定的 从父组件->子组件
+	 * 绑定修饰符 .sync (双向绑定)  .once(单次绑定)
+	 */
+
+
+
+	Vue.component('bird', {
+		//声明props   自定义元素的属性节点
+		props: ['msg', 'myMessage', 'parentMsg'], //注意 驼峰命名在写属性时为 my-message
+		// props可指定验证要求，如：
+		/*props: {
+			'propA': Number,
+			'propM': [String, Number],
+			'propB':{
+				type: String,
+				required: true
+			},
+			'propC':{
+				type: Number,
+				default: 100
+			},
+			'propD': {//对象或数组的默认值应由一个函数返回
+				type: Object,
+				default: function () {
+					return {msg: 'hello'}
+				}
+			},
+			'propE':{//双向绑定
+				twoWay: true
+			},
+			'propF':{//自定义验证函数
+				validator: function (value) {
+					return value > 10
+				}
+			},
+			'propG': {
+				coerce: function (val) {
+					return val + ''; //将值转换为字符串
+				}
+			},
+			'propH': {
+				coerce: function (val) {
+					return JSON.parse(val); //将json转换为对象
+				}
+			}
+		}*/
+		// prop可以用在模板内
+		'template': '<h2>{{ msg }} {{ myMessage }}  {{ parentMsg }}</h2>'
+	});
+
+	
+
+	/**
+	 * 注意注册组件，需要在创建vue实例前
+	 */
+		
+
+	// 创建根实例
+	var vm = new Vue({
+		el: '#app',
+		data: {
+			"pmsg": ' (data from parent component)'
+		}
+	});
+
+	</script>
+</body>
+</html>
