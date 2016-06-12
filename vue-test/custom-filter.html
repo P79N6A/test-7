@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>自定义过滤器</title>
+    <style type="text/css">
+    div{margin: 20px; padding: 20px; line-height: 1.5;}
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 自定义过滤器 reverse -->
+        <div v-text="message | reverse"></div>
+        <!-- 自定义过滤器 wrap 接受入参 -->
+        <div v-text="message | wrap 'before' 'after'"></div>
+        <!-- 双向过滤器 -->
+        <p><input type="text" v-model="money | currencyDisplay"  debounce="300"> {{ money }}</p>
+
+        <div>
+        	<input type="text" v-model="userInput"  debounce="500">
+            <!-- 过滤器 动态参数 -->
+        	<span v-text="message | concat userInput"></span>
+        </div>
+
+    </div>
+    <script type="text/javascript" src="/bower_components/vue/dist/vue.js"></script>
+    <script type="text/javascript">
+
+
+    /*
+    Vue.filter() 注册一个自定义过滤器，它接收两个参数：过滤器 ID 和过滤器函数。过滤器函数以值为参数，返回转换后的值：
+     */
+    
+    Vue.filter('reverse', function (value) {
+    	return value.split('').reverse().join('');
+    });
+
+    /*
+    过滤器函数可以接收任意数量的参数：
+     */
+    Vue.filter('wrap', function (value, before, after) {
+    	return before + ' '+ value + ' ' + after;
+    });
+
+    /*
+    双向过滤器
+    目前我们使用过滤器都是在把来自模型的值显示在视图之前转换它。不过也可以定义一个过滤器，
+    把来自视图（<input> 元素）的值写回模型之前转化它：
+     */
+    Vue.filter('currencyDisplay', {
+    	// model -> view
+    	read: function (val) {
+    		return '$'+val.toFixed(2);
+    	},
+    	// view -> model
+    	write: function (val, oldVal) {
+    		console.info('[in write fn]', val, oldVal);
+    		var number = +val.replace(/[^\d.]/g, '');
+    		return isNaN(number) ? 0 : parseFloat(number.toFixed(2));
+    	}
+    });
+
+    /*
+    如果过滤器参数没有用引号包起来，则它会在当前 vm 作用域内动态计算。另外，过滤器函数的 this 始终指向调用它的 vm。例如：
+    对于更复杂的逻辑——需要多于一个语句，这时需要将它放到计算属性或自定义过滤器中。
+     */
+    Vue.filter('concat', function (val, input) {
+    	console.info(input===this.userInput, ', this指向vm this->',this);
+    	return val + input;
+    });
+
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            message: 'hello world',
+            money: 1235.32344,
+            userInput: '',
+            todos: [
+            	{text: 'cleaning'},
+            	{text: 'running'},
+            	{text: 'learning'}
+            ]
+        }
+    });
+    </script>
+</body>
+
+</html>
