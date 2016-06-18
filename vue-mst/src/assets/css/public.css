@@ -1,0 +1,26 @@
+@import "vars.less";
+
+/* .wrapper .app-sidebar{background-color: @gray;} */
+
+/*css*/
+.red {
+	color: red;
+}
+.hand{cursor: pointer;}
+.dis-ib{display: inline-block;}
+.va-m{vertical-align: middle;}
+.loading {
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	-webkit-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+}
+.app-tips {
+	position: fixed;
+	z-index: 100;
+	top: 50%;
+	left: 50%;
+	-webkit-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+}

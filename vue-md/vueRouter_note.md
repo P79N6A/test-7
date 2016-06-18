@@ -227,3 +227,336 @@ v-link
 
 切换钩子函数 
 --------------
+`<router-view>` 通过一些钩子函数来控制视图切换的过程， 钩子函数包括:
+
++ data //activate后执行data函数, 用于获取视图所需的数据
++ activate //执行激活或停用阶段
++ deactivate 
++ canActivate //检测是否可激活或停用阶段
++ canDeactivate
++ canReuse  //检测是否可重用阶段
+
+我们可以在组件`route`选项实现这些函数
+
+    Vue.component('hooks-example', {
+        template: ..,
+        data: function(){ .. },
+        route: {
+            activate: function(transition){
+                console.log('hooks-example activate!');
+                transition.next(); //继续切换过程
+            },
+            deactivate: function(transition){
+                console.log('hooks-example deactivate!~');
+                transition.next();
+            }
+        }    
+    });
+
+###切换对象
+每个切换钩子函数都会传入 **切换对象(transition)** 参数, 切换对象的属性包括:
+
++ `transition.to`  将切换到路径所对应的路由对象(vm.$route)
++ `transition.from` 当前路径所对应的路由对象
++ `transition.next()` 继续切换过程 resolve
++ `transition.abort([reason])` 停止切换过程 reject
++ `transition.redirect(path)` 取消切换并重定向到另一个路由
+
+###异步钩子函数的resolve规则
+我们经常需要在钩子函数中进行异步操作。在一个异步的钩子被 resolve 之前，切换会处于暂停状态。钩子的 resolve 遵循以下规则：
+
++ 若钩子函数返回一个promise, 则钩子函数随promise的resolve，一起resolve(自动调用 transition.next() )
++ 若钩子函数不返回promise,也没任何参数，则钩子函数被同步resolve. 例如:
+        
+        Vue.extend({
+            template: ..
+            route: {
+                activate: function(){
+                    //无参数，且不返回promise, 同步resolve该钩子函数
+                }
+            }
+        });
++ 钩子函数被transition的方法resolve
+
+        Vue.extend({
+            template: ..,
+            route: {
+                activate: function(transition){
+                    setTimeout( transition.next, 1000);
+                    //setTimeout( transition.abort, 1000);
+                    //setTimeout( function(){transition.redirect('/')}, 1000);
+                }
+            }
+        });
+
++ 验证类的钩子函数(canActivate, canDeactivate) 和 全局类钩子(beforeEach) ,如返回值是一个布尔值，则同步resolve
+
+###在钩子中返回 Promise
++ 如果 Promise 在验证阶段被 reject，系统会调用 transition.abort。
++ 如果 Promise 在激活阶段被 reject，系统会调用 transition.next 。
++ 对于验证类钩子（ canActivate 和 canDeactivate ），如果 Promise resolve 之后的值是假值（ falsy value ），系统会中断此次切换。
++ 如果一个被 reject 的 Promise 抛出了未捕获的异常，这个异常会继续向上抛出，除非在创建路由器的时候启用了参数 suppressTransitionError 。
+
+    // 在组件定义内部
+    route: {
+      canActivate: function () {
+        // 假设此 service 返回一个 Promise ，这个 Promise 被断定后
+        // 的值是 `true` 或者 `false`
+        return authenticationService.isLoggedIn()
+      },
+      activate: function (transition) {
+        return messageService
+          .fetch(transition.to.params.messageId)
+          .then((message) => {
+            // 获取数据后更新 data
+            // 组件知道此函数执行过后才会被展示出来
+            this.message = message
+          })
+      }
+    }
+    //activate 钩子中异步的获取数据，因为这里仅仅是做个示例；注意通常我们可以使用 data 钩子来做这些，它会更加适合
+
+###钩子合并
+路由生命周期钩子:
+
++ data
++ activate 
++ deactivate 
+
+和组件的生命周期钩子一样，这些钩子函数若有重复则和合并为函数数组，都被执行。如： 
+  
+    var mixin={
+        route:{activate: function(){..}}
+    }; 
+    Vue.extend({
+        mixin: mixin, 
+        route: { activate: function(){..} }
+    }));
+
+> 需要注意的是，验证类钩子，比如 canActivate, canDeactivate 和 canReuse 在合并选项时会直接被新值覆盖。
+
+
+###data钩子函数
+`data: callback(transition)` 在激活阶段，activate被resolve后,界面切换前，调用 data钩子，用于加载组件数据
+
+    data: function(transition){
+        transition.next({a:1, b:2}); //为组件的data属性赋值, 相当于vm.$set(a,1); vm.$set(b, 2);
+    }
+
+> 切换进来的组件会得到一个名为 $loadingRouteData 的元属性，其初始值为 true ，在 data 钩子函数被断定后会被赋值为 false 。这个属性可用来会切换进来的组件展示加载效果。
+
+**data 钩子和 activate 钩子的不同之处在于：**
+
++ data在每次路由变动时都会被调用，即使是当前组件可以被重用的时候，但是 activate 仅在组件是新创建时才会被调用。
+
+        > 假设我们有一个组件对应于路由 /message/:id ，当前用户所处的路径是 /message/1 。当用户浏览 /message/2 时，当前组件可以被重用，所以 activate 不会被调用。但是我们需要根据新的 id 参数去获取和更新数据，所以大部分情况下，在 data 中获取数据比在 activate 中更加合理。
+
++ activate 的作用是控制切换到新组件的时机。data 切换钩子会在 activate 被断定（ resolved ）以及界面切换之前被调用，所以数据获取和新组件的切入动画是并行进行的，而且在 data 被断定（ resolved ）之前，组件会处在“加载”状态。
+
+>如果你想等到数据获取之后再切换视图，可以在组件定义路由选项时，添加 waitForData: true 参数。
+
+    //transition.next();
+    Vue.component('Foo', {
+        template: ..,
+        route: {
+            data: function(transition){
+                setTimeout(function(){
+                    transition.next({msg: 'data fetched'});
+                }, 1000);
+            }
+        }    
+    });
+
+    //返回promise 
+    Vue.extend({
+        template: ..,
+        route: {
+            data: function(transition){
+                return messageService.fetch(transition.to.params.messageId)
+                        .then(function(msg){
+                            return {msg: msg};
+                        });
+            }
+        }
+    });
+
+    //并发ajax请求
+    Vue.extend({
+        template: ..,
+        route: {
+            data({to: {params:{userId}}}){
+                return Promise.all([
+                    userService.get(userId),
+                    postService.getForUser(userId)
+                ]).then( ([user, post])=>({user, post}) )
+            }
+        }
+    });
+
+
+在模板中使用 $loadingRouteData ：
+
+    <div class="view">
+      <div v-if="$loadingRouteData">Loading ...</div>
+      <div v-if="!$loadingRouteData">
+        <user-profile user="{{user}}"></user-profile>
+        <user-post v-repeat="post in posts"></user-post>
+      </div>
+    </div>
+
+###Promise 语法糖
+
+    route: {
+        data( {to: { params: {userId} }} )=>({
+            user: userService.get(userId),
+            posts: postService.getForUser(userId)
+        })
+    }
+
+### activate 
+`activate: function(transition)`  在激活阶段，当组件被创建而且将要切换进入的时候被调用。 
+
+调用 transition.next() 可以断定（ resolve ）这个钩子函数。注意，这里调用 transition.abort() 并不会把应用回退到前一个路由状态因为此时切换已经被确认合法了。
+
+### deactivate
+`deactivate: function(transition) ` 在激活阶段，当一个组件将要被禁用和移除之时被调用。 其他同 activate钩子
+
+新组件的 activate 钩子函数会在所有组件的 deactivate 钩子函数被断定（ resolved ）之后被调用
+
+###canActivate 
+`canActivate:function(transition) -> Promise | Boolean` 在验证阶段，当一个组件将要被切入的时候被调用。
+
+调用 transition.next() 可以断定（ resolve ）此钩子函数。调用 transition.abort() 可以无效化并取消此次切换。
+
+> 在验证阶段可以取消这次视图切换
+
+###canDeactivate 
+`canDeactivate:function(transition) -> Promise | Boolean` 在验证阶段，当一个组件将要被切出的时候被调用。
+
+###canResuse
+`canReuse: Boolean | canReuse(transition) -> Boolean`
+
+决定组件是否可以被重用。如果一个组件不可以重用，当前实例会被一个新的实例替换，这个新实例会经历正常的验证和激活阶段。
+
+此路由配置参数可以是一个 Boolean 值或者一个同步返回 Boolean 值的函数。默认值为 true
+
+>在 canReuse 钩子中只能访问 transition.to 和 transition.from
+
+如果组件可以重用，它的 data 钩子在激活阶段仍然会被调用。
+
+API
+=========================
+路由实例属性和方法 router
+------------------
++ `router.app`  返回此路由器管理的根实例, router.start(App, '#app'); App组件类的实例
++ `router.mode` 路由模式 **hash, html5 或 abstract**
++ `router.start(App, el)` 创建App组件的实例并在上面启用路由，然后挂载到el上
+    **App** 可以是 Vue 组件构造函数或者一个组件选项对象。  
+    **el** 挂载应用的元素。可以是 CSS 选择符或者一个实际的元素。
++ `router.stop()` 停止监听 `popstate` 和 `hashchange` 事件
+    注意，当路由处于停止状态，router.app 并没有销毁，你依然可以使用 router.go(path) 进行跳转。你也可以不使用参数调用 router.start() 来重新启动路由。
+
++ `router.map(routeMap)` 定义路由映射
+    
+        router.map({
+          // 组件构造函数
+          '/a': {
+            component: Vue.extend({ /* ... */ })
+          },
+          // 组件选项对象
+          '/b': {
+            component: {
+              template: '<p>Hello from /b</p>'
+            }
+          },
+          // 嵌套的路由
+          '/c': {
+            component: {
+              // 渲染子视图
+              template: '<router-view></router-view>'
+            },
+            subRoutes: {
+              // 当路径是 /c/d 时进行渲染
+              '/d': { component: { template: 'D' }},
+              // 当路径是 /c/e 时进行渲染
+              '/e': { component: { template: 'E' }}
+            }
+          }
+        })
+
++ `router.on(path, config)` 动态添加路由配置 在内部实现时，router.map() 对于接收到的路由映射对象中每个键值对都调用 router.on() 。
+
+        router.on('/user/:userId', {
+          component: {
+            template: '<div>{{$route.params.userId}}</div>'
+          }
+        })
+
++ `router.go(path)` 路由跳转 *path*可以是一个字符串，或是包含跳转信息的对象。 **路径若不是以 / 开头的绝对路径，会以相对于当前路径的方式进行解析。** 
+
+        //path参数
+        {
+          name: '...',
+          // params 和 query 可选
+          params: { ... },
+          query: { ... }
+        }
++ `router.replace(path)` 路由跳转 但不产生新的历史记录 
+    path参数为String。路径不能以 / 开头，会以相对于当前路径的方式进行解析。
+
++ `router.redirect(redirectMap)` 为路由器定义全局重定向规则. 全局的重定向会在匹配当前路径之前执行。如果发现需要进行重定向，原本访问的路径会被直接忽略而且不会在浏览器历史中留下记录。
+
+    router.redirect({
+
+      // 重定向 /a 到 /b
+      '/a': '/b',
+
+      // 重定向可以包含动态片段
+      // 而且重定向片段必须匹配
+      '/user/:userId': '/profile/:userId',
+
+      // 重定向任意未匹配路径到 /home
+      '*': '/home'
+    })
+
++ `router.alias(aliasMap)` 为路由器设置全局的别名规则. 为路由器配置全局的别名规则。别名和重定向的区别在于，相对于重定向把 fromPath 替换为 toPath ，别名会保留 fromPath ，但是匹配时使用的是 toPath 。
+
+    router.alias({
+
+      // 匹配 /a 时就像是匹配 /a/b/c, ::地址栏还是/a , 但匹配时用 /a/b/c 进行匹配
+      '/a': '/a/b/c',
+
+      // 别名可以包含动态片段
+      // 而且重定向片段必须匹配
+      '/user/:userId': '/user/profile/:userId'
+    })
++ `router.beforeEach(hook)` 全局的前置钩子函数，这个函数会在路由切换开始时调用。调用发生在整个切换流水线之前。如果此钩子函数拒绝了切换，整个切换流水线根本就不会启动。
+
+你可以注册多个全局的前置钩子函数。这些函数会按照注册的顺序被调用。调用是异步的，后一个函数会等待前一个函数完成后才会被调用。
+
+    router.beforeEach(function (transition) {
+      if (transition.to.path === '/forbidden') {
+        transition.abort()
+      } else {
+        transition.next()
+      }
+    })
+
+    router.beforeEach(function ({ to, next }) {
+      if (to.path === '/auth-required') {
+        // 返回一个断定会 true 或者 false 的 Promise
+        return AuthService.isLoggedIn()
+      } else {
+        next()
+      }
+    })
+
++ `router.afterEach(hook)` 全局的后置钩子函数，该函数会在每次路由切换成功进入激活阶段时被调用。 
+
+    注意，该函数调用时仅仅意味着切换已经被验证过了，也就是所有 canDeactivate 和 canActivate 钩子函数都成功的被断定( resolved )了，而且浏览器地址栏中的地址也已经更新。并不能保证所有的 activate 钩子函数都被resolve了。 **注意: 后置钩子函数里不能调用任何切换函数。**
+
+    你可以注册多个全局的后置钩子函数，这些函数将会按照注册的顺序被同步调用。
+
+        router.afterEach(function (transition) {
+          console.log('成功浏览到: ' + transition.to.path)
+        })

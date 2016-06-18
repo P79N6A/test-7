@@ -269,9 +269,129 @@ Actions 是用于分发 mutations 的函数。按照惯例，Vuex actions 的第
                 actions: actions
             }
         });
-        
+
+###模块化actions
+你还可以在 action 模块中引入其他 action 模块来实现复用。
+
+    // errorActions.js
+    export const setError = ({dispatch}, error) => {
+      dispatch('SET_ERROR', error)
+    }
+    export const showError = ({dispatch}) => {
+      dispatch('SET_ERROR_VISIBLE', true)
+    }
+    export const hideError = ({dispatch}) => {
+      dispatch('SET_ERROR_VISIBLE', false)
+    }
+
+    // userActions.js
+    import {setError, showError} from './errorActions'
+
+    export const login = ({dispatch}, username, password) => {
+      if (username && password) {
+        doLogin(username, password).done(res => {
+          dispatch('SET_USERNAME', res.username)
+          dispatch('SET_LOGGED_IN', true)
+          dispatch('SET_USER_INFO', res)
+        }).fail(error => {
+          dispatch('SET_INVALID_LOGIN')
+          setError({dispatch}, error)
+          showError({dispatch})
+        })
+      }
+    }
 
 
+中间件
+------------------
+Vuex store 可以接受 middlewares 选项来加载中间件。中间件在每一个 mutation 被触发后会调用响应的勾子函数（注意这和 Redux 的中间件概念完全没有关系）。一个 Vuex 中间件即是一个包含一些勾子函数的简单对象：
+
+    const myMiddleware = {
+      onInit (state) {
+        // 记录初始 state
+      },
+      onMutation (mutation, state) {
+        // 每个 mutation 后会被调用
+        // mutation 参数的格式为 { type, payload }
+      }
+    }
 
 
+    const store = new Vuex.Store({
+      // ...
+      middlewares: [myMiddleware]
+    })
+
+一个中间件默认会接受到原本的 state 对象，但中间件通常用于 debugging 或是数据持久化, 它们是 不允许改变 state 的。
+
+有时候我们可能会想要在中间件中获得 state 的快照（snapshots），用来比较 mutation 前后的 state。这样的中间件必须定义 snapshot: true 选项：
+
+    const myMiddlewareWithSnapshot = {
+      snapshot: true,
+      onMutation (mutation, nextState, prevState) {
+        // nextState 和 prevState 分别为 mutation 触发前
+        // 和触发后对原 state 对象的深拷贝
+      }
+    }
+
+严格模式
+----------------
+要开启严格模式，只需要在创建 Vuex store 实例时传入 strict: true:
+
+    const store = new Vuex.Store({
+      // ...
+      strict: true
+    })
+
+在严格模式中，每当 Vuex state 在 mutation handlers 外部被改变时都会抛出错误。这样我们可以确保所有对状态的改变都可以清晰地被 debugging 工具所记录。
+
+###开发环境 vs. 生产环境
+不要在生产环境中开启严格模式！ 为了检测在不合适的地方发生的状态修改, 严格模式会对 state 树进行一个深观察 (deep watch)。
+
+    //配置构建工具来将严格模式的设置自动化
+    const store = new Vuex.Store({
+      // ...
+      strict: process.env.NODE_ENV !== 'production'
+    })
+
+
+API
+===============
+
+Vue.Store
+--------------
+
+    import Vuex from 'vuex';
+    const store = new Vuex.Store({...options});
+
+**options**的参数包括:
+1. `state` 状态数据
+2. `mutations`  mutation事件系统
+3. `modules`
+    
+        modules: {
+            key: {
+                state,
+                mutation,
+            }
+        },
+        ...
+
+4. `middlewares` 中间件对象数组
+      
+        {
+            snapshot: Boolean,
+            onInit: Function,
+            onMutation: Function
+        }
+
+5. `strict`  是否严格模式
+
+Store实例API
+--------------
+
+1. `store.state` 只读 根state
+2. `store.dispatch(mutationName, ...args)`  通常在组件的actions中调用 store.dispatch(..) 改变应用的状态
+3. `store.watch(pathOrGetter, callback, [options])` 监听 path or getter 的值，执行回调; options 同 vm.$watch(..);
+4. `store.hotUpdate(newOptions)` 热更新actions和mutations
 
