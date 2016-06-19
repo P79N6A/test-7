@@ -1,5 +1,5 @@
 <template>
-	<div class="view-demo">
+	<div class="demo-view">
 		<h3>this is demo page</h3>
 		<p>demo..{{user}}</p>
 	</div>

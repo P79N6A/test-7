@@ -9,12 +9,11 @@
 			</app-sidebar>			
 			<div class="main-bd">
 				<breadcrumb></breadcrumb>
-				<div class="view" v-adaptive-height.literal="footer">
-					<router-view transition="slideInDown" ></router-view>
+				<div class="viewport" v-adaptive-height.literal="footer">
+					<router-view  class="view"  transition="slideInDown" transition-mode="out-in" ></router-view>
 				</div>
 			</div>
 		</div>
-		
 		<!-- footer -->
 		<app-footer></app-footer>
 
@@ -32,6 +31,13 @@
 
 	import {User} from 'services/api';
 
+	import Vue from 'vue';
+
+	Vue.transition('slideInDown', {
+		enterClass: 'slideInDown',
+		leaveClass: 'slideOutDown'
+	});
+
 	// 导入样式
 	require('css/public.css');
 	require('css/vars.less');
@@ -47,6 +53,16 @@
 		data() {
 			return {
 				user: ''
+				// ,showTips: false
+			}
+		},
+		watch: {
+			tips: {
+				deep: true,
+				handler: function(t){
+					console.log('in watch, tips:', t);
+					showTips = !!this.tips.text;
+				}
 			}
 		},
 		vuex: {
@@ -61,19 +77,29 @@
 			}
 		},
 		computed:{
-			showTips: function(){
-				return !!this.tips.text;
+			showTips: {
+				get: function(){
+					return !!this.tips.text;
+				},
+				set: function(val){
+					if(!val){//隐藏 则提示信息置空
+						this.tips.text = '';
+					}
+				}
 			}
 		},
 		methods: {
-			
 
 		},
 		watch:{
 			
 		},
-		created() {
-			
+		created: function() {
+			// console.warn('[in app this]', this);
+			window.vmapp = this;
+			setTimeout(function(){
+				 window.vmalert = $('.app-tips').get(0).__vue__;
+			}, 2000); 
 		},
 		ready() {
 			/*User.get({userId:123}).then(function(res){
@@ -108,9 +134,13 @@
 		color: #d6d6d6;
 	}
 
-	.view{
+	.viewport{
 		min-height: 100px;
 		/*border: 5px solid #ccc;*/
 		/*padding: 20px;*/
+	}
+	.view{
+		animation-duration: .3s;
+		animation-iteration-count: 1;
 	}
 </style>

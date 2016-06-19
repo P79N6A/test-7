@@ -4,10 +4,7 @@
 			<thead>
 				<th v-for="col in columns">{{col.text || col.name}} <span v-if="col.sortable" @click="sortBy(col)" class="glyphicon hand" :class="{'glyphicon-arrow-down': col.order<0,'glyphicon-arrow-up': col.order>0, disabled: col.name!=sortKey}"></span></th>
 			</thead>
-			<tbody>
-				<tr v-for="row in tableData | orderBy sortKey order"><td v-for="i in columns.length">{{row[columns[i].name]}}</td></tr>
-				<tr class="tr-empty"><td colspan="{{columns.length}}">暂时没有数据..</td></tr>
-			</tbody>
+			<tbody is="vtbody" :rows="tableData" :cols="columns"  :sort-key="sortKey"  :order="order"  :checkable="checkable"></tbody>
 			<tfoot></tfoot>
 		</table>
 		<slot name="pager"></slot>
@@ -17,10 +14,12 @@
 
 <script>
 	import VIP from 'services/public';
+	import Vue from 'vue';
 
 	export default {
 		name:'Vtable',
 		props: {
+			vtbody:String,
 			bordered: {//样式类
 				type: Boolean,
 				coerce: VIP.makeBoolean,
@@ -57,7 +56,8 @@
 						{text:'ID', name:'id', sortable: true, order: 1},
 						{text:'标题', name:'title', sortable: true, order: 1},
 						{text:'修改时间', name:'mdate', sortable: true, order: 1},
-						{text:'启用', name:'open'}
+						{text:'启用', name:'open'},
+						{text:'操作', name:'operation'}
 					];
 				}
 			},
@@ -84,7 +84,22 @@
 				}
 			}
 		},
+		components: {
+			vtbody:  function(resolve){
+				resolve(require('components/'+this.vtbody));
+			}
+		},
+		filters: {
+			kabebCase: function(v){
+				return v.split('').map(function(c, i){
+					if(c.toUpperCase() === c){
+						return c = (i ? '-' : '') +c.toLowerCase() ;
+					}else{ return c; }
+				}).join('');
+			}
+		},
 		created: function(){
+			window.vmvtable = this;
 			/*VIP.eachKey(this.columns, function(c){
 				if (c.sortable) {
 					c.active = c.name === this.sortKey;

@@ -16,3 +16,7 @@ Mock.mock(/\/special\/query/, function (options) {
 	opt['totalRecords'] = 325;
 	return Mock.mock(opt);
 });
+
+Mock.mock(/\/special\/del/,  {
+	msg: 'del ok'
+});

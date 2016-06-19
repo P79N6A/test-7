@@ -11,10 +11,19 @@ function redirectTo (url) {
 	//codes	
 }
 
+function vlog(obj){
+	if(obj instanceof Vue){
+		console.warn('sorry, 不能打印vue的实例, 请打印实例内部数据');
+	}else{
+		return JSON.parse(JSON.stringify(obj));
+	}
+}
+
 
 
 var publicFns = {
-	redirectTo: redirectTo
+	redirectTo: redirectTo,
+	vlog: vlog
 };
 
 VIP.extend(VIP, publicFns, {_fns:{"public": publicFns}});

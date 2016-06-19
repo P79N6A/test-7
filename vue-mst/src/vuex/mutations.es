@@ -60,10 +60,7 @@ export default  {
 	},
 
 	[types.TIPS_UPDATE](state, type, text) {
-		state.tips.type = type;
-		state.tips.text = text;
+		state.tips = {'type': type, 'text': text};
 	}
-
-
 };
 

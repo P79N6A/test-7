@@ -98,6 +98,7 @@
 			}
 		},
 		ready: function(){
+			window.vmpager = this;
 			this.getPageData();
 		},
 		methods: {

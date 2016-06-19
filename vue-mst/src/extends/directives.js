@@ -51,5 +51,8 @@
  		unbind: function(){
  			$(window).off('resize', this.handler);
  		}
+ 	},
+ 	hide: function(isHide){
+ 		this.el.style.display = isHide ?  'none': 'block';
  	}
  };

@@ -31,7 +31,7 @@ function setResource(name, otherActions, params){
 			url: 'update'+name,
 			method: 'POST'
 		},remove: {
-			url: 'remove'+name
+			url: 'del'+name
 		}
 	};
 	var actions = VIP.extend({}, defActions, otherActions);
@@ -41,7 +41,7 @@ function setResource(name, otherActions, params){
 	resources[name] =  resource;
 }
 
-var resourceNames = ['user', 'specail'];
+var resourceNames = ['user', 'special'];
 resourceNames.forEach(setResource);
 
 module.exports = resources;

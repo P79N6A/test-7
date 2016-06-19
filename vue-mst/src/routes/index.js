@@ -45,23 +45,8 @@ module.exports = {
 
 	,
 	'/special/new': {
-		component: {
-			template: '<h3>{{$route.path}}</h3>'
-		}
-	},
-	'/special/new': {
-		component: {
-			template: '<h3>{{$route.path}}</h3>'
-		}
-	},
-	'/special/new': {
-		component: {
-			template: '<h3>{{$route.path}}</h3>'
-		}
-	},
-	'/special/new': {
-		component: {
-			template: '<h3>{{$route.path}}</h3>'
+		component: function(resolve){
+			require(['views/special/add'], resolve);
 		}
 	},
 	'/special/types': {

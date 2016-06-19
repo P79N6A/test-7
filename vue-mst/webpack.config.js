@@ -1,9 +1,10 @@
+var path = require('path');
 var webpack           = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
-var env               = require('./config/env');
-var currentEnv        = env.active;
-var envConf           = env[currentEnv];
+var env        = require('./config/env');
+var currentEnv = env.active;
+var envConf    = env[currentEnv];
 
 
 var webpackConf = {
@@ -16,7 +17,17 @@ var webpackConf = {
 		chunkFilename: '[id].chunk.js'
 		/*,publicPath   : './'*/
 	},
+	resolveLoader:{
+		root: [
+			path.resolve('D:\\mydev\\trunk\\js\\vue\\vue-demo\\node_modules'),
+			path.resolve('D:\\mydev\\trunk\\node_modules')
+		]
+	},
 	resolve: {
+		root: [
+			path.resolve('D:\\mydev\\trunk\\js\\vue\\vue-demo\\node_modules'),
+			path.resolve('D:\\mydev\\trunk\\node_modules')
+		],
 		extensions: ['', '.vue', '.js', '.es', '.json','.scss','.less','.css'],
 		alias: {
 			'services'  : __dirname + '/src/services',
@@ -24,6 +35,7 @@ var webpackConf = {
 			'css'       : __dirname + '/src/assets/css',
 			'components': __dirname + '/src/components',
 			'views'     : __dirname + '/src/views',
+			'appVuex'     : __dirname + '/src/vuex',
 			'config'    : __dirname + '/config'
 		}
 	},
