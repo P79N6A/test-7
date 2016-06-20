@@ -1,8 +1,10 @@
 <template>
  <div class="dropdown-wrap dis-ib" :class="{dropup: dropup, dropdown: !dropup, open: open}" v-open="open">
- 	<slot name="dropdown-toggle">
+ 	
+  <slot name="dropdown-toggle">
  		<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" @click.stop="toggle">{{btnText}} <span class="caret"></span></button>
 	</slot>
+
 	<slot name="dropdown-menu">
 	 	<ul class="dropdown-menu" :class="{'dropdown-menu-right': menuRight}">
 			<li v-for="link in links" :class="{disabled: link.disabled, divider:!link.text}">
@@ -10,26 +12,28 @@
 			</li>
 	 	</ul>
 	</slot>
+ 
  </div>
 </template>
 <script>
-  import VIP from 'services/public';
+  import {makeBoolean} from 'services/public';
 
   export default {
+    name:'Dropdown',
   	props: {
   		dropup: {
   			type: Boolean,
-  			coerce: VIP.makeBoolean,
+  			coerce: makeBoolean,
   			default: false
   		},
   		menuRight: {
   			type: Boolean,
-  			coerce: VIP.makeBoolean,
+  			coerce: makeBoolean,
   			default: false
   		},
   		open: {
   			type: Boolean,
-  			coerce: VIP.makeBoolean,
+  			coerce: makeBoolean,
   			default: false
   		},
   		btnText: {
@@ -38,14 +42,8 @@
   		},
   		links: {
   			type: Array,
-  			default: function(){
-  				return [
-  					{text:'action'},
-  					{text:'another action'},
-  					{text:'more action', disabled: true},
-  					{text:''},
-  					{text:'last action', url:'/index'}
-  				];
+  			default(){
+  				return [];
   			}
   		}
   	},
@@ -53,9 +51,6 @@
   		toggle(){
   			this.open = !this.open;
   		}
-  	},
-  	ready(){
-  		window.vmdropdown = this;
   	},
   	directives: {
 		open: {
@@ -66,7 +61,7 @@
 				};
 				
 				self.hideDropdown = function hideDropdown(event){
-					if (!self.el.contains(event.target)) {debugger;
+					if (!self.el.contains(event.target)) {
 						self.vm.open = false;
 					}
 				};

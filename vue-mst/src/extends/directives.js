@@ -4,9 +4,9 @@
  
  module.exports = {
  	bread: {
- 		bind:function(){
+ 		bind(){
  		},
- 		update: function (link) {
+ 		update (link) {
  			if (!link.text) {
  				link.text = this.el.textContent;
  			}
@@ -25,12 +25,12 @@
  			}.bind(this);
  			this.el.addEventListener('click', this.handler);
  		},
- 		unbind: function(){
+ 		unbind(){
  			this.handler && this.el.removeEventListener('click', this.handler);
  		}	
  	},
  	adaptiveHeight:{
- 		bind: function(){
+ 		bind(){
  			this.handler = function(){
 	 			var clientH = document.documentElement.clientHeight;
 	 			var offsetTop = $(this.el).offset().top;
@@ -48,11 +48,11 @@
  				$(window).resize();
  			});
  		},
- 		unbind: function(){
+ 		unbind(){
  			$(window).off('resize', this.handler);
  		}
  	},
- 	hide: function(isHide){
+ 	hide(isHide){
  		this.el.style.display = isHide ?  'none': 'block';
  	}
  };

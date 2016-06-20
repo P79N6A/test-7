@@ -1,10 +1,10 @@
 import * as types from './mutation-types';
-import VIP from 'services/public';
+import {eachKey} from 'services/public';
 
 function getNavLinks (state) {
 	if(getNavLinks.result){ return getNavLinks.result; }
 	var navLinks = state.topLinks.slice(0);
-	VIP.eachKey(state.asideLinkMap, function(links){
+	eachKey(state.asideLinkMap, function(links){
 		navLinks = navLinks.concat(links);
 	});
 	

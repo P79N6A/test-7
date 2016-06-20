@@ -32,19 +32,17 @@
 			},
 			cols: {
 				type:Array,
-				default: ()=>[]
+				default: ()=>([])
 			}
 		},
 		methods:{
-			view: function(){
+			view(){
 
 			},
-			edit: function(row){
+			edit(row){
 
 			},
-			del: function(row){
-				//this.$parent -> Vtable
-				// console.warn('[this]' , this);
+			del(row){
 				this.$dispatch('showDelModal', row);
 			}
 		}

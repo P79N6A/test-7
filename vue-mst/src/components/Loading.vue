@@ -5,8 +5,16 @@
 </template>
 
 <script>
+	import {makeBoolean} from 'services/public';
+
 	export default {
-		name: 'loading',
-		props: ['show']
+		name: 'Loading',
+		props: {
+			show: {
+				type: Boolean,
+				coerce: makeBoolean,
+				default: false
+			}
+		}
 	}
 </script>

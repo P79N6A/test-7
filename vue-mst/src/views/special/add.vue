@@ -39,21 +39,26 @@
 	
 		<p></p>
 
-		<dropdown btn-text="下拉列表"></dropdown>
+		<dropdown btn-text="下拉列表" :links="dropList"></dropdown>
+
 	</div>
 </template>
 
 <script>
 	export default  {
 		name: 'SpecialAddView',
-		props: {
-
-		},
-		data: function(){
+		data(){
 			return {
 				date: '2015-12-2',
 				checks: ['middle'],
-				radioValue: 'middle'
+				radioValue: 'middle',
+				dropList: [
+					{text:'action'},
+					{text:'another action'},
+					{text:'more action', disabled: true},
+					{text:''},
+					{text:'last action', url:'/index'}
+				]
 			};
 		}
 	}

@@ -1,5 +1,6 @@
 <template>
 	<div class="pager-wrap clearfix">
+	
 		<div class="pager-info">
 			<span class="total-records">共 <i class="text-danger">{{totalRecords}}</i> 条结果</span>
 			<div class="dis-ib select-pagesize">
@@ -10,6 +11,7 @@
 				 条
 			</div>
 		</div>
+
 		<nav class="pager-nav pull-right">
 			<ul class="pagination va-m">
 				<li :class="{disabled: activePage==1}"><a href="javascript:;" @click="navPrev" class="previous-btn"><span>&laquo;</span></a></li>
@@ -18,65 +20,64 @@
 			</ul>
 			<span class="total-pages">共 <i class="text-danger">{{totalPages}}</i> 页</span>
 		</nav>
+	
 	</div>
 </template>
 
 <script>
-	import VIP from 'services/public';
+	import {makeNumber,toArray, range} from 'services/public';
 
 	export default {
 		name: 'Pager',
 		props: {
 			pageSize: {//每页记录数
 				type: Number,
-				coerce: VIP.makeNumber,
+				coerce: makeNumber,
 				default: 10
 			},
 			pageSizes: {
 				type: Array,
-				coerce: VIP.toArray,
-				default: function(){ 
-					return VIP.range(this.pageSize,3,10); 
+				coerce: toArray,
+				default(){ 
+					return range(this.pageSize,3,10); 
 				}
 			},
 			activePage: {//当前页码
 				type: Number,
-				coerce: VIP.makeNumber,
+				coerce: makeNumber,
 				default: 1
 			},
 			totalRecords:{//结果总数
 				type: Number,
-				coerce: VIP.makeNumber,
+				coerce: makeNumber,
 				default: 120
 			},
 			viewSize: {//分页组件显示页码个数
 				type: Number,
-				coerce: VIP.makeNumber,
+				coerce: makeNumber,
 				default: 10
 			},
 			viewStart: {//分页组件开始页码
 				type: Number,
-				coerce: VIP.makeNumber,
+				coerce: makeNumber,
 				default: 1
 			},
 			pageData: {
 				twoWay: true,
 				type: Array,
-				default: function(){
-					return [];
-				}	
+				default: ()=>[]
 			},
 			api: String, //获取数据的API
 			table:String //关联的表格 <vtable v-ref:specialtbl..>
 		},
 		computed: {
-			totalPages: function(){//总页数
+			totalPages(){//总页数
 				return Math.ceil(this.totalRecords/this.pageSize);
 			},
-			pages: function(){//页码数组
-				return VIP.range(this.viewStart, Math.min(this.viewSize, this.totalPages-(this.viewStart - 1) ) );
+			pages(){//页码数组
+				return range(this.viewStart, Math.min(this.viewSize, this.totalPages-(this.viewStart - 1) ) );
 			},
-			params: function(){//请求接口参数
+			params(){//请求接口参数
 				console.warn(this.pageSize, this.activePage);
 				return {
 					pageSize: this.pageSize,
@@ -85,10 +86,10 @@
 			}			
 		},
 		watch:{
-			activePage: function(){//这里不用deep也可以
+			activePage(){//这里不用deep也可以
 				this.getPageData();
 			},
-			pageSize: function(size){
+			pageSize(size){
 				this.viewStart = 1;
 				if (this.activePage !== 1) {
 					this.activePage = 1;
@@ -97,12 +98,11 @@
 				}
 			}
 		},
-		ready: function(){
-			window.vmpager = this;
+		ready(){
 			this.getPageData();
 		},
 		methods: {
-			getPageData: function(){
+			getPageData(){
 				this.$http.get(this.api, this.params).then(function(res){
 					var data = res.data;
 					this.totalRecords = data.totalRecords;
@@ -116,14 +116,14 @@
 					}
 				});
 			},
-			navPrev: function(){
+			navPrev(){
 				if(this.activePage > 1){//未到达首页
 					if(--this.activePage < this.viewStart){
 						this.viewStart = Math.max(1, this.viewStart - this.viewSize);
 					}
 				}
 			},
-			navNext: function(){
+			navNext(){
 				if(this.activePage<this.totalPages){//未到达末尾页
 					if (++this.activePage === this.viewStart + this.viewSize) {//页码变动
 						this.viewStart = this.activePage;
@@ -131,7 +131,7 @@
 				}
 				
 			},
-			navTo: function(n){
+			navTo(n){
 				this.activePage = n;
 			}
 		}

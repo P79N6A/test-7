@@ -2,22 +2,26 @@
  * @ 全局扩展自定义组件
  */
 //import VueStrap from 'vue-strap';
-var VueStrap = require('vue-strap');var VIP = require('../services/util');
+let VueStrap = require('vue-strap');
+let {extendKeys, extend} = require('../services/util');
 
 
-var myComponents = {
+let myComponents = {
 	Loading: require('components/Loading.vue'),
 	Breadcrumb: require('components/Breadcrumb.vue'),
 	Pager: require('components/Pager.vue'),
 	Modal: require('components/Modal.vue'),
 	Dropdown: require('components/Dropdown.vue'),
+	Tab: require('components/Tab.vue'),
+	Vnav: require('components/Vnav.vue'),
+	TabPane: require('components/TabPane.vue'),
 	Vtable: require('components/Vtable.vue')
 };
 
-var VueStrapPicked = {};
+let VueStrapPicked = {};
 
-VIP.extendKeys(VueStrapPicked, VueStrap, ['alert','panel', 'accordion', 'datepicker','checkboxGroup', 'checkboxBtn', 'radioGroup', 'radioBtn']);
+extendKeys(VueStrapPicked, VueStrap, ['alert','panel', 'accordion', 'datepicker','checkboxGroup', 'checkboxBtn', 'radioGroup', 'radioBtn']);
 
-var components = VIP.extend({}, VueStrapPicked, myComponents);
+let components = extend({}, VueStrapPicked, myComponents);
 
 module.exports = components;

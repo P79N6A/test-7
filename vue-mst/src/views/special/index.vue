@@ -1,8 +1,10 @@
 <template>
 	<div class="special-view">
-		<vtable sort-key="title" vtbody="Vtbody">
+		
+		<vtable sort-key="title" vtbody="Vtbody" :columns="cols">
 			<pager api="querySpecial" slot="pager"  v-ref:pager></pager>
 		</vtable>
+
 		<modal title="删除确认"  effect="fade"  :show.sync="delModalShown" :ok-callback="delSpecial"  v-ref:delmodal>
 			<div class="modal-body" slot="modal-body">
 				<p>确定删除专题 <strong class="text-danger">{{delRow.title}}</strong> 吗?</p>
@@ -13,12 +15,9 @@
 </template>
 
 <script>
-	import  actions  from 'appVuex/actions';
-	var updateTips = actions.updateTips;
-	// import updateTips from '../../vuex/actions';
+	import  {updateTips}  from 'appVuex/actions';
 	import { Special } from 'services/api';
 
-	console.warn('[actions]', actions);
 	export default {
 		name:'SpecialView',
 		ready() {
@@ -29,23 +28,30 @@
 				user: 'sindy'
 				,delModalShown: false
 				,delRow:{},
-				editRow:{}
+				editRow:{},
+				cols:[
+						{text:'ID', name:'id', sortable: true, order: 1},
+						{text:'标题', name:'title', sortable: true, order: 1},
+						{text:'修改时间', name:'mdate', sortable: true, order: 1},
+						{text:'启用', name:'open'},
+						{text:'操作', name:'operation'}
+					]
 			}
 		},
 		events: {
-			showDelModal: function(row){
+			showDelModal(row){
 				this.delRow = row;
 				this.delModalShown = true;
 			}
 		},
 		methods: {
-			delSpecial: function(){
+			delSpecial(){
 				//注意 v-ref:delModal -> this.$refs.delmodal 会被转换为小写
 				this.$refs.delmodal.close();
-				Special.remove({sid: this.delRow.id}).then(function(res){
+				Special.remove({sid: this.delRow.id}).then((res)=>{
 					this.updateTips('success', '删除成功: '+this.delRow.title);
 					this.$refs.pager.getPageData(); //reload data
-				}.bind(this));
+				});
 			}
 		},
 		vuex: {
@@ -53,8 +59,7 @@
 				updateTips
 			}
 		},
-		ready: function(){
-			window.vmspecialview = this;
+		ready(){
 			// this.$dispatch('delRowModal', {title:'good'});
 		}
 	}

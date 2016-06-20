@@ -13,7 +13,7 @@
 </template>
 
 <script>
-	import VIP from 'services/public';
+	import {makeBoolean} from 'services/public';
 	import Vue from 'vue';
 
 	export default {
@@ -22,27 +22,27 @@
 			vtbody:String,
 			bordered: {//样式类
 				type: Boolean,
-				coerce: VIP.makeBoolean,
+				coerce: makeBoolean,
 				default: true
 			},
 			striped: {
 				type: Boolean,
-				coerce: VIP.makeBoolean,
+				coerce: makeBoolean,
 				default: true
 			},
 			hover: {
 				type: Boolean,
-				coerce: VIP.makeBoolean,
+				coerce: makeBoolean,
 				default: true
 			},
 			responsive: {
 				type: Boolean,
-				coerce: VIP.makeBoolean,
+				coerce: makeBoolean,
 				default: true
 			},
 			checkable: {//是否可勾选
 				type: Boolean,
-				coerce: VIP.makeBoolean,
+				coerce: makeBoolean,
 				default: true
 			},
 			sortKey: { //排序字段
@@ -51,32 +51,23 @@
 			},
 			columns: {//表格字段定义
 				type: Array,
-				default: function(){
-					return [
-						{text:'ID', name:'id', sortable: true, order: 1},
-						{text:'标题', name:'title', sortable: true, order: 1},
-						{text:'修改时间', name:'mdate', sortable: true, order: 1},
-						{text:'启用', name:'open'},
-						{text:'操作', name:'operation'}
-					];
-				}
+				default: ()=>([])
 			},
 			tableData: {//表格数据
 				type: Array,
-				default: function(){
-					return [];
-				}
+				default: ()=>([])
 			}
 		},
 		computed: {
-			order: function(){
-				return this.columns.filter(function(col){
+			order(){
+				return this.columns.filter((col)=>{
+					// console.warn('没有bind this, 该匿名函数内this同样指向vm', this);
 					return col.name === this.sortKey;
-				}.bind(this))[0].order;				
+				})[0].order;				
 			}
 		},
 		methods: {
-			sortBy: function(col){
+			sortBy(col){
 				if( this.sortKey==col.name ){//当前排序字段 反序
 					col.order = col.order>0 ? -1 : 1;
 				}else{
@@ -85,12 +76,12 @@
 			}
 		},
 		components: {
-			vtbody:  function(resolve){
+			vtbody(resolve){
 				resolve(require('components/'+this.vtbody));
 			}
 		},
 		filters: {
-			kabebCase: function(v){
+			kabebCase(v){
 				return v.split('').map(function(c, i){
 					if(c.toUpperCase() === c){
 						return c = (i ? '-' : '') +c.toLowerCase() ;
@@ -98,14 +89,7 @@
 				}).join('');
 			}
 		},
-		created: function(){
-			window.vmvtable = this;
-			debugger;
-			/*VIP.eachKey(this.columns, function(c){
-				if (c.sortable) {
-					c.active = c.name === this.sortKey;
-				}
-			}.bind(this));*/
+		created(){
 		}
 
 	}

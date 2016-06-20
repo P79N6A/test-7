@@ -6,10 +6,11 @@
 
 
 <script>
-	import { lastCrumb , crumbs} from '../vuex/getters';
-	import actions from '../vuex/actions';
+	import { lastCrumb , crumbs} from 'appVuex/getters';
+	import {setBreadCrumbs} from 'appVuex/actions';
 
 	export default {
+		name:'Breadcrumb',
 		data(){
 			return {};
 		},
@@ -19,7 +20,7 @@
 				links: crumbs
 			},
 			actions:{
-				setBreadCrumbs: actions.setBreadCrumbs
+				setBreadCrumbs
 			}
 		},
 		ready(){
@@ -28,7 +29,7 @@
 		directives: {
 			last: {
 				deep: false,
-				update: function(lastLink) {
+				update(lastLink) {
 						var len = this.vm.links.length;
 						Vue.nextTick(function(){
 							$(this.el).find('li').each(function(i, li){

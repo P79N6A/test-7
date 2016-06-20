@@ -8,15 +8,15 @@ import setupAjax from './services/ajax';
 import env  from 'config/env';
 
 import { sync } from 'vuex-router-sync';
-import store from './vuex/store';
+import store from 'appVuex/store';
 
-import App from './components/App.vue'; //布局组件(相当于主页面)
+import App from 'components/App.vue'; //布局组件(相当于主页面)
 
-var router;//路由器实例
+let router;//路由器实例
 
 //test
 //---------------------------
-require('./services/public');
+// require('./services/public');
 
 
 //注册全局自定义组件 指令等..
@@ -29,6 +29,20 @@ if (env.active === 'dev') {
 	Vue.config.debug = true;
 	Vue.config.devTools = true;
 	require('./mock');
+
+	Vue.mixin({
+		created(){
+			if(this.$options.name){
+				let key = 'vm' + (this.$options.name).toLowerCase();
+				if (window[key]) {
+					window[key] = [window[key]];
+					window[key].push(this);
+				} else {
+					window[key] = this;
+				}
+			}
+		}
+	});
 }
 
 //Vue插件

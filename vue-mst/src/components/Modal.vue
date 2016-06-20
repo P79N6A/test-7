@@ -1,5 +1,6 @@
 <template>
     <div role="dialog"   v-bind:class="{'modal':true, 'fade':effect === 'fade', 'zoom':effect === 'zoom'}"  vxxbackdrop="backdrop"  :show="show"  transition="modal" v-show="show">
+        
         <div v-bind:class="{'modal-dialog':true,'modal-lg':large,'modal-sm':small}" role="document" v-bind:style="{width: width}">
             <div class="modal-content">
                 <slot name="modal-header">
@@ -12,9 +13,11 @@
                         </h4>
                     </div>
                 </slot>
+        
                 <slot name="modal-body">
                     <div class="modal-body">default body..</div>
                 </slot>
+        
                 <slot name="modal-footer">
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default"  :class=" {'btn-primary': type=='alert'}"  @click="cancelCallback">{{ cancelText }}</button>
@@ -23,13 +26,15 @@
                 </slot>
             </div>
         </div>
+
     </div>
 </template>
 <script>
-import VIP from 'services/public';
+import {makeBoolean} from 'services/public';
 import $ from 'jquery';
 
 export default {
+    name:'Modal',
     props: {
         type: {//弹窗类型 alert confirm
             type: String,
@@ -50,7 +55,7 @@ export default {
         show: {
             require: true,
             type: Boolean,
-            coerce: VIP.makeBoolean,
+            coerce: makeBoolean,
             twoWay: true
         },
         width: {
@@ -66,47 +71,48 @@ export default {
         },
         backdrop: {//是否需要背景遮罩
             type: Boolean,
-            coerce: VIP.makeBoolean,
+            coerce: makeBoolean,
             default: true
         },
         large: {
             type: Boolean,
-            coerce: VIP.makeBoolean,
+            coerce: makeBoolean,
             default: false
         },
         small: {
             type: Boolean,
-            coerce: VIP.makeBoolean,
+            coerce: makeBoolean,
             default: false
         }
     },
     transitions: {
         'modal': {
-            beforeEnter: function(el){
-                setTimeout(function(){ $(el).show(); 
+            beforeEnter(el){
+                setTimeout(()=>{ 
+                    $(el).show(); 
                     $('<div class="modal-backdrop fade" deps="1"></div>').appendTo('body');
                 }, 1);
             },
-            enter: function(el){
-                setTimeout(function(){
+            enter(el){
+                setTimeout(()=>{
                     $(el).addClass('in');
                     $('.modal-backdrop').addClass('in');
                 }, 100);
             },
-            leave: function(el){
+            leave(el){
                 $(el).removeClass('in');
             },
-            afterLeave: function(el){
+            afterLeave(el){
                 $('.modal-backdrop').remove();
                 
             }
         } 
     },
     methods: {
-        close: function() {
+        close() {
             this.show = false;
         },
-        cancelCallback: function(){
+        cancelCallback(){
             this.close();
         }
     }

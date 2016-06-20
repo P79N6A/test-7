@@ -1,12 +1,12 @@
 <template>
 	<div class="wrapper">
 		<!-- navbar -->
-		<app-navbar :user="user" color="inverse"></app-navbar>
+		<navbar :user="user" color="inverse"></navbar>
 		<!-- main -->
 		<div class="main">
-			<app-sidebar>
-				<app-nav type="pills" stacked="true" :links="asideLinks"></app-nav>
-			</app-sidebar>			
+			<sidebar>
+				<vnav type="pills" stacked="true" :links="asideLinks"></vnav>
+			</sidebar>			
 			<div class="main-bd">
 				<breadcrumb></breadcrumb>
 				<div class="viewport" v-adaptive-height.literal="footer">
@@ -15,15 +15,25 @@
 			</div>
 		</div>
 
-		<!-- <tabset>
-			<tab header="hello"><h3>hello title</h3> <p>ssoode</p></tab>
-			<tab header="world"><h3>world title</h3> <p>ssoode</p></tab>
-		</tabset> -->
+		<tab>
+			<tab-pane header="html">
+				<h2>html</h2>
+				<p>good hello</p>
+			</tab-pane>
+			<tab-pane header="js">
+				<h2>js</h2>
+				<p>good hello</p>
+			</tab-pane>
+			<tab-pane header="css">
+				<h2>css</h2>
+				<p>good hello</p>
+			</tab-pane>
 
+		</tab>
 
 
 		<!-- footer -->
-		<app-footer></app-footer>
+		<vfooter></vfooter>
 
 		<!-- tips -->
 		<alert :type="tips.type == 'error'? 'danger' : 'success'" class="app-tips" :show.sync="showTips" dismissable :duration="3000" width="40%"><strong>提示: </strong>{{tips.text}}</alert>
@@ -33,12 +43,12 @@
 </template>
 
 <script type="text/javascript">
-	import store from '../vuex/store';
-	import actions from '../vuex/actions';
-	import { asideLinks } from '../vuex/getters';
+	import store from 'appVuex/store';
+	import {updateTips, addLoading} from 'appVuex/actions';
+	import { asideLinks } from 'appVuex/getters';
 
 	import {User} from 'services/api';
-
+	import TabPane from 'components/TabPane';
 	import Vue from 'vue';
 
 	Vue.transition('slideInDown', {
@@ -53,22 +63,19 @@
 	export default {
 		name: 'App',
 		components: {
-			AppNavbar: require('./AppNavbar.vue'),
-			AppSidebar: require('./AppSidebar.vue'),
-			AppNav: require('./AppNav.vue'),
-			AppFooter: require('./AppFooter.vue')
+			Navbar: require('./Navbar.vue'),
+			Sidebar: require('./Sidebar.vue'),
+			Vfooter: require('./Vfooter.vue')
 		},
 		data() {
 			return {
 				user: ''
-				// ,showTips: false
 			}
 		},
 		watch: {
 			tips: {
 				deep: true,
-				handler: function(t){
-					console.log('in watch, tips:', t);
+				handler(t){
 					showTips = !!this.tips.text;
 				}
 			}
@@ -80,16 +87,14 @@
 				asideLinks
 			},
 			actions: {
-				updateTips: actions.updateTips,
-				addLoading: actions.addLoading
+				updateTips,
+				addLoading
 			}
 		},
 		computed:{
 			showTips: {
-				get: function(){
-					return !!this.tips.text;
-				},
-				set: function(val){
+				get(){ return !!this.tips.text; },
+				set(val){
 					if(!val){//隐藏 则提示信息置空
 						this.tips.text = '';
 					}
@@ -102,19 +107,7 @@
 		watch:{
 			
 		},
-		created: function() {
-			// console.warn('[in app this]', this);
-			window.vmapp = this;
-			setTimeout(function(){
-				 window.vmalert = $('.app-tips').get(0).__vue__;
-			}, 2000); 
-		},
-		ready() {
-			/*User.get({userId:123}).then(function(res){
-				console.info('res:', res);
-			});*/
-		},
-		asyncData: function(){
+		asyncData() {
 			return User.get({userId:123}).then(function(res){
 				return res.data; //自动 vm.$set(..);
 			});
@@ -125,30 +118,12 @@
 
 
 <style scoped>
-	.button{
-		display: block;
-		background-color: #212212;
-		color: #fff;
-		font-weight: bold;
-		text-align: center;
-		padding: 1em;
-		cursor: pointer;
-		text-decoration: none;
-	}
-
-	.button span{
-		margin-left: 2em;
-		font-size: .5rem;
-		color: #d6d6d6;
-	}
-
 	.viewport{
 		min-height: 100px;
-		/*border: 5px solid #ccc;*/
-		/*padding: 20px;*/
 	}
 	.view{
 		animation-duration: .3s;
+		animation-timing-function:ease;
 		animation-iteration-count: 1;
 	}
 </style>
