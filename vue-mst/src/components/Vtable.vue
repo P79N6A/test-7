@@ -100,6 +100,7 @@
 		},
 		created: function(){
 			window.vmvtable = this;
+			debugger;
 			/*VIP.eachKey(this.columns, function(c){
 				if (c.sortable) {
 					c.active = c.name === this.sortKey;

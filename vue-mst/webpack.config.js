@@ -18,15 +18,15 @@ var webpackConf = {
 		/*,publicPath   : './'*/
 	},
 	resolveLoader:{
-		root: [
+		/*root: [
 			path.resolve('D:\\mydev\\trunk\\js\\vue\\vue-demo\\node_modules'),
 			path.resolve('D:\\mydev\\trunk\\node_modules')
-		]
+		]*/
 	},
 	resolve: {
 		root: [
-			path.resolve('D:\\mydev\\trunk\\js\\vue\\vue-demo\\node_modules'),
-			path.resolve('D:\\mydev\\trunk\\node_modules')
+			/*path.resolve('D:\\mydev\\trunk\\js\\vue\\vue-demo\\node_modules'),
+			path.resolve('D:\\mydev\\trunk\\node_modules')*/
 		],
 		extensions: ['', '.vue', '.js', '.es', '.json','.scss','.less','.css'],
 		alias: {
@@ -35,7 +35,7 @@ var webpackConf = {
 			'css'       : __dirname + '/src/assets/css',
 			'components': __dirname + '/src/components',
 			'views'     : __dirname + '/src/views',
-			'appVuex'     : __dirname + '/src/vuex',
+			'appVuex'   : __dirname + '/src/vuex',
 			'config'    : __dirname + '/config'
 		}
 	},

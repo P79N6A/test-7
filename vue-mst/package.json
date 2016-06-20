@@ -5,7 +5,8 @@
   "main": "webpack.config.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack-dev-server --inline --hot --content-base D:\\mydev\\trunk\\js\\vue\\vue-demo"
+    "mydev": "webpack-dev-server --inline --hot --content-base D:\\mydev\\trunk\\js\\vue\\vue-demo",
+    "dev": "webpack-dev-server --inline --hot"
   },
   "keywords": [
     "mst",

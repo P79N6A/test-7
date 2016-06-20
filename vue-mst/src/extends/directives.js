@@ -10,7 +10,7 @@
  			if (!link.text) {
  				link.text = this.el.textContent;
  			}
- 			if (!link.level) {
+ 			if (!link.level && this.arg) {
  				link.level = this.arg - 0;
  			}
  			//没有level参数 则不影响面包屑
@@ -21,7 +21,7 @@
  			}
 
  			this.handler = function () {
- 				this.vm.$store.dispatch('BREADCRUMBS_SET', link);
+ 				this.vm.$store.dispatch('BREADCRUMBS_SET', link); 
  			}.bind(this);
  			this.el.addEventListener('click', this.handler);
  		},

@@ -10,6 +10,7 @@ var myComponents = {
 	Breadcrumb: require('components/Breadcrumb.vue'),
 	Pager: require('components/Pager.vue'),
 	Modal: require('components/Modal.vue'),
+	Dropdown: require('components/Dropdown.vue'),
 	Vtable: require('components/Vtable.vue')
 };
 

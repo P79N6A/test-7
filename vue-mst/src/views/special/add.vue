@@ -17,7 +17,7 @@
 
 		<p></p>
 
-		<datepicker  :value.sync="date" ></datepicker> <strong>date: {{date}}</strong>
+		<datepicker  :value.sync="date" format="yyyy-MM-dd"></datepicker> <strong>date: {{date}}</strong>
 
 		<p></p>
 
@@ -36,7 +36,10 @@
 			<radio-btn value="right">right</radio-btn>
 		</radio-group>
 		<strong>radioValue: {{radioValue}}</strong>
+	
+		<p></p>
 
+		<dropdown btn-text="下拉列表"></dropdown>
 	</div>
 </template>
 

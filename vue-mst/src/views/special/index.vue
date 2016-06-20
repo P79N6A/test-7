@@ -3,7 +3,6 @@
 		<vtable sort-key="title" vtbody="Vtbody">
 			<pager api="querySpecial" slot="pager"  v-ref:pager></pager>
 		</vtable>
-		<button class="btn" @click="delModalShown = !delModalShown">delModalShown</button>
 		<modal title="删除确认"  effect="fade"  :show.sync="delModalShown" :ok-callback="delSpecial"  v-ref:delmodal>
 			<div class="modal-body" slot="modal-body">
 				<p>确定删除专题 <strong class="text-danger">{{delRow.title}}</strong> 吗?</p>

@@ -14,11 +14,19 @@
 				</div>
 			</div>
 		</div>
+
+		<!-- <tabset>
+			<tab header="hello"><h3>hello title</h3> <p>ssoode</p></tab>
+			<tab header="world"><h3>world title</h3> <p>ssoode</p></tab>
+		</tabset> -->
+
+
+
 		<!-- footer -->
 		<app-footer></app-footer>
 
 		<!-- tips -->
-		<alert :type="tips.type == 'error'? 'danger' : 'success'" class="app-tips" :show.sync="showTips" dismissable :duration="5000" width="40%"><strong>提示: </strong>{{tips.text}}</alert>
+		<alert :type="tips.type == 'error'? 'danger' : 'success'" class="app-tips" :show.sync="showTips" dismissable :duration="3000" width="40%"><strong>提示: </strong>{{tips.text}}</alert>
 		<!-- loading -->
 		<loading :show="loadingCount>0"></loading>
 	</div>
