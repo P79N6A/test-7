@@ -78,7 +78,6 @@
 				return range(this.viewStart, Math.min(this.viewSize, this.totalPages-(this.viewStart - 1) ) );
 			},
 			params(){//请求接口参数
-				console.warn(this.pageSize, this.activePage);
 				return {
 					pageSize: this.pageSize,
 					page: this.activePage

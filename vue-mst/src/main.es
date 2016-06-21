@@ -30,7 +30,7 @@ if (env.active === 'dev') {
 	Vue.config.devTools = true;
 	require('./mock');
 
-	Vue.mixin({
+	Vue.mixin({//组件vm设为全局 便于调试
 		created(){
 			if(this.$options.name){
 				let key = 'vm' + (this.$options.name).toLowerCase();
@@ -58,8 +58,12 @@ router = new VueRouter({
 	linkActiveClass: 'active'
 });
 
-router.beforeEach(function(){
+router.beforeEach(function({to, next}){
+	to.router.app.effect = Math.floor(Math.random()*2)>0? 'aniSlide': 'aniBounceDown';
+	console.warn('args:', arguments, to.router.app.effect);
+
 	window.scrollTo(0, 0);
+	next();
 });
 
 router.map(routes);

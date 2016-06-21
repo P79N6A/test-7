@@ -1,5 +1,5 @@
 <template>
-	<div class="app-sidebar" v-adaptive-height.literal="footer" :class="{'collapsed':collapsed}" v-show="$route.path!=='/index'">
+	<div class="app-sidebar" v-higher.literal="footer" :class="{'collapsed':collapsed}" v-show="$route.path!=='/index'">
 		<span class="toggle-btn" @click="toggle"><i>{{collapsed?'<':'>'}}</i></span>
 		<div class="sidebar-bd" v-show="!collapsed" transition="expand" :style="{'width': width}">
 			<slot></slot>

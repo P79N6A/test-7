@@ -18,16 +18,16 @@ var webpackConf = {
 		/*,publicPath   : './'*/
 	},
 	resolveLoader:{
-		root: [
+		/*root: [
 			path.resolve('D:\\mydev\\trunk\\js\\vue\\vue-demo\\node_modules'),
 			path.resolve('D:\\mydev\\trunk\\node_modules')
-		]
+		]*/
 	},
 	resolve: {
-		root: [
+		/*root: [
 			path.resolve('D:\\mydev\\trunk\\js\\vue\\vue-demo\\node_modules'),
 			path.resolve('D:\\mydev\\trunk\\node_modules')
-		],
+		],*/
 		extensions: ['', '.vue', '.js', '.es', '.json','.scss','.less','.css'],
 		alias: {
 			'services'  : __dirname + '/src/services',
@@ -47,7 +47,7 @@ var webpackConf = {
 			test   : /\.css$/,
 			loader : 'style!css!less'
 		}, {
-			test   : /\.es$/,
+			test   : /\.(es|js)$/,
 			exclude: /node_modules/,
 			loader : "babel"
 		}, {

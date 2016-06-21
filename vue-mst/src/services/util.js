@@ -65,6 +65,20 @@ function makeNumber (val) {
 	return Number(val);
 }
 
+function randomInt (start, end) {
+	var tmp;
+	if (arguments.length === 1) {
+		end = start;
+		start = 0;
+	}
+	if(start>end){
+		tmp = start;
+		start = end;
+		end = tmp;
+	}
+	return start + Math.floor(Math.random()* (Math.abs(end-start)+1));
+}
+
 
 /**
  * @ object
@@ -167,7 +181,7 @@ var url = {
 		}
 		var re = /\?(.+?)(#\w*)?$/;
 		var match = url.match(re);
-		var oParam = {};
+		var oParam = {}, sParam = '';
 		if (match) {
 			sParam = match[1];
 			sParam.split('&').forEach(handlePair);
@@ -268,7 +282,8 @@ var boolUtils = {
 };
 
 var numUtils = {
-	makeNumber: makeNumber
+	makeNumber: makeNumber,
+	randomInt: randomInt
 };
 
 var utils = {

@@ -24,4 +24,4 @@ extendKeys(VueStrapPicked, VueStrap, ['alert','panel', 'accordion', 'datepicker'
 
 let components = extend({}, VueStrapPicked, myComponents);
 
-module.exports = components;
+export default components;

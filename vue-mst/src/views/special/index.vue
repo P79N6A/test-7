@@ -1,9 +1,9 @@
 <template>
 	<div class="special-view">
 		
-		<vtable sort-key="title" vtbody="Vtbody" :columns="cols">
-			<pager api="querySpecial" slot="pager"  v-ref:pager></pager>
-		</vtable>
+		<table is="vtable" sort-key="title" vtbody="Vtbody" :columns="cols">
+			<tfoot is="pager" api="querySpecial" slot="pager"  v-ref:pager></tfoot>
+		</table>
 
 		<modal title="删除确认"  effect="fade"  :show.sync="delModalShown" :ok-callback="delSpecial"  v-ref:delmodal>
 			<div class="modal-body" slot="modal-body">

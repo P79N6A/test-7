@@ -1,5 +1,5 @@
 <template>
-	<div :class="{navbar:true, 'navbar-default':color=='default', 'navbar-inverse': color=='inverse', 'navbar-fixed-top':position=='top', 'navbar-fixed-bottom': position=='bottom', 'navbar-static-top': static}">
+	<div :class="{navbar:true, 'navbar-default':!inverse, 'navbar-inverse': inverse, 'navbar-fixed-top':position=='top', 'navbar-fixed-bottom': position=='bottom', 'navbar-static-top': static}">
 	    <div class="container-fluid">
 	    
 	        <div class="navbar-header">
@@ -40,9 +40,10 @@
 	export default {
 		name: 'Navbar',
 		props: {
-			color: {
-				type: String,
-				default: 'default'
+			inverse: {
+				type: Boolean,
+				coerce: makeBoolean,
+				default: false
 			},
 			position: {
 				type: String
@@ -54,7 +55,7 @@
 			user: String,
 			title: {
 				type: String,
-				default: '专题后台管理系统'
+				default: 'Brand'
 			}
 		},
 		methods: {

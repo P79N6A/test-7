@@ -6,20 +6,18 @@ import {eachKey} from '../services/util';
 
 import components from './components';
 import directives from './directives';
+import transitions from './transitions';
 
-function regCmps () {
-	eachKey(components, function (options, cmpName) {
-		Vue.component(cmpName, options);
-	});
-}
 
-function regDirs(){
-	eachKey(directives, function(options, dirName){
-		Vue.directive(dirName, options);
+function doReg (method, map) {
+	eachKey(map, function (options, name) {
+		Vue[method](name, options);
 	});
 }
 
 export default function register(){
-	regCmps();
-	regDirs();
+	eachKey({components, directives, transitions}, function(map, key){
+		var method = key.replace(/s$/,'');
+		doReg(method, map);
+	});
 }
