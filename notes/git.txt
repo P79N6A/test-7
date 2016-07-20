@@ -441,3 +441,7 @@ git commit --amend
 4. 使用 git commit --amend 进行修改，完成后 :wq 退出
 
 5. 使用 git rebase --continue 完成操作
+
+-----------------
+#从仓库删除文件
+git rm -- yourfile  
