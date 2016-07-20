@@ -1,21 +1,21 @@
 <template>
-	<div :class="{navbar:true, 'navbar-default':!inverse, 'navbar-inverse': inverse, 'navbar-fixed-top':position=='top', 'navbar-fixed-bottom': position=='bottom', 'navbar-static-top': static}">
+	<div :class="{navbar:true, 'navbar-default':!inverse, 'navbar-inverse': inverse, 'navbar-fixed-top':position=='top', 'navbar-fixed-bottom': position=='bottom', 'navbar-static-top': static}" v-ahref="links">
 	    <div class="container-fluid">
 	    
 	        <div class="navbar-header">
-	            <button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+	            <button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" @click="toggleCollapsed">
 	            	<span class="icon-bar"></span>
 	                <span class="icon-bar"></span>
 	                <span class="icon-bar"></span>
 	            </button>
-	            <a href="#" class="navbar-brand">{{title}}</a>
+	            <a v-link="{path: '/index'}" class="navbar-brand">{{title}}</a>
 	        </div>
 	        
-	        <div id="navbar" class="collapse navbar-collapse">
+	        <div id="navbar" class="collapse navbar-collapse" :class="{in: !collapsed}">
 
 		        <slot>
 		            <ul class="nav navbar-nav">
-		                <li v-for="link in links" v-link="{path: link.url}"><a v-bread:1="link">{{link.text}}</a></li>
+		                <li v-for="link in links" v-link="{path: link.url}"><a>{{link.text}}</a></li>
 		            </ul>
 		        </slot>
 
@@ -58,14 +58,18 @@
 				default: 'Brand'
 			}
 		},
+		data: ()=>({collapsed: false}),
 		methods: {
-			
+			toggleCollapsed(){
+				this.collapsed = !this.collapsed;
+			}
 		},
 		vuex:{
 			getters:{
 				links: (state)=> state.topLinks
 			}
 		}
+
 	}
 </script>
 

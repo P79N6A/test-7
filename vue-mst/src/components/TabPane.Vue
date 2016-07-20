@@ -1,5 +1,5 @@
 <template>
-	<div class="tab-pane" transition="tab"  v-show="active">
+	<div class="tab-pane animated" :transition="effect | random "  v-show="active">
 		<slot></slot>
 	</div>
 </template>
@@ -10,33 +10,19 @@
 		props: {
 			header: String,
 			effect: {
-				type: String,
-				default: 'fadeIn'
+				type: Array,
+				default:()=>VIP.aniNames
 			}
 		},
 		data(){
 			return {index: 0};
 		},
 		computed:{
-			active(){ return this.index === this.$parent.active}
+			active(){ return this.index === this.$parent.active; }
 		},
 		created(){
-			let tabNavs = this.$parent.tabNavs;
-			this.index = tabNavs.length;
-			tabNavs.push({header: this.header, index:this.index});
-		},
-		transitions:{
-			tab: {
-				enterClass: 'slideInDown',
-				leaveClass: 'fadeOut'
-			}
+			this.index = this.$parent.tabNavs.length;
+			this.$dispatch('addTabNav', {header: this.header, index:this.index, active: this.active}); //创建对应的tabNav
 		}
 	}
 </script>
-
-<style>
-	.tab-transition{
-		animation-duration: 0.3s;
-		animation-timing-function: ease;
-	}
-</style>

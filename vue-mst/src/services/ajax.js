@@ -10,10 +10,9 @@ function addInterceptor(Vue, router) {
 		},
 		response: function (response) {
 			console.info('[response]: data: %o , url: %s, res: %o', response.data, response.request.url, response);
-			// router.app.loadingCount--; //ajax counter 隐藏loading
 			router.app.addLoading(false);
 			
-			if(!response.ok){//接口调用异常
+			if(!response.ok){//接口调用异常 提示
 				// router.app.tips = 'URL:'+response.request.url + ', MSG:'+ response.data;
 				// router.app.error = true;
 				router.app.updateTips('error', 'URL:'+response.request.url + ', MSG:'+ response.data);
@@ -32,7 +31,6 @@ function setAjaxOptions(Vue, router) {
 		beforeSend: function (request) {//beforeSend其实也是interceptor ，this指向vm
 
 			// console.info('[beforeSend]:this=', this, ', app=', router.app);
-			// router.app.loadingCount++; //ajax counter 显示loading
 			router.app.addLoading(true);
 
 			request.url = API.get(request.url); //转换为正确的api

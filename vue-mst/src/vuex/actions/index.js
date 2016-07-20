@@ -11,3 +11,15 @@ export function addLoading({ dispatch }, inc) {
 export function setBreadCrumbs({ dispatch }, link) {
     dispatch(types.BREADCRUMBS_SET, link);
 }
+
+export function resetPrevAsideLinks ({dispatch}, key) {
+	dispatch(types.RESET_PREV_ASIDE_LINKS, key);
+}
+
+export function toggleSidebar ({dispatch}, show){
+	dispatch(types.TOGGLE_SIDEBAR, show);
+}
+
+export function getAsideLinks ({dispatch}, path){
+	dispatch(types.GET_ASIDE_LINKS, path);
+}

@@ -10,7 +10,9 @@
 </template>
 
 <script>
+	
 	export default {
+		name: 'IndexView',
 		ready() {
 			console.log('index ready..');
 		},

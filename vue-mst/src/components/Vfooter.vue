@@ -1,8 +1,6 @@
 <template>
 	<footer>
-		<ul>
-			<li>DESIGN BY MOBILE UED@KIMI</li>
-		</ul>
+		<ul> <li>DESIGN BY MOBILE UED@KIMI</li> </ul>
 	</footer>
 </template>
 <script>
@@ -10,11 +8,24 @@
 		name:'Vfooter',
 		data:()=>({})
 	}
+
 </script>
 
 <style lang="less">
-	@import "../assets/css/vars.less"; 
+	@import '../assets/css/vars.less';
 
-	footer{height: 50px; margin-top: 20px; line-height: 50px; background-color: @bgcolor; color:@color; text-align: center;}
-	footer ul, footer li{list-style: none; margin: 0;}
+	footer{
+		height: 50px;
+		margin-top: 20px;
+		line-height: 50px;
+		background-color: @bgcolor;
+		color: @color;
+		text-align: center;
+
+		ul, li {
+			list-style: none;
+			margin: 0;
+		}
+		
+	}
 </style>

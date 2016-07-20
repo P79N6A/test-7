@@ -1,14 +1,15 @@
 <template>
-	<ul :class="{nav: true, 'nav-tabs': type==='tabs','nav-pills': type==='pills','nav-justified': justified,'nav-stacked': stacked}">
-		<li v-for="link in links" :class="{active: link.active}" @click="activate(link)" v-bread="link">
-			<a v-link="{path: link.url}">{{link.text}}</a>
-		</li>
+	<ul :class="{nav: true, 'nav-tabs': type==='tabs','nav-pills': type==='pills','nav-justified': justified,'nav-stacked': stacked}" v-ahref="links">
+		<slot name="nav-item">
+			<nav-item v-for="link in links" :link="link"></nav-item>
+		</slot>
 	</ul>
 </template>
 
 <script>
-	
+
 	import {makeBoolean} from 'services/public';
+	import NavItem from 'components/NavItem';
 
 	export default {
 		name:'Vnav',
@@ -30,7 +31,10 @@
 			}
 		},
 		data:()=>({}),
-		methods:{
+		components: {
+			NavItem
+		},
+		events:{
 			activate(link){
 				this.links.forEach(function(item){
 					item.active = item === link;
@@ -41,5 +45,5 @@
 </script>
 
 <style>
-	.app-sidebar .nav-pills > li.active > a{border-radius: 0;}
+	.sidebar .nav-pills > li.active > a{border-radius: 0;}
 </style>

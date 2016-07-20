@@ -2,6 +2,7 @@
 	<div class="wrapper">
 		<!-- navbar -->
 		<navbar :user="user" inverse="true" title="专题后台管理系统"></navbar>
+
 		<!-- main -->
 		<div class="main">
 			<sidebar>
@@ -10,33 +11,17 @@
 			<div class="main-bd">
 				<breadcrumb></breadcrumb>
 				<div class="viewport" v-higher.literal="footer">
-					<router-view class="view animated" :transition="effect" transition-mode="out-in" ></router-view>
+					<router-view class="view animated" :transition="effect" transition-mode="out-in"></router-view>
 				</div>
 			</div>
 		</div>
-
-		<tab>
-			<tab-pane header="html">
-				<h2>html</h2>
-				<p>good hello</p>
-			</tab-pane>
-			<tab-pane header="js">
-				<h2>js</h2>
-				<p>good hello</p>
-			</tab-pane>
-			<tab-pane header="css">
-				<h2>css</h2>
-				<p>good hello</p>
-			</tab-pane>
-
-		</tab>
-
 
 		<!-- footer -->
 		<footer is="vfooter"></footer>
 
 		<!-- tips -->
-		<alert :type="tips.type == 'error'? 'danger' : 'success'" class="app-tips" :show.sync="showTips" dismissable :duration="3000" width="40%"><strong>提示: </strong>{{tips.text}}</alert>
+		<alert :type="tips.type == 'error'? 'danger' : 'success'" class="app-tips" :show.sync="showTips" dismissable :duration="3000" width="40%">	<strong>提示: </strong>{{tips.text}}
+		</alert>
 		<!-- loading -->
 		<loading :show="loadingCount>0"></loading>
 	</div>
@@ -44,37 +29,10 @@
 
 <script>
 	import store from 'appVuex/store';
-	import {updateTips, addLoading} from 'appVuex/actions';
+	import { updateTips, addLoading, setBreadCrumbs, resetPrevAsideLinks, toggleSidebar, getAsideLinks } from 'appVuex/actions';
 	import { asideLinks } from 'appVuex/getters';
 
-	import {User} from 'services/api';
-	import TabPane from 'components/TabPane';
-	import Vue from 'vue';
-
-	Vue.transition('aniSlide', {
-		enterClass: 'slideInDown',
-		leaveClass: 'slideOutDown'
-	});
-	Vue.transition('aniBounce', {
-		enterClass: 'bounceIn',
-		leaveClass: 'bounceOut'
-	});
-	Vue.transition('aniBounceDown', {
-		enterClass: 'bounceInDown',
-		leaveClass: 'bounceOutDown'
-	});
-	Vue.transition('aniFade', {
-		enterClass: 'fadeIn',
-		leaveClass: 'fadeOut'
-	});
-
-	Vue.directive('animate', {
-		priority: 2300,
-		bind(){
-			$(this.el).attr('transition', 'aniSlide');
-		}
-	});
-
+	import { User } from 'services/api';
 
 	// 导入样式
 	require('css/public.css');
@@ -83,21 +41,21 @@
 	export default {
 		name: 'App',
 		components: {
-			Navbar: require('./Navbar.vue'),
-			Sidebar: require('./Sidebar.vue'),
-			Vfooter: require('./Vfooter.vue')
+			Navbar: require('./Navbar'),
+			Sidebar: require('./Sidebar'),
+			Vfooter: require('./Vfooter')
 		},
 		data() {
 			return {
 				user: '',
-				effect: 'slide'
+				effect: 'aniFade'
 			};
 		},
 		watch: {
 			tips: {
 				deep: true,
 				handler(t){
-					showTips = !!this.tips.text;
+					this.showTips = !!this.tips.text;
 				}
 			}
 		},
@@ -105,11 +63,15 @@
 			getters: {
 				tips: state => state.tips,
 				loadingCount: state => state.loadingCount,
-				asideLinks
+				asideLinks:state => state.asideLinks
 			},
 			actions: {
 				updateTips,
-				addLoading
+				addLoading,
+				setBreadCrumbs,
+				resetPrevAsideLinks,
+				getAsideLinks,
+				toggleSidebar
 			}
 		},
 		computed:{
@@ -120,13 +82,14 @@
 						this.tips.text = '';
 					}
 				}
-			}
+			}/*,
+			sidebarShown(){
+				console.warn('in computed....shown..');
+				return this.asidelinks? this.asidelinks.length > 0 : false;
+			}*/
 		},
 		methods: {
 
-		},
-		watch:{
-			
 		},
 		asyncData() {
 			return User.get({userId:123}).then(function(res){
@@ -138,15 +101,15 @@
 </script>
 
 
-<style scoped>
-	.viewport{
+<style scoped lang="less">
+	.viewport {
 		min-height: 100px;
 	}
-
-	 .view{
+	.view {
 		-webkit-animation-duration: 0.3s;
 		animation-duration: 0.3s;
 		-webkit-animation-fill-mode: both;
-		animation-fill-mode: both;		
-	} 
-</style>
+		animation-fill-mode: both;
+	}
+
+</style>y

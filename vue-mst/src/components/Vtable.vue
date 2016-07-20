@@ -1,11 +1,16 @@
 <template>
-	<div class="table-wrap">
+	<div class="table-wrap" v-ahref="tableData">
 		<table :class="{table:true, 'table-bordered': bordered, 'table-striped': striped, 'table-hover': hover , 'table-responsive': responsive, 'table-empty': tableData.length==0}">
 			<thead>
-				<th v-for="col in columns">{{col.text || col.name}} <span v-if="col.sortable" @click="sortBy(col)" class="glyphicon hand" :class="{'glyphicon-arrow-down': col.order<0,'glyphicon-arrow-up': col.order>0, disabled: col.name!=sortKey}"></span></th>
+				<th v-if="checkable" class="text-center">
+					<input type="checkbox" name="checkAll" class="check-all" v-model="allChecked">						
+				</th>
+				<th v-for="col in columns">
+					{{col.text || col.name}} 
+					<span v-if="col.sortable" @click="sortBy(col)" class="glyphicon hand" :class="{'glyphicon-arrow-down': col.order<0,'glyphicon-arrow-up': col.order>0, disabled: col.name!=sortKey}"></span>
+				</th>
 			</thead>
 			<tbody is="vtbody" :rows="tableData" :cols="columns"  :sort-key="sortKey"  :order="order"  :checkable="checkable"></tbody>
-			<tfoot></tfoot>
 		</table>
 		<slot name="pager"></slot>
 	</div>
@@ -15,11 +20,11 @@
 <script>
 	import {makeBoolean} from 'services/public';
 	import Vue from 'vue';
+	import Vtbody from 'components/Vtbody';
 
 	export default {
 		name:'Vtable',
 		props: {
-			vtbody:String,
 			bordered: {//样式类
 				type: Boolean,
 				coerce: makeBoolean,
@@ -61,9 +66,26 @@
 		computed: {
 			order(){
 				return this.columns.filter((col)=>{
-					// console.warn('没有bind this, 该匿名函数内this同样指向vm', this);
 					return col.name === this.sortKey;
 				})[0].order;				
+			},
+			allChecked:{
+				get(){
+					return this.tableData.every( row => row.checked === true );
+				},
+				set(checked){
+					this.tableData.forEach( row => row.checked = checked );
+				}
+			}
+		},
+		events:{
+			tableData(data){
+				if (this.checkable && data.length) {
+					data.forEach( (row) =>{
+						Vue.set(row, 'checked', false);
+					});
+				}
+				this.tableData = data;
 			}
 		},
 		methods: {
@@ -76,30 +98,25 @@
 			}
 		},
 		components: {
-			vtbody(resolve){
-				resolve(require('components/'+this.vtbody));
-			}
-		},
-		filters: {
-			kabebCase(v){
-				return v.split('').map(function(c, i){
-					if(c.toUpperCase() === c){
-						return c = (i ? '-' : '') +c.toLowerCase() ;
-					}else{ return c; }
-				}).join('');
-			}
-		},
-		created(){
+			Vtbody
 		}
 
 	}
 </script>
 
-<style>
-	.tr-empty{display: none;}
-	.table-empty .tr-empty{display: table-row;}
-	.tr-empty td{line-height: 80px !important; text-align: center;}
-	.glyphicon-arrow-up.disabled:before, .glyphicon-arrow-down.disabled:before{
-		color:#E7E1E1;
+<style lang="less">
+	.table .tr-empty {
+		display: none;
+
+		td {
+			line-height: 80px !important;
+			text-align: center;
+		}
+	}
+	.table-empty .tr-empty {
+		display: table-row;
+	}
+	.glyphicon-arrow-up.disabled:before, .glyphicon-arrow-down.disabled:before {
+		color: #E7E1E1;
 	}
 </style>

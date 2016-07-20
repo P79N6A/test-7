@@ -1,7 +1,7 @@
 var path = require('path');
 var webpack           = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var env        = require('./config/env');
 var currentEnv = env.active;
 var envConf    = env[currentEnv];
@@ -15,7 +15,7 @@ var webpackConf = {
 		path         : __dirname + '/dist',
 		filename     : '[name].js',
 		chunkFilename: '[id].chunk.js'
-		/*,publicPath   : './'*/
+		/*,publicPath   : '.'*/
 	},
 	resolveLoader:{
 		/*root: [
@@ -33,6 +33,7 @@ var webpackConf = {
 			'services'  : __dirname + '/src/services',
 			'extends'   : __dirname + '/src/extends',
 			'css'       : __dirname + '/src/assets/css',
+			'img'       : __dirname + '/src/assets/images',
 			'components': __dirname + '/src/components',
 			'views'     : __dirname + '/src/views',
 			'appVuex'   : __dirname + '/src/vuex',
@@ -45,7 +46,7 @@ var webpackConf = {
 			loader : 'json'
 		}, {
 			test   : /\.css$/,
-			loader : 'style!css!less'
+			loader : ExtractTextPlugin.extract('style-loader', 'css-loader!less-loader')
 		}, {
 			test   : /\.(es|js)$/,
 			exclude: /node_modules/,
@@ -67,11 +68,11 @@ var webpackConf = {
 	},
 	plugins: [
 		new HtmlWebpackPlugin({
-			template     : 'index.html',
+			template     : 'index.ejs',
 			title        : 'Vue-MST',
 			env          : currentEnv //把当前'环境'变量传入模板
 		}),
-		new webpack.optimize.CommonsChunkPlugin({
+		/*new webpack.optimize.CommonsChunkPlugin({
 			names        : ['app'],
 			children     : true,
 			minChunks    : 3
@@ -79,7 +80,12 @@ var webpackConf = {
 		new webpack.optimize.AggressiveMergingPlugin({
 			minSizeReduce: 1.5,
 			movetoParents: true
-		})
+		}),*/
+		new webpack.ProvidePlugin({
+			$:'jquery',
+			VIP: 'services/public'
+		}),
+		new ExtractTextPlugin('public.css',{allChunks: true})
 	],
 	babel: {
 		presets: ['es2015'],
@@ -90,7 +96,7 @@ var webpackConf = {
 
 
 if (currentEnv === 'dev') {
-	//webpackConf.devtool = '#source-map';
+	webpackConf.devtool = '#source-map';
 }
 
 module.exports = webpackConf;
