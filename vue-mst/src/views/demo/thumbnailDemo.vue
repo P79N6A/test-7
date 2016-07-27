@@ -41,7 +41,7 @@
 	    </tbody>
 	</table>
 	
-	
+
 	<!-- 示例 -->
 	<h3>示例: </h3>
 	<pre>{{ opt | json }}</pre>
@@ -66,6 +66,26 @@
 			</div>
 		</vform>
 	</div>
+
+	<div class="test-div">
+		<h2 class="avatar">lixiaolong</h2>
+		<div class="con">
+			user profile..
+		</div>
+	</div>
+	<div class="test2-div">
+		<h2 class="avatar">lixiaolong</h2>
+		<div class="con">
+			user profile..
+		</div>
+	</div>
+	<div class="hello">
+		
+	</div>
+
+	<div class="alias">
+		djdididi
+	</div>
 	<!-- try end -->
 	
 	<div class="row">
@@ -75,11 +95,25 @@
 			</thumbnail>
 		</div>
 	</div>
+
+	<img src="~img/4.jpg" alt="test-img">
 	
 </div>
 </template>
 
 <script>
+	/*require('test/testcss.js');
+	// import t from 'test/testcss';
+
+	// import k from 'css/public.css';
+
+	var jpg  = require('url?limit=80&name=[path][name].[ext]&context='+__dirname+'!../../assets/images/4.jpg');
+	console.info(jpg);
+*/
+
+	// import vtui from 'vtui/dist/vtui.js';
+	// console.info('vtui:', vtui);
+
 	var options = {
 		imgLink: 'http://www.baidu.com',
 		imgSrc: '/src/assets/images/6.jpg',
@@ -87,6 +121,7 @@
 		hasCaption: true
 	};
 
+	
 	export default {
 		data: function(){
 			return {
@@ -98,3 +133,34 @@
 
 </script>
 
+
+<style lang="less">
+	@import '../../assets/css/test.less';
+
+	.avatar{
+		height: 200px; 
+		background: pink url('/src/assets/images/avatar.jpg') no-repeat;
+	}
+
+	/*.alias{
+		height: 120px;
+		border:2px solid blue;
+		background: hotpink url('img/avatar.jpg') no-repeat;
+	}*/
+	.test-div{
+		padding:50px;
+		.bgcat;
+	}
+
+	.test2-div{
+		padding:50px;
+		margin-top: 20px;
+		.bgcat-bad;
+	}
+
+	.hello{
+		height:250px;
+		background:yellow url('../../assets/images/6.jpg') no-repeat;
+
+	}
+</style>

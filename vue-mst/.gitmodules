@@ -1,0 +1,3 @@
+[submodule "vcui"]
+	path = vcui
+	url = git@gitlab.tools.vipshop.com:vue-admin/vue.git

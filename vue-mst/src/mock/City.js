@@ -1,4 +1,5 @@
 var VIP = require('services/public');
+var Mock = require('mockjs');
 
 // /city/query?name=xxx
 Mock.mock(/\/city\/query/, function(options){

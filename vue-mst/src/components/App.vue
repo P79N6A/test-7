@@ -24,10 +24,19 @@
 		</alert>
 		<!-- loading -->
 		<loading :show="loadingCount>0"></loading>
+
+		<!-- test -->
+		<!-- <wui-alert>eiieieiei</wui-alert> -->
+		<ui-button value="a button">wwqwwq</ui-button>
+		<ui-switch open-intro="同步" close-intro="不同步"></ui-switch>
+
+		<div style="margin-top:300px; border-top:1px dashed #ccc;"></div>
+
 	</div>
 </template>
 
 <script>
+	
 	import store from 'appVuex/store';
 	import { updateTips, addLoading, setBreadCrumbs, resetPrevAsideLinks, toggleSidebar, getAsideLinks } from 'appVuex/actions';
 	import { asideLinks } from 'appVuex/getters';
@@ -89,7 +98,7 @@
 			}*/
 		},
 		methods: {
-
+			
 		},
 		asyncData() {
 			return User.get({userId:123}).then(function(res){

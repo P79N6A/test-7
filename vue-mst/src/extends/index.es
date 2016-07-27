@@ -11,6 +11,13 @@ import directives from './directives';
 import transitions from './transitions';
 import filters from './filters';
 
+import Vcom from 'vcom';
+console.info('[Vcom]:', Vcom);
+eachKey(Vcom, (definition, key) => {
+	let name = 'Ui'+VIP.camelize(VIP.capitalize(key));
+	Vue.component(name, definition);
+});
+
 //开发环境 设置全局mixin
 //---------------------------
 if (env.active === 'dev') {

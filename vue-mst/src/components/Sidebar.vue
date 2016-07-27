@@ -1,7 +1,7 @@
 <template>
 	<div class="sidebar" v-higher.literal="footer" :class="{'collapsed':collapsed}" v-show="show" v-fixed>
-		<span class="toggle-btn" @click="toggle"><i>{{collapsed?'<':'>'}}</i></span>
-		<div class="sidebar-bd" v-show="!collapsed" transition="expand" :style="{'width': width}">
+		<span class="toggle-btn" @click="toggle"><i>{{collapsed?'\u003c':'\u003e'}}</i></span>
+		<div class="sidebar-bd" v-show="!collapsed" transition="expand" :style="{width: width}">
 			<slot></slot>
 		</div>
 	</div>

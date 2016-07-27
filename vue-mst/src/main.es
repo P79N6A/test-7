@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-// import VueResource from 'vue-resource';
 import VueAsyncData from 'vue-async-data';
 
 import extendVue from './extends';
@@ -20,14 +19,30 @@ import store from 'appVuex/store';
 import App from 'components/App.vue'; //布局组件(相当于主页面)
 
 console.log('[VIP]:', VIP);
+window.Vue = Vue;
+
+//生产环境 第三方样式也打包起来
+//-----------------------------
+if (process.env.NODE_ENV === 'production') {
+	console.info('[MIND]: BUNDLE VENDOR CSS..');
+	require('animate.css/animate.css');
+	require('style!css!bootstrap/dist/css/bootstrap.css');
+}
 
 
 let router;//路由器实例
+
+//测试加载自定义组件库vtui
+/*import vtui from 'vtui';
+require('vtui/dist/bundle.css');
+Vue.use(vtui);
+console.info('[vtui]:', vtui);*/
 
 //Vue插件
 //---------------------------
 Vue.use(VueRouter);
 Vue.use(VueAsyncData);
+
 
 //开发环境相关设置
 //---------------------------
@@ -44,7 +59,6 @@ router = new VueRouter({
 	history: false,
 	linkActiveClass: 'active'
 });
-
 
 //路由切换转场动画
 //---------------------------

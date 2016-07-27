@@ -5,6 +5,8 @@ import mutations from './mutations';
 
 import env from 'config/env';
 
+Vue.use(Vuex);
+
 var debug = env.active === 'dev';
 
 var state = {
