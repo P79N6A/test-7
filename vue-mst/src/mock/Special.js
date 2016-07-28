@@ -1,4 +1,5 @@
 var VIP = require('services/public');
+var Mock = require('mockjs');
 
 Mock.mock(/\/special\/get/, {
 	'special': '@name'

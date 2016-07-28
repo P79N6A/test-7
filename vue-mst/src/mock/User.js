@@ -1,3 +1,4 @@
+var Mock = require('mockjs');
 
 Mock.mock(/\/user\/get/, {
 	'user': '@name'

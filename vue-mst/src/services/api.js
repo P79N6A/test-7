@@ -1,8 +1,11 @@
+import Vue from 'vue';
+import VueResource from 'vue-resource';
+Vue.use(VueResource);
+
 /**
  * @ resource的方式包装与后端交互的api
  * 如：user, special
  */
-var Vue = require('vue');
 var VIP = require('services/public');
 var resources = {};
 

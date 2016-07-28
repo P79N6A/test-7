@@ -30,6 +30,11 @@ function parsePath (path) {
 	});
 }
 
+//显隐左侧导航
+function toggleSidebar (state, show) {
+	state.sidebarShown = show==null ? !state.sidebarShown : show;
+}
+
 export default  {
 	//重置面包屑
 	[types.BREADCRUMBS_RESET](state, crumbs) {
@@ -43,6 +48,7 @@ export default  {
 		var links = paths.map(function(path) {
 			return navLinks.filter(function(link){ return link.url === path; })[0];
 		});
+
 		if (links) {
 			state.breadCrumbs = state.breadCrumbs.slice(0,1).concat(links);
 		}
@@ -51,16 +57,35 @@ export default  {
 		}
 		// state.breadCrumbs.splice(link.level, len-link.level, link);
 	},
-
+	//ajax计数器
 	[types.LOADING_INCREMENT](state) {
 		state.loadingCount++;
 	},
 	[types.LOADING_DECREMENT](state) {
 		state.loadingCount--;
-	},
 
+	},
+	//全局提示
 	[types.TIPS_UPDATE](state, type, text) {
 		state.tips = {'type': type, 'text': text};
+	},
+	//左侧导航重置高亮态
+	[types.RESET_PREV_ASIDE_LINKS](state, key){
+		state.asideLinkMap[key].forEach(link=>link.active=false);
+	},
+	//左侧导航折叠
+	[types.TOGGLE_SIDEBAR]: toggleSidebar,
+	// 左侧导航链接
+	[types.GET_ASIDE_LINKS](state, path){
+		let key = path.replace(/^(\/\w+).*/, '$1');
+
+		let hasLinks = state.asideLinks.length > 0;
+		state.asideLinks = state.asideLinkMap[key];
+		let newHasLinks = state.asideLinks.length > 0;
+		
+		if (hasLinks != newHasLinks || !state.route.path) {//首次打开 route.path = ''
+			toggleSidebar(state, newHasLinks);
+		}
 	}
 };
 

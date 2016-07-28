@@ -1,5 +1,5 @@
 <template>
-    <div role="dialog"   v-bind:class="{'modal':true, 'fade':effect === 'fade', 'zoom':effect === 'zoom'}"  vxxbackdrop="backdrop"  :show="show"  transition="modal" v-show="show">
+    <div class="modal vue-modal"  :class="{'fade':effect === 'fade', 'zoom':effect === 'zoom'}"  transition="modal" v-show="show"  role="dialog" >
         
         <div v-bind:class="{'modal-dialog':true,'modal-lg':large,'modal-sm':small}" role="document" v-bind:style="{width: width}">
             <div class="modal-content">
@@ -21,7 +21,7 @@
                 <slot name="modal-footer">
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default"  :class=" {'btn-primary': type=='alert'}"  @click="cancelCallback">{{ cancelText }}</button>
-                        <button type="button"  v-if="type !== 'alert'" class="btn btn-primary" @click="okCallback">{{ okText }}</button>
+                        <button type="button"  v-if="type !== 'alert'" class="btn btn-primary" @click="onconfirm">{{ okText }}</button>
                     </div>
                 </slot>
             </div>
@@ -31,12 +31,11 @@
 </template>
 <script>
 import {makeBoolean} from 'services/public';
-import $ from 'jquery';
 
 export default {
     name:'Modal',
     props: {
-        type: {//弹窗类型 alert confirm
+        type: {//弹窗类型 alert(单按钮) confirm(双按钮)
             type: String,
             default: 'confirm'
         },
@@ -53,7 +52,6 @@ export default {
             default: '提示'
         },
         show: {
-            require: true,
             type: Boolean,
             coerce: makeBoolean,
             twoWay: true
@@ -61,11 +59,11 @@ export default {
         width: {
             default: null
         },
-        okCallback: {
+        onconfirm: {
             type: Function,
             default () {}
         },
-        effect: {
+        effect: {//动画效果 fade zoom
             type: String,
             default: 'fade'
         },
@@ -86,45 +84,27 @@ export default {
         }
     },
     transitions: {
-        'modal': {
-            beforeEnter(el){
-                setTimeout(()=>{ 
-                    $(el).show(); 
-                    $('<div class="modal-backdrop fade" deps="1"></div>').appendTo('body');
-                }, 1);
-            },
-            enter(el){
-                setTimeout(()=>{
-                    $(el).addClass('in');
-                    $('.modal-backdrop').addClass('in');
-                }, 100);
-            },
-            leave(el){
-                $(el).removeClass('in');
-            },
-            afterLeave(el){
-                $('.modal-backdrop').remove();
-                
-            }
-        } 
+        'modal': VIP.getTransWithBackdrop('modal')
     },
     methods: {
         close() {
             this.show = false;
         },
-        cancelCallback(){
+        cancelCallback(){//点击取消按钮 默认关闭弹窗
             this.close();
         }
     }
 }
 </script>
 <style>
+.vue-modal{display: block;}
 .modal {
     transition: all 0.3s ease;
 }
 
 .modal.in {
-    background-color: rgba(0, 0, 0, 0.5);
+    /*background-color: rgba(0, 0, 0, 0.5);*/
+    background-color: transparent!important;
 }
 
 .modal.zoom .modal-dialog {

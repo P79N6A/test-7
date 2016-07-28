@@ -12,11 +12,11 @@
 			</div>
 		</div>
 
-		<nav class="pager-nav pull-right">
+		<nav class="pager-nav pull-right" v-ahref="pages">
 			<ul class="pagination va-m">
-				<li :class="{disabled: activePage==1}"><a href="javascript:;" @click="navPrev" class="previous-btn"><span>&laquo;</span></a></li>
-				<li v-for="page in pages" @click="navTo(page)" :class="{active: page==activePage}"><a href="javascript:;">{{page}}</a></li>
-				<li :class="{disabled: activePage==totalPages}"><a href="javascript:;" @click="navNext"><span>&raquo;</span></a></li>
+				<li :class="{disabled: activePage==1}"><a @click="navPrev" class="previous-btn"><span>&laquo;</span></a></li>
+				<li v-for="page in pages" @click="navTo(page)" :class="{active: page==activePage}"><a>{{page}}</a></li>
+				<li :class="{disabled: activePage==totalPages}"><a @click="navNext"><span>&raquo;</span></a></li>
 			</ul>
 			<span class="total-pages">共 <i class="text-danger">{{totalPages}}</i> 页</span>
 		</nav>
@@ -67,8 +67,7 @@
 				type: Array,
 				default: ()=>[]
 			},
-			api: String, //获取数据的API
-			table:String //关联的表格 <vtable v-ref:specialtbl..>
+			api: String //获取数据的API
 		},
 		computed: {
 			totalPages(){//总页数
@@ -78,13 +77,13 @@
 				return range(this.viewStart, Math.min(this.viewSize, this.totalPages-(this.viewStart - 1) ) );
 			},
 			params(){//请求接口参数
-				console.warn(this.pageSize, this.activePage);
 				return {
 					pageSize: this.pageSize,
 					page: this.activePage
 				};
-			}			
+			}
 		},
+		data: ()=>({loadingData: false}),
 		watch:{
 			activePage(){//这里不用deep也可以
 				this.getPageData();
@@ -101,9 +100,14 @@
 		ready(){
 			this.getPageData();
 		},
+		events:{
+			reload: 'getPageData'
+		},
 		methods: {
 			getPageData(){
+				this.loadingData = true;
 				this.$http.get(this.api, this.params).then(function(res){
+					this.loadingData = false;
 					var data = res.data;
 					this.totalRecords = data.totalRecords;
 					this.pageSize = data.pageSize;
@@ -111,12 +115,14 @@
 
 					// this.pageData = data.specials;
 					// 数据同步给Table
-					if(this.$parent.constructor.name == 'Vtable'){
+					/*if(this.$parent.constructor.name.toLowerCase().indexOf('table')>-1 ){
 						this.$parent.tableData = data.specials;
-					}
+					}*/
+					this.$dispatch('tableData', data.specials);
 				});
 			},
 			navPrev(){
+				if(this.loadingData) return;
 				if(this.activePage > 1){//未到达首页
 					if(--this.activePage < this.viewStart){
 						this.viewStart = Math.max(1, this.viewStart - this.viewSize);
@@ -124,6 +130,7 @@
 				}
 			},
 			navNext(){
+				if(this.loadingData) return;
 				if(this.activePage<this.totalPages){//未到达末尾页
 					if (++this.activePage === this.viewStart + this.viewSize) {//页码变动
 						this.viewStart = this.activePage;
@@ -132,17 +139,38 @@
 				
 			},
 			navTo(n){
+				if(this.loadingData) return;
 				this.activePage = n;
 			}
 		}
 	}
 </script>
 
-<style>
-	.pager-wrap{padding: 0 20px;}	
-	.pagination{margin-right: 20px;}
-	.pager-info{display: inline-block; vertical-align: middle; line-height: 74px;}
-	.pager-info .select-pagesize{width: 200px; margin-left: 10px;}
-	.select-pagesize .form-control{display: inline; width: auto;}
-	.pager-wrap i{font-style: normal;}
+<style lang="less">
+	.pager-wrap {
+		padding: 0 20px;
+
+		i {
+			font-style: normal;
+		}
+		.pager-info {
+			display: inline-block;
+			vertical-align: middle;
+			line-height: 74px;
+
+			.select-pagesize {
+				width: 200px;
+				margin-left: 10px;
+
+				.form-control {
+					display: inline;
+					width: auto;
+				}
+			}
+		}
+		.pagination {
+			margin-right: 20px;
+		}
+	}
+	
 </style>

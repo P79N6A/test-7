@@ -11,7 +11,7 @@ vuex
 
 Vuex应用的核心是**store**, store是状态的容器，和全局对象有以下不同:
 
-1. store存储的状态时响应式的 (*store中状态改变，依赖改状态的组件会得到更新*)
+1. store存储的状态时响应式的 (*store中状态改变，依赖该状态的组件会得到更新*)
 2. 不能直接修改store中的状态 (**只能**通过派发变更事件的方式 `dispatching mutations` ，修改store的状态)
 
 示例：
@@ -20,7 +20,7 @@ Vuex应用的核心是**store**, store是状态的容器，和全局对象有以
     //创建vuex的store
     import Vuex from 'vuex';
 
-    cost state = { count: 0 };
+    const state = { count: 0 };
 
     const mutations = {
         INCREMENT(state){
@@ -54,7 +54,7 @@ State 和 getters
     Vue.use(Vuex); //使用插件Vuex
     var app = new Vue({
         el: '#app',
-        store, //通过store选项把store实例注入到每个子组件中,子组件通过 this.$store获取
+        store, //通过store选项 把store实例注入到每个子组件中,子组件通过 this.$store获取
         components: {
             MyComponent
         }    

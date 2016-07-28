@@ -1,0 +1,447 @@
+git checkout -b local_name origin/remote_name #基于远程分支在本地新建分支，并切换到新分支  当不成功时，说明本地repo还不能感知到该远程分支, git remote update  ,  git update 更新一下跟踪信息
+git checkout -b dev origin/dev，作用是checkout远程的dev分支，在本地起名为dev分支，并切换到本地的dev分支
+git checkout master #切换到mater分支
+
+
+
+
+----
+Git checkout -- + 需要恢复的文件名
+
+但是，需要注意的是，如果该文件已经 add 到暂存队列中，上面的命令就不灵光喽
+需要先让这个文件取消暂存：
+
+git reset HEAD -- + 需要取消暂存的文件名
+
+然后再使用第一条命令。
+
+如果感觉命令多了记不住，那就做一两个匿名呗，比如：
+
+git config --global alias.unstage 'reset HEAD --'
+git config --global alias.restore 'checkout --'
+
+我们拿 README.md 这个文件举例，比如修改了一段文字描述，想恢复回原来的样子：
+
+git restore README.md
+
+即可，如果修改已经被 git add README.md 放入暂存队列，那就要
+
+git unstage README.md
+git restore README.md
+-----
+
+git branch #列出本地分支
+git branch -r #查看所有远程分支
+git branch -a #查看所有分支 包括远端仓库的分支
+git branch -a -v #查看本地和远端仓库的所有分支，并显示最后一次提交
+git clone -b <branch> <remote_repo> #clone 远端仓库的某个分支
+git branch new_branch
+git branch -d merged_branch
+git branch -D unmerged_branch
+
+git diff <branch1>..<branch2> #分支比较
+
+
+git remote show origin #显示远端仓库的详细信息(fetchUrl pushUrl, branches, "local branches configured for 'git pull'" , "local refs configured for 'git push' ")
+git remote -v #查看远端仓库的配置信息
+git remote update
+
+git fetch
+git fetch origin remote_branch_name:local_branch_name #把远程分支取回本地分支中
+
+
+git push #推送所有分支到远端
+git push origin localBranchName:removeBranchName #只推送 当前分支 到 远端对应分支
+
+
+cat -n .git/config
+
+git log --since="1 day ago" #查看1天前到现在的提交日志
+git log -- somefile.html #查看某文件的更新历史
+git log -p -- somefile.html #某文件明细更新历史
+git log -n 1 -p -- somefile.html #查看某文件上次的修改内容
+
+1. 撤销working tree的修改
+git reset --hard HEAD # HEAD, index和working tree都重置为最后一次commit的状态
+
+2. 撤销staged状态
+git reset HEAD #index tree回退到最后一次commit的状态
+
+3.本地修改文件后，不希望commit到远端仓库可以这样
+git commit -m "commit part of changes" -- folderName_or_fileName
+
+
+
+---------------------------------
+查看、添加、提交、删除、找回，重置修改文件
+
+git help <command> # 显示command的help
+
+git show # 显示某次提交的内容 git show $id
+
+git co -- <file> # 抛弃工作区修改
+
+git co . # 抛弃工作区修改
+
+git add <file> # 将工作文件修改提交到本地暂存区
+
+git add . # 将所有修改过的工作文件提交暂存区
+
+git rm <file> # 从版本库中删除文件
+
+git rm <file> --cached # 从版本库中删除文件，但不删除文件
+
+git reset <file> # 从暂存区恢复到工作文件
+
+git reset -- . # 从暂存区恢复到工作文件
+
+git reset --hard # 恢复最近一次提交过的状态，即放弃上次提交后的所有本次修改
+
+git ci <file> git ci . git ci -a # 将git add, git rm和git ci等操作都合并在一起做　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　git ci -am "some comments"
+
+git ci --amend # 修改最后一次提交记录
+
+git revert <$id> # 恢复某次提交的状态，恢复动作本身也创建次提交对象
+
+git revert HEAD # 恢复最后一次提交的状态
+
+查看文件diff
+
+git diff <file> # 比较当前文件和暂存区文件差异 git diff
+
+git diff <id1><id1><id2> # 比较两次提交之间的差异
+
+git diff <branch1>..<branch2> # 在两个分支之间比较
+
+git diff --staged # 比较暂存区和版本库差异
+
+git diff --cached # 比较暂存区和版本库差异
+
+git diff --stat # 仅仅比较统计信息
+
+查看提交记录
+
+git log git log <file> # 查看该文件每次提交记录
+
+git log -p <file> # 查看每次详细修改内容的diff
+
+git log -p -2 # 查看最近两次详细修改内容的diff
+
+git log --stat #查看提交统计信息
+
+tig
+
+Mac上可以使用tig代替diff和log，brew install tig
+
+Git 本地分支管理
+
+查看、切换、创建和删除分支
+
+git br -r # 查看远程分支
+
+git br <new_branch> # 创建新的分支
+
+git br -v # 查看各个分支最后提交信息
+
+git br --merged # 查看已经被合并到当前分支的分支
+
+git br --no-merged # 查看尚未被合并到当前分支的分支
+
+git co <branch> # 切换到某个分支
+
+git co -b <new_branch> # 创建新的分支，并且切换过去
+
+git co -b <new_branch> <branch> # 基于branch创建新的new_branch
+
+git co $id # 把某次历史提交记录checkout出来，但无分支信息，切换到其他分支会自动删除
+
+git co $id -b <new_branch> # 把某次历史提交记录checkout出来，创建成一个分支
+
+git br -d <branch> # 删除某个分支
+
+git br -D <branch> # 强制删除某个分支 (未被合并的分支被删除的时候需要强制)
+
+ 分支合并和rebase
+
+git merge <branch> # 将branch分支合并到当前分支
+
+git merge origin/master --no-ff # 不要Fast-Foward合并，这样可以生成merge提交
+
+git rebase master <branch> # 将master rebase到branch，相当于： git co <branch> && git rebase master && git co master && git merge <branch>
+
+ Git补丁管理(方便在多台机器上开发同步时用)
+
+git diff > ../sync.patch # 生成补丁
+
+git apply ../sync.patch # 打补丁
+
+git apply --check ../sync.patch #测试补丁能否成功
+
+ Git暂存管理
+
+git stash # 暂存
+
+git stash list # 列所有stash
+
+git stash apply # 恢复暂存的内容
+
+git stash drop # 删除暂存区
+
+Git远程分支管理
+
+git pull # 抓取远程仓库所有分支更新并合并到本地
+
+git pull --no-ff # 抓取远程仓库所有分支更新并合并到本地，不要快进合并
+
+git fetch origin # 抓取远程仓库更新
+
+git merge origin/master # 将远程主分支合并到本地当前分支
+
+git co --track origin/branch # 跟踪某个远程分支创建相应的本地分支
+
+git co -b <local_branch> origin/<remote_branch> # 基于远程分支创建本地分支，功能同上
+
+git push # push所有分支
+
+git push origin master # 将本地主分支推到远程主分支
+
+git push -u origin master # 将本地主分支推到远程(如无远程主分支则创建，用于初始化远程仓库)
+
+git push origin <local_branch> # 创建远程分支， origin是远程仓库名
+
+git push origin <local_branch>:<remote_branch> # 创建远程分支
+
+git push origin :<remote_branch> #先删除本地分支(git br -d <branch>)，然后再push删除远程分支
+
+Git远程仓库管理
+
+GitHub
+
+git remote -v # 查看远程服务器地址和仓库名称
+
+git remote show origin # 查看远程服务器仓库状态
+
+git remote add origin git@ github:robbin/robbin_site.git # 添加远程仓库地址
+
+git remote set-url origin git@ github.com:robbin/robbin_site.git # 设置远程仓库地址(用于修改远程仓库地址) git remote rm <repository> # 删除远程仓库
+
+创建远程仓库
+
+git clone --bare robbin_site robbin_site.git # 用带版本的项目创建纯版本仓库
+
+scp -r my_project.git git@ git.csdn.net:~ # 将纯仓库上传到服务器上
+
+mkdir robbin_site.git && cd robbin_site.git && git --bare init # 在服务器创建纯仓库
+
+git remote add origin git@ github.com:robbin/robbin_site.git # 设置远程仓库地址
+
+git push -u origin master # 客户端首次提交
+
+git push -u origin develop # 首次将本地develop分支提交到远程develop分支，并且track
+
+git remote set-head origin master # 设置远程仓库的HEAD指向master分支
+
+也可以命令设置跟踪远程库和本地库
+
+git branch --set-upstream master origin/master
+
+git branch --set-upstream develop origin/develop
+
+
+
+
+----------
+git clone remote_repo <local_dir>?
+支持协议 http(s)://, ssh://, git://, file:///, ftp(s)://, rsync://
+git clone [user@]example.com:path/to/repo.git
+git clone git@github.com:stephenykk/test.git
+
+git clone -o jq https://github.com/jquery/jquery.git
+git remote //=> jq
+git remote -v
+git remote add origin repo_url
+git remote rm origin
+git remote rename origin newOrigin
+
+git fetch  //默认会取回所有分支的更新 所取回的更新，在本地主机上要用"远程主机名/分支名"的形式读取。比如origin主机的master，就要用origin/master读取
+
+git fetch <remote_repo> <branch_name> //只取回指定分支的更新
+git fetch origin master
+git checkout -b newBranch origin/master //在取回的远程分支(origin/master)的基础上， 创建分支
+
+git merge origin/master
+或
+git rebase origin/master //合并 orgin/master到当前分支
+
+
+git branch -r //查看远程分支
+git branch -a //查看所有分支(包括远程和本地)
+
+
+git pull <远程主机名> <远程分支>:<本地分支>
+git pull origin next:master //比如，取回origin主机的next分支，与本地的master分支合并
+
+git pull origin next //取回origin/next分支，再与当前分支合并。
+等价于
+git fetch origin next
+git merge origin/next
+
+
+在某些场合，Git会自动在本地分支与远程分支之间，建立一种追踪关系（tracking）。比如，在git clone的时候，所有本地分支默认与远程主机的同名分支，建立追踪关系，也就是说，本地的master分支自动"追踪"origin/master分支。
+Git也允许手动建立追踪关系。
+
+git branch --set-upstream master origin/next  //指定master分支追踪origin/next分支。
+
+如果当前分支与远程分支存在追踪关系，git pull就可以省略远程分支名。
+git pull origin  //会pull所有有追踪关系的分支吧？
+
+如果当前分支只有一个追踪分支，连远程主机名都可以省略。
+git pull
+如果合并需要采用rebase模式，可以使用--rebase选项。
+git pull --rebase <远程主机名> <远程分支>:<本地分支>
+
+加上参数 -p 就会在本地删除远程已经删除的分支。
+git pull -p
+#等价于
+git fetch --prune origin
+git fetch -p
+
+git push <远程主机名> <本地分支>:<远程分支>
+
+如果省略远程分支名，则表示将本地分支推送与之存在"追踪关系"的远程分支（通常两者同名），如果该远程分支不存在，则会被新建。
+git push origin master
+
+如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支。
+git push origin :master
+#等同于
+git push origin --delete master
+
+如果当前分支与远程分支之间存在追踪关系，则本地分支和远程分支都可以省略。
+git push origin
+
+如果当前分支只有一个追踪分支，那么主机名都可以省略。
+git push
+
+git push -u origin master //令将本地的master分支推送到origin主机，同时指定origin为默认主机，后面就可以不加任何参数使用git push了
+
+
+不带任何参数的git push，默认只推送当前分支，这叫做simple方式。此外，还有一种matching方式，会推送所有有对应的远程分支的本地分支。
+
+
+$ git config --global push.default matching
+# 或者
+$ git config --global push.default simple
+
+
+
+
+
+
+
+
+**************************************************
+
+你不小心，写错了提交的注视/信息，该如何处理呢。理论上，SCM是不应该修改历史的信息的，提交的注释也是。 
+  不过在Git中，其commit提供了一个--amend参数，可以修改最后一次提交的信息.但是如果你已经push过了，那么其历史最后一次，永远也不能修改了。 
+  我使用git commit --amend已经push过的，截图如下，我那个"fixes #3"永远的在版本历史中了。
+ git commit --amend
+的用法，，，
+# git commit --amend
+然后在出来的编辑界面，直接编辑 注释的信息。。
+===========================================================================================================
+===========================================================================================================
+git修改历史提交
+2011-06-16 17:58
+       git使用amend选项提供了最后一次commit的反悔。但是对于历史提交呢，就必须使用rebase了。
+       git rebase -i HEAD~3
+       表示要修改当前版本的倒数第三次状态。
+        这个命令出来之后，会出来三行东东：
+        pick:*******
+        pick:*******
+        pick:*******
+        如果你要修改哪个，就把那行的pick改成edit，然后退出。
+ 
+        这时通过git log你可以发现，git的最后一次提交已经变成你选的那个了，这时再使用：
+        git commit --amend
+        来对commit进行修改。
+        修改完了之后，要回来对不对？
+        使用git rebase --continue
+        OK，一切都搞定了。
+
+==============================================================
+Git修改前一次提交的方法(特别注意保持Change-Id不变)
+2011年8月8日sinojelly发表评论阅读评论
+如果发现上一次提交的内容存在问题，就需要修改了。
+基本概念
+Change:
+Gerrit中的一个Change就是一个Review任务，它对应一个commit。
+每个commit，应该是为了一个目的的完整修改。如果某一次修改不完全，就需要修正该commit。
+每一次修正之前的commit，重新提交时，都应该保持Change-Id不变，这样就不会产生新的Change，而是在原有的Change下产生一个新的Patch Set。
+所有的Patch Set中，只有最新的一个是真正有用的，能够合并的。
+图1：Change和Change-Id
+
+
+图2：Patch Set
+
+
+修改前一次提交的方法
+方法一：用–amend选项
+#修改需要修改的地方。
+git add .
+git commit –amend
+注：这种方式可以比较方便的保持原有的Change-Id，推荐使用。
+
+方法二：先reset，再修改
+这是可以完全控制上一次提交内容的方法。但在与Gerrit配合使用时，需特别注意保持同一个commit的多次提交的Change-Id是不变的。
+否则，就需要Abondon之前的Change，产生一些垃圾不说，操作得不对，会使得简单的事情复杂化，甚至无法合并。
+git reset HEAD^
+#重新修改
+git add .
+git commit -m “MSG”
+特别注意：为了保持提交到Gerrit的Change不变，需要复制对应的Change-Id到commit msg的最后，可以到Gerrit上对应的Change去复制，参见图1。
+
+方法三：只是修改作者
+如果email不对，会无法提交到Gerrit，所以这个命令也可能用到。
+git commit –amend –author=<user-email>
+注：如果该email地址从未有过成功的提交，这个修改会不成功。在别的分支做一次成功提交之后，就可以修改了。
+
+
+
+
+=========================================================
+1. // 查看修改
+
+git rebase -i master~1 //最后一次
+git rebase -i master~5 //最后五次
+
+2. // 显示结果如下，修改 pick 为 edit ，并 :wq 保存退出
+
+pick 92b495b 2009-08-08: ×××××××
+
+# Rebase 9ef2b1f..92b495b onto 9ef2b1f
+#
+# Commands:
+#  pick = use commit
+#  edit = use commit, but stop for amending //改上面的 pick 为 edit
+#  squash = use commit, but meld into previous commit
+#
+# If you remove a line here THAT COMMIT WILL BE LOST.
+# However, if you remove everything, the rebase will be aborted.
+#
+
+
+3. 命令行显示：
+
+Rebasing (1/1)
+You can amend the commit now, with
+
+git commit --amend
+
+
+4. 使用 git commit --amend 进行修改，完成后 :wq 退出
+
+5. 使用 git rebase --continue 完成操作
+
+-----------------
+#从仓库删除文件
+git rm -- yourfile  

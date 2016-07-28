@@ -1,4 +1,4 @@
-@import "vars.less";
+@import "vars.less"; 
 
 /* .wrapper .app-sidebar{background-color: @gray;} */
 
@@ -23,4 +23,187 @@
 	left: 50%;
 	-webkit-transform: translate(-50%, -50%);
 	transform: translate(-50%, -50%);
+}
+
+
+.main-bd {
+	/* overflow-x: hidden; bfc*/ 
+	display: table-cell;
+	width: 2000px;
+  padding: 0 20px;
+}
+
+footer{
+	position: fixed;
+  z-index: 1000;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+}
+
+.dropdown-wrap{
+  display: inline-block;
+}
+
+.checkbox label{
+  margin-right: 20px;
+}
+
+/*demo page*/
+.demo-page{
+  padding-bottom: 200px;
+}
+.demo-page .try{
+  padding: 20px;
+  margin: 20px 0;
+  border: 1px dashed #ccc;
+  border-radius: 3px;
+}
+
+.demo-page .try strong{
+  margin-right: 15px;
+}
+
+.demo-page .try .row{
+  margin-bottom:15px;
+}
+
+
+
+/*dropdown animation*/
+.dropdown-transition{display: block; -webkit-transition: height .3s ease; transition: height .3s ease; overflow: hidden;}
+.dropdown-enter, .dropdown-leave{height:0!important;}
+
+
+/*fade animation*/
+.fadein-enter {
+  animation:fadein-in 0.3s ease-in;
+}
+.fadein-leave {
+  animation:fadein-out 0.3s ease-out;
+}
+@keyframes fadein-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes fadein-out {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/*scale animation*/
+
+.popover.bottom.scale-enter, .tooltip.bottom.scale-enter {
+  animation:bottom-scale-in 0.15s ease-in;
+}
+.popover.bottom.scale-leave, .tooltip.bottom.scale-leave {
+  animation:bottom-scale-out 0.15s ease-out;
+}
+.popover.top.scale-enter, .tooltip.top.scale-enter {
+  animation:top-scale-in 0.15s ease-in;
+}
+.popover.top.scale-leave, .tooltip.top.scale-leave {
+  animation:top-scale-out 0.15s ease-out;
+}
+.popover.left.scale-enter, .tooltip.left.scale-enter {
+  animation:left-scale-in 0.15s ease-in;
+}
+.popover.left.scale-leave, .tooltip.left.scale-leave {
+  animation:left-scale-out 0.15s ease-out;
+}
+.popover.right.scale-enter, .tooltip.right.scale-enter {
+  animation:right-scale-in 0.15s ease-in;
+}
+.popover.right.scale-leave, .tooltip.right.scale-leave {
+  animation:right-scale-out 0.15s ease-out;
+}
+
+
+@keyframes bottom-scale-in {
+  0% {
+    transform: translate(-50%, 100%) scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, 100%) scale(1);
+    opacity: 1;
+  }
+}
+@keyframes bottom-scale-out {
+  0% {
+    transform: translate(-50%, 100%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, 100%) scale(0);
+    opacity: 0;
+  }
+}
+@keyframes top-scale-in {
+  0% {
+    transform: translate(-50%, -100%) scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, -100%) scale(1);
+    opacity: 1;
+  }
+}
+@keyframes top-scale-out {
+  0% {
+    transform: translate(-50%, -100%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -100%) scale(0);
+    opacity: 0;
+  }
+}
+@keyframes left-scale-in {
+  0% {
+    transform: translate(-100%, -50%) scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-100%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+@keyframes left-scale-out {
+  0% {
+    transform: translate(-100%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-100%, -50%) scale(0);
+    opacity: 0;
+  }
+}
+@keyframes right-scale-in {
+  0% {
+    transform: translate(100%, -50%) scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(100%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+@keyframes right-scale-out {
+  0% {
+    transform: translate(100%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(100%, -50%) scale(0);
+    opacity: 0;
+  }
 }

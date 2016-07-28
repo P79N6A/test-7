@@ -300,7 +300,7 @@ v-link
     // 在组件定义内部
     route: {
       canActivate: function () {
-        // 假设此 service 返回一个 Promise ，这个 Promise 被断定后
+        // 假设此 service 返回一个 Promise ，这个 Promise 被resolve后
         // 的值是 `true` 或者 `false`
         return authenticationService.isLoggedIn()
       },
@@ -309,7 +309,7 @@ v-link
           .fetch(transition.to.params.messageId)
           .then((message) => {
             // 获取数据后更新 data
-            // 组件知道此函数执行过后才会被展示出来
+            // 组件直到此函数执行过后才会被展示出来
             this.message = message
           })
       }
