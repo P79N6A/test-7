@@ -13,6 +13,9 @@ import * as transition from './transition/index'
 import FragmentFactory from './fragment/factory'
 import internalDirectives from './directives/internal/index'
 
+//::设置Vue命名空间下的 全局api, 如: Vue.set() , Vue.extend()
+
+//:常用的工具函数释放到Vue命名空间下
 import {
   set,
   del,
@@ -36,7 +39,9 @@ export default function (Vue) {
    * These can be seen as the default options of every
    * Vue instance.
    */
-
+   //:Vue和继承Vue的子类都关联一个options对象，在组件编译时即可获取该options( this.constructor.options 类的静态属性)
+   //: this.constructor.options 可看做实例的默认选项
+   //:类的静态属性Vue.options包含: 内置指令 内置元素指令 内置过滤器, replace: true
   Vue.options = {
     directives,
     elementDirectives,
@@ -50,7 +55,8 @@ export default function (Vue) {
   /**
    * Expose useful internals
    */
-
+   //:暴露有用的内部方法 Vue.set(), Vue.delete(), Vue.nextTick(), Vue.config,  Vue.util
+   //:Vue.util下有很多实用的方法: 数据类型判断 数据类型转换 dom操作 客户端判断 事件监听
   Vue.util = util
   Vue.config = config
   Vue.set = set
