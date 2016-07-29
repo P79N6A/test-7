@@ -117,7 +117,7 @@ vue-router
 
     <div>
         <p>当前路径: {{$route.path}}< /p>
-        <p>当前路由参数： {{$router.params}} < /p>
+        <p>当前路由参数： {{$route.params}} < /p>
     < /div>
 
 ### 动态片段
@@ -170,7 +170,7 @@ vue-router
 
 **路由器配置项包括：**
 
-+ **hasbang**  , 默认true, 所有路径被格式化为 `#!`开始, 如 `router.go('/foo/bar')` 浏览器url会变为 example.com/#!/foo/bar
++ **hashbang**  , 默认true, 所有路径被格式化为 `#!`开始, 如 `router.go('/foo/bar')` 浏览器url会变为 example.com/#!/foo/bar
 + **history** , 默认false, 是否使用HTML5 history API(`history.pushState()`, `history.replaceState()` ), 需要服务器做响应配置，不然容易404
 + **abstract** , 默认false, 不依赖于浏览器的浏览历史的虚拟管理后端
 + **root** , 默认null, 根路径作用类似 <base />标签, 路由规则的所有路径都以此为根， 根路径功能需 `history` 设置为true 才可用
