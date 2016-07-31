@@ -10,12 +10,12 @@ import { removeWithTransition } from '../transition/index'
  * @param {String|Element} el
  * @return {Element}
  */
-
+//:用document.querySelector() 查询dom元素
 export function query (el) {
   if (typeof el === 'string') {
     var selector = el
     el = document.querySelector(el)
-    if (!el) {
+    if (!el) {//:找不到则提示
       process.env.NODE_ENV !== 'production' && warn(
         'Cannot find element: ' + selector
       )
@@ -35,10 +35,10 @@ export function query (el) {
  * @param {Node} node
  * @return {Boolean}
  */
-
+//:检测节点是否加入文档中 document.documentElement.contains(node)
 export function inDoc (node) {
   if (!node) return false
-  var doc = node.ownerDocument.documentElement
+  var doc = node.ownerDocument.documentElement//:node.ownerDocument
   var parent = node.parentNode
   return doc === node ||
     doc === parent ||
@@ -51,7 +51,7 @@ export function inDoc (node) {
  * @param {Node} node
  * @param {String} _attr
  */
-
+//:获取属性节点值 node.getAttribute(attr) 然后删除属性节点
 export function getAttr (node, _attr) {
   var val = node.getAttribute(_attr)
   if (val !== null) {
@@ -67,7 +67,7 @@ export function getAttr (node, _attr) {
  * @param {String} name
  * @return {String|null}
  */
-
+//:插值的属性节点 :attr="expr" or v-bind:attr="expr"
 export function getBindAttr (node, name) {
   var val = getAttr(node, ':' + name)
   if (val === null) {
@@ -83,7 +83,7 @@ export function getBindAttr (node, name) {
  * @param {String} name
  * @return {Boolean}
  */
-
+//:检测是否存在插值属性 :attr  v-bind:attr attr="{{expr}}"
 export function hasBindAttr (node, name) {
   return node.hasAttribute(name) ||
     node.hasAttribute(':' + name) ||
@@ -264,12 +264,12 @@ export function removeClass (el, cls) {
  * @param {Boolean} asFragment
  * @return {Element|DocumentFragment}
  */
-
+//:把dom元素的内容提取至临时的div/documentFragment容器中
 export function extractContent (el, asFragment) {
   var child
   var rawContent
   /* istanbul ignore if */
-  if (isTemplate(el) && isFragment(el.content)) {
+  if (isTemplate(el) && isFragment(el.content)) {//:el是模板并且是documentFragment
     el = el.content
   }
   if (el.hasChildNodes()) {
@@ -292,7 +292,7 @@ export function extractContent (el, asFragment) {
  *
  * @param {Node} node
  */
-
+//:移除头尾的文本/注释节点
 export function trimNode (node) {
   var child
   /* eslint-disable no-sequences */
@@ -305,7 +305,7 @@ export function trimNode (node) {
   /* eslint-enable no-sequences */
 }
 
-function isTrimmable (node) {
+function isTrimmable (node) {//:空白文本节点/注释节点为可删除节点
   return node && (
     (node.nodeType === 3 && !node.data.trim()) ||
     node.nodeType === 8
@@ -319,7 +319,7 @@ function isTrimmable (node) {
  *
  * @param {Element} el
  */
-
+//:检查是否 <template>..
 export function isTemplate (el) {
   return el.tagName &&
     el.tagName.toLowerCase() === 'template'
@@ -342,12 +342,12 @@ export function isTemplate (el) {
  *                            templates.
  * @return {Comment|Text}
  */
-
+//:创建锚点 用于插入/删除操作的参考
 export function createAnchor (content, persist) {
   var anchor = config.debug
     ? document.createComment(content)
-    : document.createTextNode(persist ? ' ' : '')
-  anchor.__v_anchor = true
+    : document.createTextNode(persist ? ' ' : '') //:debug模式 创建注释节点; 否则创建空文本节点
+  anchor.__v_anchor = true //:标记其为vue的锚点
   return anchor
 }
 
@@ -360,12 +360,12 @@ export function createAnchor (content, persist) {
 
 var refRE = /^v-ref:/
 export function findRef (node) {
-  if (node.hasAttributes()) {
+  if (node.hasAttributes()) {//:元素包含属性节点 则遍历
     var attrs = node.attributes
     for (var i = 0, l = attrs.length; i < l; i++) {
       var name = attrs[i].name
       if (refRE.test(name)) {
-        return camelize(name.replace(refRE, ''))
+        return camelize(name.replace(refRE, '')) //: v-ref:hello-world -> helloWorld
       }
     }
   }
@@ -378,7 +378,7 @@ export function findRef (node) {
  * @param {Node} end
  * @param {Function} op
  */
-
+//:对一系列兄弟节点执行某中操作
 export function mapNodeRange (node, end, op) {
   var next
   while (node !== end) {
@@ -400,7 +400,7 @@ export function mapNodeRange (node, end, op) {
  * @param {DocumentFragment} frag
  * @param {Function} cb
  */
-
+//:带过渡动画方式删除一个范围的节点，存入docuemntFragment中
 export function removeNodeRange (start, end, vm, frag, cb) {
   var done = false
   var removed = 0
@@ -412,7 +412,7 @@ export function removeNodeRange (start, end, vm, frag, cb) {
   })
   function onRemoved () {
     removed++
-    if (done && removed >= nodes.length) {
+    if (done && removed >= nodes.length) {//:若全部移除完成 则存入documentFragment 并执行回调
       for (var i = 0; i < nodes.length; i++) {
         frag.appendChild(nodes[i])
       }
@@ -439,7 +439,7 @@ export function isFragment (node) {
  * @param {Element} el
  * @return {String}
  */
-
+//:获取outerHTML 兼容IE
 export function getOuterHTML (el) {
   if (el.outerHTML) {
     return el.outerHTML

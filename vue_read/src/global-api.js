@@ -66,11 +66,11 @@ export default function (Vue) {
   /**
    * The following are exposed for advanced usage / plugins
    */
-
-  Vue.compiler = compiler
-  Vue.FragmentFactory = FragmentFactory
-  Vue.internalDirectives = internalDirectives
-  Vue.parsers = {
+   //:暴露一些高级应用需要的一些插件方法
+  Vue.compiler = compiler //:模板编译器 可用于动态编译
+  Vue.FragmentFactory = FragmentFactory //:片段工厂
+  Vue.internalDirectives = internalDirectives //:内部指令 class style prop component
+  Vue.parsers = {//:内部的一些解释器
     path,
     text,
     template,
@@ -83,7 +83,7 @@ export default function (Vue) {
    * cid. This enables us to create wrapped "child
    * constructors" for prototypal inheritance and cache them.
    */
-
+   //:每个组件类(包括Vue)都有cid属性
   Vue.cid = 0
   var cid = 1
 
@@ -92,15 +92,15 @@ export default function (Vue) {
    *
    * @param {Object} extendOptions
    */
-
+   //:派生子组件类
   Vue.extend = function (extendOptions) {
     extendOptions = extendOptions || {}
     var Super = this
     var isFirstExtend = Super.cid === 0
     if (isFirstExtend && extendOptions._Ctor) {
-      return extendOptions._Ctor
+      return extendOptions._Ctor //:扩展选项保存生成的构造函数 extendOptions._Ctor Vue.extend(sameOptions)时 直接返回上次的构造函数
     }
-    var name = extendOptions.name || Super.options.name
+    var name = extendOptions.name || Super.options.name //组件名 无指定则用父组件名
     if (process.env.NODE_ENV !== 'production') {
       if (!/^[a-zA-Z][\w-]*$/.test(name)) {
         warn(
@@ -110,8 +110,8 @@ export default function (Vue) {
         name = null
       }
     }
-    var Sub = createClass(name || 'VueComponent')
-    Sub.prototype = Object.create(Super.prototype)
+    var Sub = createClass(name || 'VueComponent') //:以options.name作为构造函数名
+    Sub.prototype = Object.create(Super.prototype) //:子类的原型对象的原型指向父类的原型对象
     Sub.prototype.constructor = Sub
     Sub.cid = cid++
     Sub.options = mergeOptions(
@@ -120,15 +120,15 @@ export default function (Vue) {
     )
     Sub['super'] = Super
     // allow further extension
-    Sub.extend = Super.extend
+    Sub.extend = Super.extend //:Vue.extend直接赋值给Sub.extend
     // create asset registers, so extended classes
     // can have their private assets too.
     config._assetTypes.forEach(function (type) {
-      Sub[type] = Super[type]
+      Sub[type] = Super[type] //:注册vue资源的方法(Vue.directive(..), Vue.component(..), ..) 同样释放到子类
     })
     // enable recursive self-lookup
-    if (name) {
-      Sub.options.components[name] = Sub
+    if (name) {//:若options.name有指定 则子组件类中注册自身(即在子组件的模板中可调用自己)
+      Sub.options.components[name] = Sub 
     }
     // cache constructor
     if (isFirstExtend) {
@@ -150,7 +150,7 @@ export default function (Vue) {
     /* eslint-disable no-new-func */
     return new Function(
       'return function ' + classify(name) +
-      ' (options) { this._init(options) }'
+      ' (options) { this._init(options) }' //:返回子类的构造函数 调用原型链上的_init方法
     )()
     /* eslint-enable no-new-func */
   }
@@ -163,19 +163,19 @@ export default function (Vue) {
 
   Vue.use = function (plugin) {
     /* istanbul ignore if */
-    if (plugin.installed) {
+    if (plugin.installed) {//:plugin为函数或对象 installed标记防止重复install
       return
     }
     // additional parameters
     var args = toArray(arguments, 1)
-    args.unshift(this)
+    args.unshift(this) //:Vue.use(plugin,...)的参数列表 替换参数1为Vue后传给plugin/plugin.install方法
     if (typeof plugin.install === 'function') {
       plugin.install.apply(plugin, args)
     } else {
       plugin.apply(null, args)
     }
     plugin.installed = true
-    return this
+    return this //:返回Vue 可以链式调用方法
   }
 
   /**
@@ -183,7 +183,7 @@ export default function (Vue) {
    * options.
    */
 
-  Vue.mixin = function (mixin) {
+  Vue.mixin = function (mixin) {//:mixin的选项被混合进Vue.options
     Vue.options = mergeOptions(Vue.options, mixin)
   }
 
@@ -194,14 +194,14 @@ export default function (Vue) {
    * @param {String} id
    * @param {*} definition
    */
-
+   //:创建各种资源的注册方法 Vue.component(...)
   config._assetTypes.forEach(function (type) {
     Vue[type] = function (id, definition) {
-      if (!definition) {
+      if (!definition) {//:没传入definition 则为获取资源, 资源保存在构造函数的options上
         return this.options[type + 's'][id]
       } else {
         /* istanbul ignore if */
-        if (process.env.NODE_ENV !== 'production') {
+        if (process.env.NODE_ENV !== 'production') {//:非生产环境 使用原生html标签或保留标签则告警
           if (
             type === 'component' &&
             (commonTagRE.test(id) || reservedTagRE.test(id))
