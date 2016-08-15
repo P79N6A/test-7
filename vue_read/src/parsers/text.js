@@ -11,17 +11,17 @@ let cache, tagRE, htmlRE
  *
  * @param {String} str
  */
-
+//:转义正则关键字符，从而可用于正则定义
 function escapeRegex (str) {
-  return str.replace(regexEscapeRE, '\\$&')
+  return str.replace(regexEscapeRE, '\\$&') // $&表示最近一次匹配的字符
 }
 
 export function compileRegex () {
-  var open = escapeRegex(config.delimiters[0])
+  var open = escapeRegex(config.delimiters[0]) //:=> \{\{\}\}
   var close = escapeRegex(config.delimiters[1])
   var unsafeOpen = escapeRegex(config.unsafeDelimiters[0])
   var unsafeClose = escapeRegex(config.unsafeDelimiters[1])
-  tagRE = new RegExp(
+  tagRE = new RegExp(//:匹配定界符的正则  {{ expr... }}  or {{{ expr... }}}
     unsafeOpen + '((?:.|\\n)+?)' + unsafeClose + '|' +
     open + '((?:.|\\n)+?)' + close,
     'g'
