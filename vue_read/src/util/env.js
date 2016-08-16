@@ -1,16 +1,16 @@
 /* global MutationObserver */
 
-// can we use __proto__?
+// can we use __proto__? //:能够通过__proto__直接访问原型对象
 export const hasProto = '__proto__' in {}
 
-// Browser environment sniffing
+// Browser environment sniffing //:检测是否浏览器环境
 export const inBrowser =
   typeof window !== 'undefined' &&
   Object.prototype.toString.call(window) !== '[object Object]'
 
 // detect devtools
 export const devtools = inBrowser && window.__VUE_DEVTOOLS_GLOBAL_HOOK__
-
+//:客户端检测 isIE9 isAndroid isIos isWechat
 // UA sniffing for working around browser-specific quirks
 const UA = inBrowser && window.navigator.userAgent.toLowerCase()
 export const isIE9 = UA && UA.indexOf('msie 9.0') > 0
@@ -22,7 +22,7 @@ let transitionProp
 let transitionEndEvent
 let animationProp
 let animationEndEvent
-
+//:嗅探过渡属性和过渡结束事件 ontransitionend onanimationend
 // Transition property/event sniffing
 if (inBrowser && !isIE9) {
   const isWebkitTrans =
@@ -61,7 +61,7 @@ export {
  * @param {Function} cb
  * @param {Object} ctx
  */
-
+//:异步执行回调 MutationObserver / setTimeout(fn, 0)
 export const nextTick = (function () {
   var callbacks = []
   var pending = false
@@ -70,7 +70,7 @@ export const nextTick = (function () {
     pending = false
     var copies = callbacks.slice(0)
     callbacks = []
-    for (var i = 0; i < copies.length; i++) {
+    for (var i = 0; i < copies.length; i++) {//:复制回调函数数组并遍历执行
       copies[i]()
     }
   }
@@ -80,7 +80,7 @@ export const nextTick = (function () {
     var counter = 1
     var observer = new MutationObserver(nextTickHandler)
     var textNode = document.createTextNode(counter)
-    observer.observe(textNode, {
+    observer.observe(textNode, {//:观察textNode的变化 执行绑定的回调
       characterData: true
     })
     timerFunc = function () {
@@ -96,14 +96,14 @@ export const nextTick = (function () {
       : typeof global !== 'undefined' ? global : {}
     timerFunc = context.setImmediate || setTimeout
   }
-  return function (cb, ctx) {
+  return function (cb, ctx) {//:nextTick(callback, context)
     var func = ctx
       ? function () { cb.call(ctx) }
       : cb
     callbacks.push(func)
     if (pending) return
     pending = true
-    timerFunc(nextTickHandler, 0)
+    timerFunc(nextTickHandler, 0) //:setTimout(cb, 0) 或 仅仅改变textNode.data
   }
 })()
 
@@ -111,10 +111,10 @@ let _Set
 /* istanbul ignore if */
 if (typeof Set !== 'undefined' && Set.toString().match(/native code/)) {
   // use native Set when available.
-  _Set = Set
+  _Set = Set //:是否原生支持Set类型
 } else {
   // a non-standard Set polyfill that only works with primitive keys.
-  _Set = function () {
+  _Set = function () {//:实现一个非标准的Set类型 只支持原始类型key set.add(), set.has(), set.delete(), set.size , set.clear()
     this.set = Object.create(null)
   }
   _Set.prototype.has = function (key) {

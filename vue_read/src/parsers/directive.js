@@ -16,19 +16,19 @@ var inSingle, inDouble, curly, square, paren
 /**
  * Push a filter to the current directive object
  */
-
+//:加入过滤器到指令对象中
 function pushFilter () {
-  var exp = str.slice(lastFilterIndex, i).trim()
+  var exp = str.slice(lastFilterIndex, i).trim() //:提取过滤器位置的表达式
   var filter
   if (exp) {
     filter = {}
-    var tokens = exp.match(filterTokenRE)
+    var tokens = exp.match(filterTokenRE) //: | myFilter arg1 'hello'
     filter.name = tokens[0]
-    if (tokens.length > 1) {
+    if (tokens.length > 1) {//: 过滤器带参数
       filter.args = tokens.slice(1).map(processFilterArg)
     }
   }
-  if (filter) {
+  if (filter) {//:若有过滤器 则加入dir.filters
     (dir.filters = dir.filters || []).push(filter)
   }
   lastFilterIndex = i + 1
@@ -40,16 +40,16 @@ function pushFilter () {
  * @param {String} arg
  * @return {Object}
  */
-
+//:处理过滤器参数 检查是否动态参数 字面量则去掉引号
 function processFilterArg (arg) {
-  if (reservedArgRE.test(arg)) {
+  if (reservedArgRE.test(arg)) {//：若为保留过滤器参数(in 或者 数字)
     return {
       value: toNumber(arg),
       dynamic: false
     }
   } else {
     var stripped = stripQuotes(arg)
-    var dynamic = stripped === arg
+    var dynamic = stripped === arg //:若参数本身不包含引号 则为动态参数
     return {
       value: dynamic ? arg : stripped,
       dynamic: dynamic
@@ -74,10 +74,10 @@ function processFilterArg (arg) {
  * @param {String} s
  * @return {Object}
  */
-
+//:解析指令的value,并把指令解析为descriptor
 export function parseDirective (s) {
   var hit = cache.get(s)
-  if (hit) {
+  if (hit) {//:若命中缓存 则直接返回
     return hit
   }
 
@@ -91,10 +91,11 @@ export function parseDirective (s) {
   for (i = 0, l = str.length; i < l; i++) {
     prev = c
     c = str.charCodeAt(i)
+    //:逐字符遍历 判断是否在单引号 双引号内
     if (inSingle) {
       // check single quote
       if (c === 0x27 && prev !== 0x5C) inSingle = !inSingle
-    } else if (inDouble) {
+    } else if (inDoubleuble) {
       // check double quote
       if (c === 0x22 && prev !== 0x5C) inDouble = !inDouble
     } else if (
@@ -130,6 +131,6 @@ export function parseDirective (s) {
     pushFilter()
   }
 
-  cache.put(s, dir)
+  cache.put(s, dir) //:缓存解析到的指令对象
   return dir
 }

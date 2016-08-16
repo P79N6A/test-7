@@ -215,9 +215,9 @@ export default function (Vue) {
         if (
           type === 'component' &&
           isPlainObject(definition)
-        ) {
+        ) {//:若注册时传入的definition是对象 不是构造函数，则用注册的id作为组件的name
           definition.name = id
-          definition = Vue.extend(definition)
+          definition = Vue.extend(definition) //:自动调用Vue.extend(...) 返回构造函数
         }
         this.options[type + 's'][id] = definition
         return definition

@@ -10,7 +10,7 @@
  * @param {Number} limit
  * @constructor
  */
-
+//:应用LRU机制的缓存类
 export default function Cache (limit) {
   this.size = 0
   this.limit = limit
@@ -30,20 +30,20 @@ var p = Cache.prototype
  * @param {*} value
  * @return {Entry|undefined}
  */
-
+//:键值对存入缓存 若达到上限 则返回被移除项
 p.put = function (key, value) {
   var removed
-  if (this.size === this.limit) {
+  if (this.size === this.limit) {//:达到上限 cache.shift() 移除最旧项
     removed = this.shift()
   }
 
   var entry = this.get(key, true)
-  if (!entry) {
+  if (!entry) {//:不存在对应缓存项 则加入
     entry = {
       key: key
     }
     this._keymap[key] = entry
-    if (this.tail) {
+    if (this.tail) {//:更新链表节点的前后指向
       this.tail.newer = entry
       entry.older = this.tail
     } else {
@@ -52,7 +52,7 @@ p.put = function (key, value) {
     this.tail = entry
     this.size++
   }
-  entry.value = value
+  entry.value = value //: cache._keymap{key: {key:.., value:..}}
 
   return removed
 }
@@ -62,10 +62,10 @@ p.put = function (key, value) {
  * cache. Returns the removed entry or undefined if the
  * cache was empty.
  */
-
+//:移除最旧项
 p.shift = function () {
   var entry = this.head
-  if (entry) {
+  if (entry) {//:链表头节点为最旧项
     this.head = this.head.newer
     this.head.older = undefined
     entry.newer = entry.older = undefined
@@ -83,11 +83,11 @@ p.shift = function () {
  * @param {Boolean} returnEntry
  * @return {Entry|*}
  */
-
+//:获取缓存项
 p.get = function (key, returnEntry) {
   var entry = this._keymap[key]
   if (entry === undefined) return
-  if (entry === this.tail) {
+  if (entry === this.tail) {//:若刚好是获取链接尾节点 直接返回该节点
     return returnEntry
       ? entry
       : entry.value
@@ -96,7 +96,7 @@ p.get = function (key, returnEntry) {
   //   <.older   .newer>
   //  <--- add direction --
   //   A  B  C  <D>  E
-  if (entry.newer) {
+  if (entry.newer) {//:被访问的节点移到最后 调整前后节点的指针
     if (entry === this.head) {
       this.head = entry.newer
     }
