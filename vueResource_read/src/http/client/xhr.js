@@ -11,7 +11,7 @@ export default function (request) {
 
         var xhr = new XMLHttpRequest(), response = {request: request}, handler;
 
-        request.cancel = () => {
+        request.cancel = () => {// 取消ajax请求的方法
             xhr.abort();
         };
 
@@ -24,7 +24,7 @@ export default function (request) {
             response.statusText = trim(xhr.statusText || '');
             response.headers = xhr.getAllResponseHeaders();
 
-            resolve(response);
+            resolve(response);// 没有判断status， 直接resolve promise, 所以 User.query().then(sucCb) // sucCb总会被调用
         };
 
         xhr.timeout = 0;

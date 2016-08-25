@@ -21,6 +21,7 @@ export default function Http(url, options) {
     var self = this || {}, client = Client, request, promise;
 
     Http.interceptors.forEach((handler) => {// 设置http拦截器 handler ->{request:.., response:.. } or factoryfn
+        // 拦截器的上下文对象为 vm(vm.http)  或 undefined(Vue.http)
         client = interceptor(handler, self.$vm)(client);// 设置好拦截器的http客户端?
     });
 
@@ -52,7 +53,7 @@ export default function Http(url, options) {
 
     return promise;
 }
-
+// Vue.http.options
 Http.options = {
     method: 'get',
     data: '',
@@ -67,7 +68,7 @@ Http.options = {
     emulateJSON: false,
     timeout: 0
 };
-
+// Vue.http.headers
 Http.headers = {
     put: jsonType,
     post: jsonType,
@@ -81,19 +82,19 @@ Http.interceptors = [before, timeout, jsonp, method, mime, header, cors];
 
 ['get', 'put', 'post', 'patch', 'delete', 'jsonp'].forEach(function (method) {
 
-    Http[method] = function (url, data, success, options) {
+    Http[method] = function (url, data, success, options) {// 注册http动词为对应的方法
 
-        if (isFunction(data)) {
+        if (isFunction(data)) {// Vue.http.get(url, sucCb, options)
             options = success;
             success = data;
             data = undefined;
         }
 
-        if (isObject(success)) {
+        if (isObject(success)) {// Vue.http.get(url, data, options)
             options = success;
             success = undefined;
         }
-
+        // Http(url, options)
         return this(url, extend({method: method, data: data, success: success}, options));
     };
 });
