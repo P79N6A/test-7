@@ -3,14 +3,14 @@ import { parsePath, setPath } from './path'
 import Cache from '../cache'
 
 const expressionCache = new Cache(1000)
-
+//:内联表达式中允许出现的关键字
 const allowedKeywords =
   'Math,Date,this,true,false,null,undefined,Infinity,NaN,' +
   'isNaN,isFinite,decodeURI,decodeURIComponent,encodeURI,' +
   'encodeURIComponent,parseInt,parseFloat'
 const allowedKeywordsRE =
   new RegExp('^(' + allowedKeywords.replace(/,/g, '\\b|') + '\\b)')
-
+//:内联表达式中不合适的关键字 不会对它们做处理
 // keywords that don't make sense inside expressions
 const improperKeywords =
   'break,case,class,catch,const,continue,debugger,default,' +

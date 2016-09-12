@@ -17,6 +17,7 @@ import {
   getAttr
 } from '../util/index'
 
+// 特殊的绑定前缀 v-bind v-on : @ v-show v-show:m.b.c  v-bind:transition :transition
 // special binding prefixes
 const bindRE = /^v-bind:|^:/
 const onRE = /^v-on:|^@/
@@ -25,8 +26,8 @@ const modifierRE = /\.[^\.]+/g
 const transitionRE = /^(v-bind:|:)?transition$/
 
 // default directive priority
-const DEFAULT_PRIORITY = 1000
-const DEFAULT_TERMINAL_PRIORITY = 2000
+const DEFAULT_PRIORITY = 1000 //指令默认优先级
+const DEFAULT_TERMINAL_PRIORITY = 2000 //终结指令的默认优先级
 
 /**
  * Compile a template and return a reusable composite link
@@ -44,13 +45,13 @@ const DEFAULT_TERMINAL_PRIORITY = 2000
  * @param {Boolean} partial
  * @return {Function}
  */
-
+// 编译模板，返回可复用的复合link函数 ; 复合link函数调用后返回销毁函数
 export function compile (el, options, partial) {
   // link function for the node itself.
   var nodeLinkFn = partial || !options._asComponent
     ? compileNode(el, options)
     : null
-  // link function for the childNodes
+  // link function for the childNodes 编译元素及其子节点
   var childLinkFn =
     !(nodeLinkFn && nodeLinkFn.terminal) &&
     !isScript(el) &&
@@ -70,7 +71,7 @@ export function compile (el, options, partial) {
    * @param {Fragment} [frag] - link context fragment
    * @return {Function|undefined}
    */
-
+  // linkFn在dom编译后被调用，用来初始化指令
   return function compositeLinkFn (vm, el, host, scope, frag) {
     // cache childNodes before linking parent, fix #657
     var childNodes = toArray(el.childNodes)
@@ -99,14 +100,14 @@ function linkAndCapture (linker, vm) {
     // them out (which turns out to be a perf hit).
     // they are kept in development mode because they are
     // useful for Vue's own tests.
-    vm._directives = []
+    vm._directives = [] //生产环境 清空vm._directives数组
   }
-  var originalDirCount = vm._directives.length
-  linker()
+  var originalDirCount = vm._directives.length // 指令个数
+  linker() //链接指令
   var dirs = vm._directives.slice(originalDirCount)
-  dirs.sort(directiveComparator)
+  dirs.sort(directiveComparator)//指令排序
   for (var i = 0, l = dirs.length; i < l; i++) {
-    dirs[i]._bind()
+    dirs[i]._bind() //遍历指令 调用其bind回调函数
   }
   return dirs
 }
@@ -117,7 +118,7 @@ function linkAndCapture (linker, vm) {
  * @param {Object} a
  * @param {Object} b
  */
-
+//指令优先级排序器
 function directiveComparator (a, b) {
   a = a.descriptor.def.priority || DEFAULT_PRIORITY
   b = b.descriptor.def.priority || DEFAULT_PRIORITY
@@ -138,7 +139,7 @@ function directiveComparator (a, b) {
  * @param {Array} [contextDirs]
  * @return {Function}
  */
-
+// 创建unlinkFn
 function makeUnlinkFn (vm, dirs, context, contextDirs) {
   function unlink (destroying) {
     teardownDirs(vm, dirs, destroying)
@@ -158,11 +159,11 @@ function makeUnlinkFn (vm, dirs, context, contextDirs) {
  * @param {Array} dirs
  * @param {Boolean} destroying
  */
-
+// 销毁指令
 function teardownDirs (vm, dirs, destroying) {
   var i = dirs.length
   while (i--) {
-    dirs[i]._teardown()
+    dirs[i]._teardown() //遍历指令数组 销毁指令 dir._teardown()
     if (process.env.NODE_ENV !== 'production' && !destroying) {
       vm._directives.$remove(dirs[i])
     }
@@ -201,7 +202,7 @@ export function compileAndLinkProps (vm, el, props, scope) {
  * @param {Object} contextOptions
  * @return {Function}
  */
-
+// 编译组件实例的根元素
 export function compileRoot (el, options, contextOptions) {
   var containerAttrs = options._containerAttrs
   var replacerAttrs = options._replacerAttrs

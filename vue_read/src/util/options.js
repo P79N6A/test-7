@@ -73,15 +73,17 @@ strats.data = function (parentVal, childVal, vm) {
     // merged result of both functions... no need to
     // check if parentVal is a function here because
     // it has to be a function to pass previous merges.
-    return function mergedDataFn () {//:parent.options.data , child.options.data同时存在 合并函数调用的返回值
+    return function mergedDataFn () {
+      //:parent.options.data , child.options.data同时存在 合并函数调用的返回值
       return mergeData(
         childVal.call(this),
         parentVal.call(this)
       )
     }
-  } else if (parentVal || childVal) {//:parent.options.data, child.options.data 只有1个时
+  } else if (parentVal || childVal) {
+  //:有vm参数传入(即实例化), 且parent.options.data, child.options.data 只有1个
     return function mergedInstanceDataFn () {
-      // instance merge
+      // instance merge   //: new MyCmp({data:..})
       var instanceData = typeof childVal === 'function'
         ? childVal.call(vm)
         : childVal
@@ -149,8 +151,10 @@ strats.activate = function (parentVal, childVal) {
  * options and parent options.
  */
 //:实例化时，实例传入的options和子类的options和父类的options 三方合并
+//:vm.$options 的原型 指向构造函数的options
 function mergeAssets (parentVal, childVal) {
   var res = Object.create(parentVal || null)
+  //: {scmp1,scmp2, __proto__: parentCmps}
   return childVal
     ? extend(res, guardArrayAssets(childVal))
     : res
@@ -167,6 +171,7 @@ config._assetTypes.forEach(function (type) {
  * another, so we merge them as arrays.
  */
 //:events watchers 一样的合并策略，合并为数组
+//: events:{ev1:cb1}, events:{ev1:cb2} -> events:{ev1:[cb1,cb2]}
 strats.watch =
 strats.events = function (parentVal, childVal) {
   if (!childVal) return parentVal
@@ -190,6 +195,7 @@ strats.events = function (parentVal, childVal) {
  * Other object hashes.
  */
 //:props, methods, computed相同合并策略， 同名覆盖
+//:props:{prop1:{default:1}}, props:{prop1:{default:2}} -> props:{prop1:{default:2}}
 strats.props =
 strats.methods =
 strats.computed = function (parentVal, childVal) {
@@ -340,7 +346,8 @@ export function mergeOptions (parent, child, vm) {
   var options = {}
   var key
   //:先处理childOptions.extends 再处理mixins
-  if (child.extends) {//:childOptions有extends 且为函数，则认为时构造函数 合并该构造函数的options和父类的options; extends为对象 则作为options和父类的合并
+  if (child.extends) {
+    //:childOptions有extends 且为函数，则认为时构造函数 合并该构造函数的options和父类的options; extends为对象 则作为options和父类的合并
     //:递归的mergeOptions
     parent = typeof child.extends === 'function'
       ? mergeOptions(parent, child.extends.options, vm)
