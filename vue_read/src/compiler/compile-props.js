@@ -55,7 +55,7 @@ export function compileProps (el, propOptions, vm) {
     // interpreted as minus calculations by the parser
     // so we need to camelize the path here
     path = camelize(name) // propName 需为camelize风格, foo-bar会被理解为减法运算
-    if (!identRE.test(path)) {// propName 不合法，则提示
+    if (!identRE.test(path)) {// propName 非合法标识符，则提示
       process.env.NODE_ENV !== 'production' && warn(
         'Invalid prop key: "' + name + '". Prop keys ' +
         'must be valid identifiers.',
@@ -67,7 +67,7 @@ export function compileProps (el, propOptions, vm) {
     prop = {
       name: name, //is-show
       path: path, //isShow
-      options: options,
+      options: options, //propName: options
       mode: propBindingModes.ONE_WAY,
       raw: null
     }
