@@ -1,0 +1,88 @@
+this.props  属性节点信息
+
+<Hello name="sindy" class="good" for="user" />
+this.props.className
+this.props.htmlFor
+this.props.children //undefined 没有子节点; object 1个子节点; array 多个子节点
+
+React.children.map(this.props.children, function(child){
+ return <li>{child}</li>
+}
+
+组件并非真实的DOM节点，而是存在于内存中的一种数据结构。虚拟DOM dom diff
+Hello = React.createClass({
+ render: function(){ .. },
+ propTypes:{
+  title: React.PropTypes.string.isRequired
+ },
+ getDefaultProps: function(){
+  return {
+   title: 'hello world'
+  }
+ }
+});
+
+
+
+ReactDOM.render()
+
+工具方法
+React.children.map  专门处理this.props.children
+
+this.refs.[refName] 获取真实dom
+
+Fine = React.createClass({
+ render: function(){
+  return (
+  <div>
+   <input type="text" ref="title" name="title" />
+   <input type="text" name="user" />
+  </div>
+  );
+});
+
+## this.state
+var LikeButton = React.createClass({
+ getInitialState: function(){
+  return {liked: false};
+ },
+ handleClick: function(event){
+  this.setState({liked: !this.state.liked});
+ },
+ render: function(){
+  var text = this.state.liked ? 'like' : 'do not like';
+  return (
+   <p onClick={this.hanldeClick}>
+      you {text} this. click to toggle.
+   </p>
+  );
+});
+
+ReactDOM.render(<LikeButton />, document.getElementById('example'));
+
+Mounting
+Updating
+Unmounting
+
+will did
+
+componentWillRecieveProp()
+shouldComponentUpdate();
+
+this.isMounted()
+this.setState();
+
+
+------------------
++ view 视图
++ action 动作 视图层发出的消息，如：mouseclick
++ dispatcher 派发层 接收action , 执行回调
++ store 数据层 保存应用状态
+
+单向数据流
+1. 用户访问view
+2. view 发出用户的action
+3. dispatcher收到action，要求store更新状态
+4. store更新后 发出change事件
+5. view收到change事件 更新页面
+
