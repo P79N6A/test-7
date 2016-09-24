@@ -22,7 +22,7 @@ import {
 const propBindingModes = config._propBindingModes // 单向 双向 一次
 const empty = {}
 
-// regexes
+// regexes 命名规则 keypath  obj.hi obj['hi']
 const identRE = /^[$_a-zA-Z]+[\w$]*$/
 const settablePathRE = /^[A-Za-z_$][\w$]*(\.[A-Za-z_$][\w$]*|\[[^\[\]]+\])*$/ // a.b a['b']
 
@@ -65,11 +65,11 @@ export function compileProps (el, propOptions, vm) {
     }
 
     prop = {
-      name: name, //is-show
-      path: path, //isShow
+      name: name, //is-show   attr's name
+      path: path, //isShow  obj's keypath
       options: options, //propName: options
       mode: propBindingModes.ONE_WAY,
-      raw: null
+      raw: null  // :is-show="so" so
     }
 
     attr = hyphenate(name) // isShow -> is-show
@@ -93,7 +93,7 @@ export function compileProps (el, propOptions, vm) {
         // for expressions containing literal numbers and
         // booleans, there's no need to setup a prop binding,
         // so we can optimize them as a one-time set.
-        prop.optimizedLiteral = true
+        prop.optimizedLiteral = true // 指令的值是字面量时，会被优化
       } else {
         prop.dynamic = true
         // check non-settable path for two-way bindings
