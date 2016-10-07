@@ -262,6 +262,7 @@ git remote -v
 git remote add origin repo_url
 git remote rm origin
 git remote rename origin newOrigin
+git remote update origin #更新远程仓库信息
 
 git fetch  //默认会取回所有分支的更新 所取回的更新，在本地主机上要用"远程主机名/分支名"的形式读取。比如origin主机的master，就要用origin/master读取
 

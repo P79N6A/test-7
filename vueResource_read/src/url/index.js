@@ -15,10 +15,10 @@ export default function Url(url, params) {
 
     var self = this || {}, options = url, transform;
 
-    if (isString(url)) {
+    if (isString(url)) {// 若参数1为string
         options = {url: url, params: params};
     }
-
+    // 合并options: 默认options vm.$options, 入参的url params
     options = merge({}, Url.options, self.$options, options);
 
     Url.transforms.forEach((handler) => {
@@ -50,11 +50,11 @@ Url.transforms = [template, legacy, query, root];
  * @param {Object} obj
  */
 
-Url.params = function (obj) {
+Url.params = function (obj) {// url查询参数序列化
 
     var params = [], escape = encodeURIComponent;
 
-    params.add = function (key, value) {
+    params.add = function (key, value) {// 添加url参数
 
         if (isFunction(value)) {
             value = value();
@@ -78,14 +78,14 @@ Url.params = function (obj) {
  * @param {String} url
  */
 
-Url.parse = function (url) {
+Url.parse = function (url) {// 解析url
 
     if (ie) {
         el.href = url;
         url = el.href;
     }
 
-    el.href = url;
+    el.href = url;// a.href = url
 
     return {
         href: el.href,
@@ -105,23 +105,23 @@ function factory(handler, next, vm) {
     };
 }
 
-function serialize(params, obj, scope) {
+function serialize(params, obj, scope) {// 序列化查询参数
 
     var array = isArray(obj), plain = isPlainObject(obj), hash;
 
     each(obj, (value, key) => {
 
-        hash = isObject(value) || isArray(value);
+        hash = isObject(value) || isArray(value);// value为数组或对象
 
         if (scope) {
             key = scope + '[' + (plain || hash ? key : '') + ']';
         }
 
-        if (!scope && array) {
+        if (!scope && array) {// obj -> [{name:.., value:..}, ..]
             params.add(value.name, value.value);
         } else if (hash) {
             serialize(params, value, key);
-        } else {
+        } else {// params = ['foo=bar']  obj ={'goo': 'hoo' } -> params.add('goo', 'hoo')
             params.add(key, value);
         }
     });

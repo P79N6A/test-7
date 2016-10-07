@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>测试：子组件$emit(someEvent) , 父组件能否捕获someEvent </title>
+	<style>
+	.container, .box{padding: 20px; background-color: #eee; border: 1px dashed #ccc; margin: 20px;}
+	.d-ib{display: inline-block; }
+	</style>
+</head>
+<body>
+	<div id="app">
+		App here...
+		<my-cmp  @userinfo="hello"></my-cmp>
+		<h2>user: {{user}}</h2>
+	</div>
+	<script src="/bower_components/vue/dist/vue.js"></script>
+	<script>
+
+	var MyCmp = Vue.extend({
+		name: 'MyCmp',
+		template: '<h2> this is my-cmp content , inner user: {{user}} </h2>',
+		data: function(){
+			return { user: 'cici' };
+		},
+		events: {
+			userinfo: function(user){
+				this.user = user;
+				// return true;
+			}
+		},
+		/*methods: {
+			hi: function(user){
+				this.user = user;
+				// return true;
+			}
+		},*/
+		created: function () {
+			this.$emit('userinfo', 'sindy');
+			// this.$dispatch('userinfo', 'sindy');
+		}
+	});
+
+	var vm = new Vue({
+		name: 'App',
+		el: '#app',
+		data: {
+			name: 'vue.js',
+			user: 'lucy'
+		},
+		events: {
+			userinfo: function (user) {
+				this.user = user;
+			}
+		},
+		methods: {
+			hello: function(user){
+				this.user = user + '...';
+				// return true;
+			}
+		},
+		components: {
+			MyCmp: MyCmp
+		}
+	});
+
+	</script>
+</body>
+</html>

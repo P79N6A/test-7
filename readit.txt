@@ -1,0 +1,23 @@
+http://stackoverflow.com/questions/4919680/html5-placeholder-css-padding
+
+
+
+http://www.adobe.com/devnet/photoshop/scripting.html
+
+http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/photoshop/pdfs/photoshop_scriptref_js.pdf
+
+
+
+http://www.admin10000.com/document/2437.html
+
+@[北京]北狼 看看叶小钗或艾伦的博客，里边有大量的相关框架介绍。
+
+moment.js
+
+
+mocha
+
+chai
+
+travis-ci
+

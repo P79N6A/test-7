@@ -96,7 +96,7 @@ Http API
 + headers  `Object`  附加的请求头
 + xhr  `Object`  Parameters object to be set on the [XHR](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) object
 + upload  `Object`  Parameters object to be set on the [XHR.upload](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/upload) property
-+ jsonp  `string`  JSONP请求的回调函数名 `jsonp:foo => api/jsonp=foo`
++ jsonp  `string`  JSONP请求的回调函数名 `jsonp:foo => api?hello=hi&foo=_jsonptz98mt7uxhddncc`
 + timeout  `number`  设置多少毫秒超时
 + beforeSend  `function(request)`  发送请求前的钩子 可以修改request对象,再发出请求
 + emulateHTTP  `boolean`  Send PUT, PATCH and DELETE requests with a HTTP POST and set the `X-HTTP-Method-Override` header

@@ -1,7 +1,7 @@
 /**
  * JSONP Interceptor.
  */
-
+// 处理options.method === JSONP 的拦截器
 import jsonpClient from './client/jsonp';
 
 const exports = {

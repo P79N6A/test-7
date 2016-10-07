@@ -152,7 +152,7 @@ export function compileProps (el, propOptions, vm) {
       }
     }
     // push prop
-    props.push(prop)
+    props.push(prop) // props 为组件根元素解析props后的数组 
   }
   return makePropsLinkFn(props)
 }
@@ -168,7 +168,7 @@ function makePropsLinkFn (props) {
   return function propsLinkFn (vm, scope) {
     // store resolved props info
     vm._props = {}
-    var inlineProps = vm.$options.propsData
+    var inlineProps = vm.$options.propsData //通过propsData参数指定属性
     var i = props.length
     var prop, path, options, value, raw
     while (i--) {// 遍历props数组 [{name:'isShow', mode:0, raw: 'so', path:'isShow'},..]
@@ -187,6 +187,7 @@ function makePropsLinkFn (props) {
         if (prop.mode === propBindingModes.ONE_TIME) {
           // one time binding
           value = (scope || vm._context || vm).$get(prop.parentPath)// :is-show="so" -> prop.parentPath == 'so' prop.path == 'isShow'
+          // vm.$get('so')
           initProp(vm, prop, value)
         } else {// 非单次绑定
           if (vm._context) {// 有vm._context表示非根实例
