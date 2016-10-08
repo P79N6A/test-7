@@ -43,7 +43,7 @@ export default function Http(url, options) {
         return Promise.reject(response);
     });
 
-    if (request.success) {// 根据request.success, request.error 来执行对应回调
+    if (request.success) {// 有request.success, request.error 回调, 则注册为promise完成时resolve/reject的回调
         promise.success(request.success);
     }
 
@@ -77,20 +77,31 @@ Http.headers = {
     common: {'Accept': 'application/json, text/plain, */*'},
     custom: {'X-Requested-With': 'XMLHttpRequest'}
 };
-
+// 默认的拦截器数组
 Http.interceptors = [before, timeout, jsonp, method, mime, header, cors];
 
 ['get', 'put', 'post', 'patch', 'delete', 'jsonp'].forEach(function (method) {
+<<<<<<< HEAD
+    // http动词注册为对应方法
+    Http[method] = function (url, data, success, options) {
+
+        if (isFunction(data)) {// 参数2是函数则作为成功回调,参数3作为options
+=======
 
     Http[method] = function (url, data, success, options) {// 注册http动词为对应的方法
 
         if (isFunction(data)) {// Vue.http.get(url, sucCb, options)
+>>>>>>> 124764fd76aebd96f66efbb2027c97e1c76d63bb
             options = success;
             success = data;
             data = undefined;
         }
 
+<<<<<<< HEAD
+        if (isObject(success)) {// 参数3为对象则作为options
+=======
         if (isObject(success)) {// Vue.http.get(url, data, options)
+>>>>>>> 124764fd76aebd96f66efbb2027c97e1c76d63bb
             options = success;
             success = undefined;
         }

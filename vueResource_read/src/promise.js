@@ -5,17 +5,27 @@
 import { warn } from './util';
 import PromiseLib from './lib/promise';
 
+<<<<<<< HEAD
+var PromiseObj = window.Promise || PromiseLib;// 原生支持Promise 则用原生; 否则用promise库
+=======
 var PromiseObj = window.Promise || PromiseLib;// 原生的Promise 或 promise library
+>>>>>>> 124764fd76aebd96f66efbb2027c97e1c76d63bb
 
 export default function Promise(executor, context) {// 创建新的Promise类 -> { promise: .., context: ..}
 
-    if (executor instanceof PromiseObj) {
+    if (executor instanceof PromiseObj) {// 参数1为promise对象 则赋值返回
         this.promise = executor;
+<<<<<<< HEAD
+    } else {// 创建promise , 
+        // 如 p = new Promise(function(){ setTimeout(function(){ p.resolve('ok')})});
+        this.promise = new PromiseObj(executor.bind(context));
+=======
     } else {
         this.promise = new PromiseObj(executor.bind(context));// 绑定执行上下文的函数
+>>>>>>> 124764fd76aebd96f66efbb2027c97e1c76d63bb
     }
 
-    this.context = context;
+    this.context = context; // => {promise: .., context: ..}
 }
 
 Promise.all = function (iterable, context) {
@@ -42,7 +52,7 @@ p.bind = function (context) {
 };
 
 p.then = function (fulfilled, rejected) {
-
+    // p -> {promise:.., context:..} , 则让fullfilled, rejected回调绑定this.context上下文
     if (fulfilled && fulfilled.bind && this.context) {
         fulfilled = fulfilled.bind(this.context);
     }
