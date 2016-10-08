@@ -11,22 +11,22 @@ JSONEditor.defaults.templates["default"] = function() {
       // This drastically speeds up template execution
       var replacements = [];
       var get_replacement = function(i) {
-        var p = matches[i].replace(/[{}]+/g,'').trim().split('.');
+        var p = matches[i].replace(/[{}]+/g,'').trim().split('.');//['{{foo.bar.go}}', ..]
         var n = p.length;
         var func;
         
         if(n > 1) {
           var cur;
           func = function(vars) {
-            cur = vars;
+            cur = vars; // vars: {foo: {bar: 'hello'}} p:['foo', 'bar', 'go']
             for(i=0; i<n; i++) {
               cur = cur[p[i]];
               if(!cur) break;
             }
-            return cur;
+            return cur; // => foo.bar.go
           };
         }
-        else {
+        else {// p: ['foo']  vars: {foo: {bar: 'good'}}
           p = p[0];
           func = function(vars) {
             return vars[p];
@@ -34,8 +34,8 @@ JSONEditor.defaults.templates["default"] = function() {
         }
         
         replacements.push({
-          s: matches[i],
-          r: func
+          s: matches[i], // 插值表达式
+          r: func //替换函数
         });
       };
       for(var i=0; i<l; i++) {

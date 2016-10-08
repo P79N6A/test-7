@@ -3,7 +3,7 @@
  */
 JSONEditor.AbstractEditor = Class.extend({
   onChildEditorChange: function(editor) {
-    this.onChange(true);
+    this.onChange(true);// 当childEditorChange，触发当前editor的onChange
   },
   notify: function() {
     this.jsoneditor.notifyWatchers(this.path);
@@ -28,8 +28,8 @@ JSONEditor.AbstractEditor = Class.extend({
   getNumColumns: function() {
     return 12;
   },
-  init: function(options) {
-    this.jsoneditor = options.jsoneditor;
+  init: function(options) {// editor类的入口
+    this.jsoneditor = options.jsoneditor;// 转存options.jsoneditor上的常用数据 (theme, template_engine, iconlib, translate)
     
     this.theme = this.jsoneditor.theme;
     this.template_engine = this.jsoneditor.template;
@@ -38,13 +38,13 @@ JSONEditor.AbstractEditor = Class.extend({
     this.translate = this.jsoneditor.translate || JSONEditor.defaults.translate;
 
     this.original_schema = options.schema;
-    this.schema = this.jsoneditor.expandSchema(this.original_schema);
-    
+    this.schema = this.jsoneditor.expandSchema(this.original_schema);// 展开original_schema 加载$ref指向的外部schema, 并合并
+    // Editor.options, options, schema.options
     this.options = $extend({}, (this.options || {}), (options.schema.options || {}), options);
     
     if(!options.path && !this.schema.id) this.schema.id = 'root';
     this.path = options.path || 'root';
-    this.formname = options.formname || this.path.replace(/\.([^.]+)/g,'[$1]');
+    this.formname = options.formname || this.path.replace(/\.([^.]+)/g,'[$1]'); // this.path = foo.bar -> this.forname = [foo][bar]
     if(this.jsoneditor.options.form_name_root) this.formname = this.formname.replace(/^root\[/,this.jsoneditor.options.form_name_root+'[');
     this.key = this.path.split('.').pop();
     this.parent = options.parent;
@@ -54,7 +54,7 @@ JSONEditor.AbstractEditor = Class.extend({
     if(options.container) this.setContainer(options.container);
   },
   setContainer: function(container) {
-    this.container = container;
+    this.container = container; // 容器div
     // setAttribute -> data-schemaid, data-schematype data-schemapath
     if(this.schema.id) this.container.setAttribute('data-schemaid',this.schema.id);
     if(this.schema.type && typeof this.schema.type === "string") this.container.setAttribute('data-schematype',this.schema.type);

@@ -1,3 +1,5 @@
+// Object.keys(JSONEditor) =>
+// ["defaults", "Validator", "AbstractEditor", "AbstractTheme", "AbstractIconLib", "plugins"]
 JSONEditor.Validator = Class.extend({
   init: function(jsoneditor,schema,options) {
     this.jsoneditor = jsoneditor;
@@ -5,7 +7,7 @@ JSONEditor.Validator = Class.extend({
     this.options = options || {};
     this.translate = this.jsoneditor.translate || JSONEditor.defaults.translate;
   },
-  validate: function(value) {
+  validate: function(value) {// 验证提供的值是否符合schema的定义
     return this._validateSchema(this.schema, value);
   },
   _validateSchema: function(schema,value,path) {
@@ -24,7 +26,7 @@ JSONEditor.Validator = Class.extend({
      */
 
     // Version 3 `required`
-    if(schema.required && schema.required === true) {
+    if(schema.required && schema.required === true) {// 校验必填
       if(typeof value === "undefined") {
         errors.push({
           path: path,
@@ -53,7 +55,7 @@ JSONEditor.Validator = Class.extend({
     }
 
     // `enum`
-    if(schema["enum"]) {
+    if(schema["enum"]) {// 提供的值 在枚举值列表中
       valid = false;
       for(i=0; i<schema["enum"].length; i++) {
         if(stringified === JSON.stringify(schema["enum"][i])) valid = true;
@@ -82,7 +84,7 @@ JSONEditor.Validator = Class.extend({
     }
 
     // `anyOf`
-    if(schema.anyOf) {
+    if(schema.anyOf) {// 是否有任意一个schema, 让value验证通过
       valid = false;
       for(i=0; i<schema.anyOf.length; i++) {
         if(!this._validateSchema(schema.anyOf[i],value,path).length) {
@@ -100,7 +102,7 @@ JSONEditor.Validator = Class.extend({
     }
 
     // `oneOf`
-    if(schema.oneOf) {
+    if(schema.oneOf) {// 多个schema, 让value验证通过，触发error_oneOf
       valid = 0;
       var oneof_errors = [];
       for(i=0; i<schema.oneOf.length; i++) {
@@ -127,7 +129,7 @@ JSONEditor.Validator = Class.extend({
     }
 
     // `not`
-    if(schema.not) {
+    if(schema.not) {// schema.not让value验证通过 则触发error_not
       if(!this._validateSchema(schema.not,value,path).length) {
         errors.push({
           path: path,

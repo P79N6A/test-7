@@ -1,3 +1,4 @@
+// array类型数据对应的editor
 JSONEditor.defaults.editors.array = JSONEditor.AbstractEditor.extend({
   getDefault: function() {
     return this.schema["default"] || [];
