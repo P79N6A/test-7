@@ -1,5 +1,5 @@
 JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
-  getDefault: function() {
+  getDefault: function() {// 获取editor默认值
     return $extend({},this.schema["default"] || {});
   },
   getChildEditors: function() {
@@ -7,16 +7,16 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
   },
   register: function() {
     this._super();
-    if(this.editors) {
+    if(this.editors) {// this.editors 缓存子editors
       for(var i in this.editors) {
         if(!this.editors.hasOwnProperty(i)) continue;
-        this.editors[i].register();
+        this.editors[i].register(); //把自身和子editors都注册到jsoneditor.editors上
       }
     }
   },
   unregister: function() {
     this._super();
-    if(this.editors) {
+    if(this.editors) {// 自身和childEditors都反注册
       for(var i in this.editors) {
         if(!this.editors.hasOwnProperty(i)) continue;
         this.editors[i].unregister();
@@ -24,14 +24,15 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
     }
   },
   getNumColumns: function() {
-    return Math.max(Math.min(12,this.maxwidth),3);
+    return Math.max(Math.min(12,this.maxwidth),3); // 区间[3, 12]
   },
   enable: function() {
+    // object editor的相关按钮 editjson_button addProperty_button
     if(this.editjson_button) this.editjson_button.disabled = false;
     if(this.addproperty_button) this.addproperty_button.disabled = false;
 
     this._super();
-    if(this.editors) {
+    if(this.editors) {// 自身及其childEditors都启用
       for(var i in this.editors) {
         if(!this.editors.hasOwnProperty(i)) continue;
         this.editors[i].enable();
@@ -193,7 +194,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
 
     return schema;
   },
-  preBuild: function() {
+  preBuild: function() {// 生产editor前，设置缓存字段 和 一些默认值
     this._super();
 
     this.editors = {};
@@ -208,13 +209,13 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
     this.maxwidth = 0;
 
     // If the object should be rendered as a table row
-    if(this.options.table_row) {
-      $each(this.schema.properties, function(key,schema) {
+    if(this.options.table_row) {// 若指定渲染为table_row 获取对应editor 将每个字段渲染成行
+      $each(this.schema.properties, function(key,schema) {// properties: {foo: fooSchema}
         var editor = self.jsoneditor.getEditorClass(schema);
         self.editors[key] = self.jsoneditor.createEditor(editor,{
           jsoneditor: self.jsoneditor,
           schema: schema,
-          path: self.path+'.'+key,
+          path: self.path+'.'+key,// root.foo
           parent: self,
           compact: true,
           required: true

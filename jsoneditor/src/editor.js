@@ -5,19 +5,19 @@ JSONEditor.AbstractEditor = Class.extend({
   onChildEditorChange: function(editor) {
     this.onChange(true);// 当childEditorChange，触发当前editor的onChange
   },
-  notify: function() {
+  notify: function() {// 通知对应的watcher 执行回调列表
     this.jsoneditor.notifyWatchers(this.path);
   },
-  change: function() {
+  change: function() {//触发paentEditor的onChildEditorChange, 若为rootEditor 在触发jsoneditor.onChange 触发parentEditor的change事件
     if(this.parent) this.parent.onChildEditorChange(this);
     else this.jsoneditor.onChange();
   },
   onChange: function(bubble) {
     this.notify();
     if(this.watch_listener) this.watch_listener();
-    if(bubble) this.change();
+    if(bubble) this.change();// change事件向上毛怕
   },
-  register: function() {
+  register: function() {//把自身注册到 jsoneditor.editors上, 并触发onChange
     this.jsoneditor.registerEditor(this);
     this.onChange();
   },
@@ -28,7 +28,7 @@ JSONEditor.AbstractEditor = Class.extend({
   getNumColumns: function() {
     return 12;
   },
-  init: function(options) {// editor类的入口
+  init: function(options) {// editor类的入口 new Editor(opts)时会执行int方法
     this.jsoneditor = options.jsoneditor;// 转存options.jsoneditor上的常用数据 (theme, template_engine, iconlib, translate)
     
     this.theme = this.jsoneditor.theme;
@@ -41,7 +41,7 @@ JSONEditor.AbstractEditor = Class.extend({
     this.schema = this.jsoneditor.expandSchema(this.original_schema);// 展开original_schema 加载$ref指向的外部schema, 并合并
     // Editor.options, options, schema.options
     this.options = $extend({}, (this.options || {}), (options.schema.options || {}), options);
-    
+    // editor: {path, formname, key, parent, link_watchers}
     if(!options.path && !this.schema.id) this.schema.id = 'root';
     this.path = options.path || 'root';
     this.formname = options.formname || this.path.replace(/\.([^.]+)/g,'[$1]'); // this.path = foo.bar -> this.forname = [foo][bar]
@@ -53,8 +53,8 @@ JSONEditor.AbstractEditor = Class.extend({
     
     if(options.container) this.setContainer(options.container);
   },
-  setContainer: function(container) {
-    this.container = container; // 容器div
+  setContainer: function(container) {// 保存 editor的容器div 并设置其属性节点
+    this.container = container; 
     // setAttribute -> data-schemaid, data-schematype data-schemapath
     if(this.schema.id) this.container.setAttribute('data-schemaid',this.schema.id);
     if(this.schema.type && typeof this.schema.type === "string") this.container.setAttribute('data-schematype',this.schema.type);
@@ -76,21 +76,21 @@ JSONEditor.AbstractEditor = Class.extend({
     this.onWatchedFieldChange();
   },
   
-  setupWatchListeners: function() {
+  setupWatchListeners: function() {//设置监听器相关的缓存 和 回调
     var self = this;
     
     // Watched fields
-    this.watched = {};
+    this.watched = {}; // editor: {watched: {..}, watched_values: {..}, watch_listener: fn}
     if(this.schema.vars) this.schema.watch = this.schema.vars;
-    this.watched_values = {};
+    this.watched_values = {}; // 缓存监听字段对应的值
     this.watch_listener = function() {
-      if(self.refreshWatchedFieldValues()) {
+      if(self.refreshWatchedFieldValues()) {// 刷新监听字段的值，若有变更 则触发watchFieldChange的回调
         self.onWatchedFieldChange();
       }
     };
     
     this.register();
-    if(this.schema.hasOwnProperty('watch')) {
+    if(this.schema.hasOwnProperty('watch')) {// 处理editor的schema.watch字段
       var path,path_parts,first,root,adjusted_path;
 
       for(var name in this.schema.watch) {
@@ -98,7 +98,7 @@ JSONEditor.AbstractEditor = Class.extend({
         path = this.schema.watch[name];
 
         if(Array.isArray(path)) {// watch: {'somename': ['root', 'some.path']}
-          if(path.length<2) continue;
+          if(path.length<2) continue; // watch: {'name': ['somepath']} skip this
           // ['root', 'some.path'] -> ['root', 'some','path']
           path_parts = [path[0]].concat(path[1].split('.'));
         }
@@ -109,22 +109,22 @@ JSONEditor.AbstractEditor = Class.extend({
         first = path_parts.shift();
 
         if(first === '#') first = self.jsoneditor.schema.id || 'root';
-
+        // 查找当前editor对应的上级Editor
         // Find the root node for this template variable
         root = self.theme.closest(self.container,'[data-schemaid="'+first+'"]');
         if(!root) throw "Could not find ancestor node with id "+first;
 
         // Keep track of the root node and path for use when rendering the template
         adjusted_path = root.getAttribute('data-schemapath') + '.' + path_parts.join('.');
-        
+        // path_parts: [upperEditorId, 'my.local.path'] adjusted_path 调整后的绝对路径
         self.jsoneditor.watch(adjusted_path,self.watch_listener);
         
-        self.watched[name] = adjusted_path;
+        self.watched[name] = adjusted_path;// editor.watched: {name: fieldFullPath}
       }
     }
     
     // Dynamic header
-    if(this.schema.headerTemplate) {
+    if(this.schema.headerTemplate) {// 有schema.headerTemplate则将其预编译 并缓存到editor
       this.header_template = this.jsoneditor.compileTemplate(this.schema.headerTemplate, this.template_engine);
     }
   },
@@ -287,7 +287,7 @@ JSONEditor.AbstractEditor = Class.extend({
   getWatchedFieldValues: function() {
     return this.watched_values;// {fieldName: fieldValue, ..}
   },
-  updateHeaderText: function() {
+  updateHeaderText: function() {// 更新editor.header的文本节点 or textContent
     if(this.header) {
       // If the header has children, only update the text node's value
       if(this.header.children.length) {// this.header <div>some title<i></i></div>
@@ -304,7 +304,7 @@ JSONEditor.AbstractEditor = Class.extend({
       }
     }
   },
-  getHeaderText: function(title_only) {
+  getHeaderText: function(title_only) {// 获取header的内容
     // this.header_text || this.schema.title || this.getTitle()
     if(this.header_text) return this.header_text;
     else if(title_only) return this.schema.title;
@@ -320,19 +320,20 @@ JSONEditor.AbstractEditor = Class.extend({
         i1: (this.key*1+1),
         title: this.getTitle()
       });
-      var header_text = this.header_template(vars);
+      var header_text = this.header_template(vars);// header模板填入数据 获得新的header
       
-      if(header_text !== this.header_text) {
+      if(header_text !== this.header_text) {// header与缓存的不同 则更新
         this.header_text = header_text;
         this.updateHeaderText();
-        this.notify();
+        this.notify(); //通知相关 watcher  执行回调
         //this.fireChangeHeaderEvent();
       }
     }
+    // 若editor包含links 并有对应的link_watchers (a.href中的插值生成的watcher)
     if(this.link_watchers.length) {// 若监听字段发生变化 更新link this.link_watchers
       vars = this.getWatchedFieldValues();
       for(var i=0; i<this.link_watchers.length; i++) {
-        this.link_watchers[i](vars);
+        this.link_watchers[i](vars);// 执行link_watchers: [cb1, cb2,..]  回调列表
       }
     }
   },
@@ -389,7 +390,7 @@ JSONEditor.AbstractEditor = Class.extend({
     
     return null;
   },
-  getTitle: function() {
+  getTitle: function() {// 用 schema.title 或 editor.id作为title
     return this.schema.title || this.key;
   },
   enable: function() {
