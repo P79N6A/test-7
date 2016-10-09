@@ -20,7 +20,7 @@ JSONEditor.defaults.editors["enum"] = JSONEditor.AbstractEditor.extend({
       this.select_options[i] = this.options.enum_titles[i] || "Value "+(i+1);
       this.html_values[i] = this.getHTML(this["enum"][i]);
     }
-
+    // container > title + switcher + display_area
     // Switcher
     this.switcher = this.theme.getSwitcher(this.select_options);
     this.container.appendChild(this.switcher);
@@ -31,7 +31,7 @@ JSONEditor.defaults.editors["enum"] = JSONEditor.AbstractEditor.extend({
 
     if(this.options.hide_display) this.display_area.style.display = "none";
 
-    this.switcher.addEventListener('change',function() {
+    this.switcher.addEventListener('change',function() {// enum: ['foo', 'bar', 'goo']
       self.selected = self.select_options.indexOf(this.value);
       self.value = self["enum"][self.selected];
       self.refreshValue();
@@ -54,7 +54,7 @@ JSONEditor.defaults.editors["enum"] = JSONEditor.AbstractEditor.extend({
     });
 
     if(self.selected<0) {
-      self.setValue(self["enum"][0]);
+      self.setValue(self["enum"][0]);// 默认选中 第1项
       return;
     }
 

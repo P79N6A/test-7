@@ -15,7 +15,7 @@ JSONEditor
     var editorDiv = document.getElementById('editorHolder')
     var editor = new JSONEditor(editorDiv, {
         schema: {
-            type: "object",
+            type: "object",// type决定采用的editor类型 和 返回的值类型
             properties: {
                 name: { type: 'string'}
             }

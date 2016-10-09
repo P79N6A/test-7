@@ -2,23 +2,23 @@ JSONEditor.defaults.editors.upload = JSONEditor.AbstractEditor.extend({
   getNumColumns: function() {
     return 4;
   },
-  build: function() {    
+  build: function() {// 生成editor所需的html结构 并绑定事件    
     var self = this;
-    this.title = this.header = this.label = this.theme.getFormInputLabel(this.getTitle());
+    this.title = this.header = this.label = this.theme.getFormInputLabel(this.getTitle());// title element
 
     // Input that holds the base64 string
-    this.input = this.theme.getFormInputField('hidden');
+    this.input = this.theme.getFormInputField('hidden'); // input:hidden
     this.container.appendChild(this.input);
     
     // Don't show uploader if this is readonly
     if(!this.schema.readOnly && !this.schema.readonly) {
 
-      if(!this.jsoneditor.options.upload) throw "Upload handler required for upload editor";
+      if(!this.jsoneditor.options.upload) throw "Upload handler required for upload editor"; // check upload function
 
       // File uploader
       this.uploader = this.theme.getFormInputField('file');
       
-      this.uploader.addEventListener('change',function(e) {
+      this.uploader.addEventListener('change',function(e) {// bind event input:file change
         e.preventDefault();
         e.stopPropagation();
         
@@ -26,7 +26,7 @@ JSONEditor.defaults.editors.upload = JSONEditor.AbstractEditor.extend({
           var fr = new FileReader();
           fr.onload = function(evt) {
             self.preview_value = evt.target.result;
-            self.refreshPreview();
+            self.refreshPreview();// preview by img src=dataUrl , 选中文件 刷新预览图
             self.onChange(true);
             fr = null;
           };
@@ -73,7 +73,7 @@ JSONEditor.defaults.editors.upload = JSONEditor.AbstractEditor.extend({
     this.preview.innerHTML += '<br>';
     var uploadButton = this.getButton('Upload', 'upload', 'Upload');
     this.preview.appendChild(uploadButton);
-    uploadButton.addEventListener('click',function(event) {
+    uploadButton.addEventListener('click',function(event) {// 点击按钮 执行上传
       event.preventDefault();
 
       uploadButton.setAttribute("disabled", "disabled");

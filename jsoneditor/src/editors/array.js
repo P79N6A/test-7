@@ -5,7 +5,7 @@ JSONEditor.defaults.editors.array = JSONEditor.AbstractEditor.extend({
   },
   register: function() {
     this._super();
-    if(this.rows) {
+    if(this.rows) {// rows are sub editors?
       for(var i=0; i<this.rows.length; i++) {
         this.rows[i].register();
       }
@@ -76,6 +76,8 @@ JSONEditor.defaults.editors.array = JSONEditor.AbstractEditor.extend({
   build: function() {
     var self = this;
 
+    // container > (title > header) + title_controls + description + error_holder + (panel > row_holder + controls)
+    // container > tabs_holder + (title > controls)
     if(!this.options.compact) {
       this.header = document.createElement('span');
       this.header.textContent = this.getTitle();
@@ -108,7 +110,8 @@ JSONEditor.defaults.editors.array = JSONEditor.AbstractEditor.extend({
         this.panel.appendChild(this.controls);
       }
     }
-    else {
+    else {// options.compact == true
+        // container > (panel > controls + row_holder)
         this.panel = this.theme.getIndentedPanel();
         this.container.appendChild(this.panel);
         this.controls = this.theme.getButtonHolder();
@@ -198,7 +201,7 @@ JSONEditor.defaults.editors.array = JSONEditor.AbstractEditor.extend({
     }
 
     this.row_holder.appendChild(holder);
-
+    // 创建字段对应的editor
     var ret = this.jsoneditor.createEditor(editor,{
       jsoneditor: this.jsoneditor,
       schema: schema,

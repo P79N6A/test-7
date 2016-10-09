@@ -174,8 +174,9 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
     schema = $extend({},schema);
     var matched = this.schema.properties[key]? true : false;
 
+    // 处理 editor.schema.patternProperties 字段
     // Any matching patternProperties should be merged in
-    if(this.schema.patternProperties) {
+    if(this.schema.patternProperties) {// 添加schema.allOf字段  schema.patternProperties: { 'foo.*': fooSchema, 'bar.+': barSchema }
       for(var i in this.schema.patternProperties) {
         if(!this.schema.patternProperties.hasOwnProperty(i)) continue;
         var regex = new RegExp(i);
@@ -187,6 +188,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
       }
     }
 
+    // 处理 editor.schema.addtionalProperties 字段
     // Hasn't matched other rules, use additionalProperties schema
     if(!matched && this.schema.additionalProperties && typeof this.schema.additionalProperties === "object") {
       schema = $extend({},this.schema.additionalProperties);
@@ -194,7 +196,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
 
     return schema;
   },
-  preBuild: function() {// 生产editor前，设置缓存字段 和 一些默认值
+  preBuild: function() {// 生成editor前，设置缓存字段 和 一些默认值
     this._super();
 
     this.editors = {};
@@ -212,19 +214,20 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
     if(this.options.table_row) {// 若指定渲染为table_row 获取对应editor 将每个字段渲染成行
       $each(this.schema.properties, function(key,schema) {// properties: {foo: fooSchema}
         var editor = self.jsoneditor.getEditorClass(schema);
+        // editor.editors.foo = fooEditor
         self.editors[key] = self.jsoneditor.createEditor(editor,{
           jsoneditor: self.jsoneditor,
           schema: schema,
           path: self.path+'.'+key,// root.foo
-          parent: self,
+          parent: self, //设置了 parentEditor
           compact: true,
           required: true
         });
-        self.editors[key].preBuild();
-
+        self.editors[key].preBuild();// childEditor also do prebuild
+        //childEditor 的 width
         var width = self.editors[key].options.hidden? 0 : (self.editors[key].options.grid_columns || self.editors[key].getNumColumns());
 
-        self.minwidth += width;
+        self.minwidth += width; // 累加 childEditor's width
         self.maxwidth += width;
       });
       this.no_link_holder = true;
@@ -236,24 +239,24 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
     }
     // If the object should be rendered as a div
     else {
-      if(!this.schema.defaultProperties) {
+      if(!this.schema.defaultProperties) {// 无设置defaultProperties, 则生成
         if(this.jsoneditor.options.display_required_only || this.options.display_required_only) {
           this.schema.defaultProperties = [];
-          $each(this.schema.properties, function(k,s) {
+          $each(this.schema.properties, function(k,s) {// 若要求只显示 required 的属性 则生成 schema.defaultProperties
             if(self.isRequired({key: k, schema: s})) {
               self.schema.defaultProperties.push(k);
             }
           });
         }
         else {
-          self.schema.defaultProperties = Object.keys(self.schema.properties);
+          self.schema.defaultProperties = Object.keys(self.schema.properties);// 若非仅显示required的字段 则defaultProperties为所有字段组成的数组
         }
       }
 
       // Increase the grid width to account for padding
       self.maxwidth += 1;
 
-      $each(this.schema.defaultProperties, function(i,key) {
+      $each(this.schema.defaultProperties, function(i,key) {// 遍历需显示的字段
         self.addObjectProperty(key, true);
 
         if(self.editors[key]) {
@@ -280,7 +283,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
     // If the object should be rendered as a table row
     if(this.options.table_row) {
       this.editor_holder = this.container;
-      $each(this.editors, function(key,editor) {
+      $each(this.editors, function(key,editor) {// childEditor 放置在td or div.col-md-x中
         var holder = self.theme.getTableCell();
         self.editor_holder.appendChild(holder);
 
@@ -288,10 +291,10 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
         editor.build();
         editor.postBuild();
 
-        if(self.editors[key].options.hidden) {
+        if(self.editors[key].options.hidden) {// 设置隐藏
           holder.style.display = 'none';
         }
-        if(self.editors[key].options.input_width) {
+        if(self.editors[key].options.input_width) {// 设置input的宽度
           holder.style.width = self.editors[key].options.input_width;
         }
       });
@@ -303,14 +306,14 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
     }
     // If the object should be rendered as a div
     else {
-      this.header = document.createElement('span');
+      this.header = document.createElement('span');// 渲染 title element
       this.header.textContent = this.getTitle();
       this.title = this.theme.getHeader(this.header);
-      this.container.appendChild(this.title);
-      this.container.style.position = 'relative';
+      this.container.appendChild(this.title);// container > title
+      this.container.style.position = 'relative'; 
 
       // Edit JSON modal
-      this.editjson_holder = this.theme.getModal();
+      this.editjson_holder = this.theme.getModal(); // 直接编辑json的弹出层 holder > textarea + saveBtn + cancelBtn
       this.editjson_textarea = this.theme.getTextareaInput();
       this.editjson_textarea.style.height = '170px';
       this.editjson_textarea.style.width = '300px';
@@ -319,20 +322,20 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
       this.editjson_save.addEventListener('click',function(e) {
         e.preventDefault();
         e.stopPropagation();
-        self.saveJSON();
+        self.saveJSON();// 保存编辑后的json数据
       });
       this.editjson_cancel = this.getButton('Cancel','cancel','Cancel');
       this.editjson_cancel.addEventListener('click',function(e) {
         e.preventDefault();
         e.stopPropagation();
-        self.hideEditJSON();
+        self.hideEditJSON();// 隐藏弹出层
       });
       this.editjson_holder.appendChild(this.editjson_textarea);
       this.editjson_holder.appendChild(this.editjson_save);
       this.editjson_holder.appendChild(this.editjson_cancel);
 
       // Manage Properties modal
-      this.addproperty_holder = this.theme.getModal();
+      this.addproperty_holder = this.theme.getModal(); // propertyModal > list + addBtn + input:text 
       this.addproperty_list = document.createElement('div');
       this.addproperty_list.style.width = '295px';
       this.addproperty_list.style.maxHeight = '160px';
@@ -393,7 +396,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
         var holder = self.theme.getGridColumn();
         self.row_container.appendChild(holder);
 
-        editor.setContainer(holder);
+        editor.setContainer(holder); // childEditors build and postbuild
         editor.build();
         editor.postBuild();
       });
@@ -413,7 +416,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
       this.toggle_button.addEventListener('click',function(e) {
         e.preventDefault();
         e.stopPropagation();
-        if(self.collapsed) {
+        if(self.collapsed) {// 切换折叠展开
           self.editor_holder.style.display = '';
           self.collapsed = false;
           self.setButtonText(self.toggle_button,'','collapse',self.translate('button_collapse'));
@@ -483,7 +486,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
       this.layoutEditors();
     }
   },
-  showEditJSON: function() {
+  showEditJSON: function() {// 显示editjsonModal
     if(!this.editjson_holder) return;
     this.hideAddProperty();
 
@@ -502,7 +505,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
     this.editjson_button.disabled = false;
     this.editing_json = true;
   },
-  hideEditJSON: function() {
+  hideEditJSON: function() {// 隐藏编辑json的modal
     if(!this.editjson_holder) return;
     if(!this.editing_json) return;
 
@@ -510,11 +513,11 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
     this.enable();
     this.editing_json = false;
   },
-  saveJSON: function() {
+  saveJSON: function() {// 保存编辑后的json , and hide modal
     if(!this.editjson_holder) return;
 
     try {
-      var json = JSON.parse(this.editjson_textarea.value);
+      var json = JSON.parse(this.editjson_textarea.value);// 反序列化 textarea.value
       this.setValue(json);
       this.hideEditJSON();
     }
@@ -523,7 +526,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
       throw e;
     }
   },
-  toggleEditJSON: function() {
+  toggleEditJSON: function() {// 切换editjsonModal的显隐
     if(this.editing_json) this.hideEditJSON();
     else this.showEditJSON();
   },
@@ -534,7 +537,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
     if (typeof propertyOrder !== "number") propertyOrder = 1000;
     control.propertyOrder = propertyOrder;
 
-    for (var i = 0; i < container.childNodes.length; i++) {
+    for (var i = 0; i < container.childNodes.length; i++) {// 按propertyOrder 插入dom
       var child = container.childNodes[i];
       if (control.propertyOrder < child.propertyOrder) {
         this.addproperty_list.insertBefore(control, child);
@@ -546,7 +549,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
       this.addproperty_list.appendChild(control);
     }
   },
-  addPropertyCheckbox: function(key) {
+  addPropertyCheckbox: function(key) {// 为字段添加checkbox相关元素 control > label + checkbox
     var self = this;
     var checkbox, label, labelText, control;
 
@@ -581,7 +584,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
 
     return checkbox;
   },
-  showAddProperty: function() {
+  showAddProperty: function() {// show modal of add property
     if(!this.addproperty_holder) return;
     this.hideEditJSON();
 
@@ -598,7 +601,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
     this.addproperty_holder.style.display = '';
     this.refreshAddProperties();
   },
-  hideAddProperty: function() {
+  hideAddProperty: function() {// 隐藏添加属性的modal
     if(!this.addproperty_holder) return;
     if(!this.adding_property) return;
 
@@ -607,7 +610,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
 
     this.adding_property = false;
   },
-  toggleAddProperty: function() {
+  toggleAddProperty: function() {// toggle modal of adding property
     if(this.adding_property) this.hideAddProperty();
     else this.showAddProperty();
   },
@@ -620,7 +623,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
       this.layoutEditors();
     }
   },
-  addObjectProperty: function(name, prebuild_only) {
+  addObjectProperty: function(name, prebuild_only) {// object添加新字段
     var self = this;
 
     // Property is already added
@@ -652,7 +655,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
       });
       self.editors[name].preBuild();
 
-      if(!prebuild_only) {
+      if(!prebuild_only) {// 新增字段，生成对应的childEditor, 并执行构建函数 prebuild build postbuild
         var holder = self.theme.getChildEditorHolder();
         self.editor_holder.appendChild(holder);
         self.editors[name].setContainer(holder);
@@ -666,14 +669,14 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
     // If we're only prebuilding the editors, don't refresh values
     if(!prebuild_only) {
       self.refreshValue();
-      self.layoutEditors();
+      self.layoutEditors();// 重新布局childEditors
     }
   },
   onChildEditorChange: function(editor) {
     this.refreshValue();
     this._super(editor);
   },
-  canHaveAdditionalProperties: function() {
+  canHaveAdditionalProperties: function() {// 是否可带额外的属性
     if (typeof this.schema.additionalProperties === "boolean") {
       return this.schema.additionalProperties;
     }
@@ -716,7 +719,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
     
     if(this.adding_property) this.refreshAddProperties();
   },
-  refreshAddProperties: function() {
+  refreshAddProperties: function() {// 刷新添加字段弹出层的内容
     if(this.options.disable_properties || (this.options.disable_properties !== false && this.jsoneditor.options.disable_properties)) {
       this.addproperty_controls.style.display = 'none';
       return;
@@ -745,7 +748,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
       this.addPropertyCheckbox(i);
 
       if(this.isRequired(this.cached_editors[i]) && i in this.editors) {
-        this.addproperty_checkboxes[i].disabled = true;
+        this.addproperty_checkboxes[i].disabled = true; // 必须字段，不允许点击checkbox 隐藏
       }
 
       if(typeof this.schema.minProperties !== "undefined" && num_props <= this.schema.minProperties) {
@@ -798,10 +801,10 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
       this.addproperty_add.disabled = false;
     }
   },
-  isRequired: function(editor) {
+  isRequired: function(editor) {// 判断editor是否应该显示
     if(typeof editor.schema.required === "boolean") return editor.schema.required;
-    else if(Array.isArray(this.schema.required)) return this.schema.required.indexOf(editor.key) > -1;
-    else if(this.jsoneditor.options.required_by_default) return true;
+    else if(Array.isArray(this.schema.required)) return this.schema.required.indexOf(editor.key) > -1; // key 在 required数组中
+    else if(this.jsoneditor.options.required_by_default) return true; // 全局设置 默认都显示
     else return false;
   },
   setValue: function(value, initial) {
@@ -811,7 +814,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
     if(typeof value !== "object" || Array.isArray(value)) value = {};
 
     // First, set the values for all of the defined properties
-    $each(this.cached_editors, function(i,editor) {
+    $each(this.cached_editors, function(i,editor) {// childEditors setValue(..)
       // Value explicitly set
       if(typeof value[i] !== "undefined") {
         self.addObjectProperty(i);
@@ -834,17 +837,17 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
       }
     });
 
-    this.refreshValue();
+    this.refreshValue(); // update editor's value
     this.layoutEditors();
-    this.onChange();
+    this.onChange(); // make watcher listeners to be called
   },
-  showValidationErrors: function(errors) {
+  showValidationErrors: function(errors) {// 显示验证错误
     var self = this;
 
     // Get all the errors that pertain to this editor
     var my_errors = [];
     var other_errors = [];
-    $each(errors, function(i,error) {
+    $each(errors, function(i,error) {// errors.path 标识 error发生在哪个editor
       if(error.path === self.path) {
         my_errors.push(error);
       }
@@ -859,7 +862,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
         var message = [];
         this.error_holder.innerHTML = '';
         this.error_holder.style.display = '';
-        $each(my_errors, function(i,error) {
+        $each(my_errors, function(i,error) {// append elements for error msg
           self.error_holder.appendChild(self.theme.getErrorMessage(error.message));
         });
       }
@@ -872,7 +875,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
     // Show error for the table row if this is inside a table
     if(this.options.table_row) {
       if(my_errors.length) {
-        this.theme.addTableRowError(this.container);
+        this.theme.addTableRowError(this.container); // 用表格行输出error msg
       }
       else {
         this.theme.removeTableRowError(this.container);
@@ -881,7 +884,7 @@ JSONEditor.defaults.editors.object = JSONEditor.AbstractEditor.extend({
 
     // Show errors for child editors
     $each(this.editors, function(i,editor) {
-      editor.showValidationErrors(other_errors);
+      editor.showValidationErrors(other_errors);// childEditor also show their errors
     });
   }
 });

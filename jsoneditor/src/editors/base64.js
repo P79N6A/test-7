@@ -21,10 +21,10 @@ JSONEditor.defaults.editors.base64 = JSONEditor.AbstractEditor.extend({
         e.preventDefault();
         e.stopPropagation();
         
-        if(this.files && this.files.length) {
+        if(this.files && this.files.length) {// this.files 用户选择的文件
           var fr = new FileReader();
           fr.onload = function(evt) {
-            self.value = evt.target.result;
+            self.value = evt.target.result; // base64 string
             self.refreshPreview();
             self.onChange(true);
             fr = null;
@@ -33,7 +33,7 @@ JSONEditor.defaults.editors.base64 = JSONEditor.AbstractEditor.extend({
         }
       });
     }
-
+    // container > (control > preview + label + input:file)
     this.preview = this.theme.getFormInputDescription(this.schema.description);
     this.container.appendChild(this.preview);
 
@@ -48,7 +48,7 @@ JSONEditor.defaults.editors.base64 = JSONEditor.AbstractEditor.extend({
     
     if(!this.value) return;
     
-    var mime = this.value.match(/^data:([^;,]+)[;,]/);
+    var mime = this.value.match(/^data:([^;,]+)[;,]/);// base64 string
     if(mime) mime = mime[1];
     
     if(!mime) {
@@ -62,7 +62,7 @@ JSONEditor.defaults.editors.base64 = JSONEditor.AbstractEditor.extend({
         img.style.maxWidth = '100%';
         img.style.maxHeight = '100px';
         img.src = this.value;
-        this.preview.appendChild(img);
+        this.preview.appendChild(img);// <div> type: .. size: .. <img /> </div>
       }
     }
   },

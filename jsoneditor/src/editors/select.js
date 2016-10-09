@@ -4,7 +4,7 @@ JSONEditor.defaults.editors.select = JSONEditor.AbstractEditor.extend({
 
     // Sanitize value before setting it
     var sanitized = value;
-    if(this.enum_values.indexOf(sanitized) < 0) {
+    if(this.enum_values.indexOf(sanitized) < 0) {// 不在枚举列表中
       sanitized = this.enum_values[0];
     }
 
@@ -61,7 +61,7 @@ JSONEditor.defaults.editors.select = JSONEditor.AbstractEditor.extend({
     var i;
 
     // Enum options enumerated
-    if(this.schema["enum"]) {
+    if(this.schema["enum"]) {// 从枚举值中选择
       var display = this.schema.options && this.schema.options.enum_titles || [];
       
       $each(this.schema["enum"],function(i,option) {
@@ -70,7 +70,7 @@ JSONEditor.defaults.editors.select = JSONEditor.AbstractEditor.extend({
         self.enum_values[i] = self.typecast(option);
       });
 
-      if(!this.isRequired()){
+      if(!this.isRequired()){// 非必填 则加入空白项
         self.enum_display.unshift(' ');
         self.enum_options.unshift('undefined');
         self.enum_values.unshift(undefined);
@@ -78,7 +78,7 @@ JSONEditor.defaults.editors.select = JSONEditor.AbstractEditor.extend({
             
     }
     // Boolean
-    else if(this.schema.type === "boolean") {
+    else if(this.schema.type === "boolean") {// 选择真假
       self.enum_display = this.schema.options && this.schema.options.enum_titles || ['true','false'];
       self.enum_options = ['1',''];
       self.enum_values = [true,false];
@@ -91,14 +91,14 @@ JSONEditor.defaults.editors.select = JSONEditor.AbstractEditor.extend({
     
     }
     // Dynamic Enum
-    else if(this.schema.enumSource) {
+    else if(this.schema.enumSource) {// 枚举列表为动态的
       this.enumSource = [];
       this.enum_display = [];
       this.enum_options = [];
       this.enum_values = [];
       
       // Shortcut declaration for using a single array
-      if(!(Array.isArray(this.schema.enumSource))) {
+      if(!(Array.isArray(this.schema.enumSource))) {//not array
         if(this.schema.enumValue) {
           this.enumSource = [
             {
@@ -115,19 +115,19 @@ JSONEditor.defaults.editors.select = JSONEditor.AbstractEditor.extend({
           ];
         }
       }
-      else {
+      else {// array
         for(i=0; i<this.schema.enumSource.length; i++) {
           // Shorthand for watched variable
-          if(typeof this.schema.enumSource[i] === "string") {
+          if(typeof this.schema.enumSource[i] === "string") {// string
             this.enumSource[i] = {
               source: this.schema.enumSource[i]
             };
           }
           // Make a copy of the schema
-          else if(!(Array.isArray(this.schema.enumSource[i]))) {
+          else if(!(Array.isArray(this.schema.enumSource[i]))) {// object
             this.enumSource[i] = $extend({},this.schema.enumSource[i]);
           }
-          else {
+          else {// array
             this.enumSource[i] = this.schema.enumSource[i];
           }
         }
@@ -135,7 +135,7 @@ JSONEditor.defaults.editors.select = JSONEditor.AbstractEditor.extend({
       
       // Now, enumSource is an array of sources
       // Walk through this array and fix up the values
-      for(i=0; i<this.enumSource.length; i++) {
+      for(i=0; i<this.enumSource.length; i++) {// enumSource 对象数组
         if(this.enumSource[i].value) {
           this.enumSource[i].value = this.jsoneditor.compileTemplate(this.enumSource[i].value, this.template_engine);
         }
@@ -195,7 +195,7 @@ JSONEditor.defaults.editors.select = JSONEditor.AbstractEditor.extend({
 
     // Store new value and propogate change event
     this.value = new_val;
-    this.onChange(true);
+    this.onChange(true); // 广播change事件
   },
   setupSelect2: function() {
     // If the Select2 library is loaded use it when we have lots of items

@@ -1,3 +1,5 @@
+// 设置JSONEditor的默认选项 JSONEditor.defaults
+
 // Set the default theme
 JSONEditor.defaults.theme = 'html';
 
@@ -9,7 +11,7 @@ JSONEditor.defaults.options = {};
 
 // String translate function
 JSONEditor.defaults.translate = function(key, variables) {
-  var lang = JSONEditor.defaults.languages[JSONEditor.defaults.language];
+  var lang = JSONEditor.defaults.languages[JSONEditor.defaults.language];// 默认语言 {word: '...', word2: '..'}
   if(!lang) throw "Unknown language "+JSONEditor.defaults.language;
   
   var string = lang[key] || JSONEditor.defaults.languages[JSONEditor.defaults.default_language][key];
@@ -17,7 +19,7 @@ JSONEditor.defaults.translate = function(key, variables) {
   if(typeof string === "undefined") throw "Unknown translate string "+key;
   
   if(variables) {
-    for(var i=0; i<variables.length; i++) {
+    for(var i=0; i<variables.length; i++) {// ('some string {{foo}}', {foo: 'hello'})
       string = string.replace(new RegExp('\\{\\{'+i+'}}','g'),variables[i]);
     }
   }
@@ -205,7 +207,7 @@ JSONEditor.defaults.languages.en = {
 };
 
 // Miscellaneous Plugin Settings
-JSONEditor.plugins = {
+JSONEditor.plugins = {// 插件的默认选项
   ace: {
     theme: ''
   },
@@ -223,7 +225,7 @@ JSONEditor.plugins = {
 };
 
 // Default per-editor options
-$each(JSONEditor.defaults.editors, function(i,editor) {
+$each(JSONEditor.defaults.editors, function(i,editor) {// EditorClass.options = {}
   JSONEditor.defaults.editors[i].options = editor.options || {};
 });
 

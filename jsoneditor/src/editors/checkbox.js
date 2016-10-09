@@ -1,6 +1,6 @@
 JSONEditor.defaults.editors.checkbox = JSONEditor.AbstractEditor.extend({
   setValue: function(value,initial) {
-    this.value = !!value;
+    this.value = !!value; // 转换为bool
     this.input.checked = this.value;
     this.onChange();
   },
@@ -27,7 +27,7 @@ JSONEditor.defaults.editors.checkbox = JSONEditor.AbstractEditor.extend({
 
     this.input = this.theme.getCheckbox();
     this.control = this.theme.getFormControl(this.label, this.input, this.description);
-
+    // container > control(label + input + description)
     if(this.schema.readOnly || this.schema.readonly) {
       this.always_disabled = true;
       this.input.disabled = true;

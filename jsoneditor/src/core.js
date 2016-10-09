@@ -56,23 +56,23 @@ JSONEditor.prototype = {
         container: self.root_container // root editor 的容器
       });
       
-      self.root.preBuild();
+      self.root.preBuild(); // 执行 rootEditor的创建方法 preBuild build postBuild
       self.root.build();
       self.root.postBuild();
 
       // Starting data
-      if(self.options.startval) self.root.setValue(self.options.startval);
+      if(self.options.startval) self.root.setValue(self.options.startval); // 设置 rootEditor 的初始值
 
-      self.validation_results = self.validator.validate(self.root.getValue());
-      self.root.showValidationErrors(self.validation_results);
-      self.ready = true;
+      self.validation_results = self.validator.validate(self.root.getValue());// rootEditor 校验， 校验结果存在 jsoneditor.validation_results
+      self.root.showValidationErrors(self.validation_results);// rootEditor 显示验证的错误信息
+      self.ready = true; // jsoneditor ready
 
       // Fire ready event asynchronously
       window.requestAnimationFrame(function() {
         if(!self.ready) return;
         self.validation_results = self.validator.validate(self.root.getValue());
         self.root.showValidationErrors(self.validation_results);
-        self.trigger('ready');
+        self.trigger('ready'); // jsoneditor trigger events : ready change
         self.trigger('change');
       });
     });
@@ -80,33 +80,33 @@ JSONEditor.prototype = {
   getValue: function() {
     if(!this.ready) throw "JSON Editor not ready yet.  Listen for 'ready' event before getting the value";
 
-    return this.root.getValue();
+    return this.root.getValue();// 获取rootEditor的值
   },
   setValue: function(value) {
     if(!this.ready) throw "JSON Editor not ready yet.  Listen for 'ready' event before setting the value";
 
-    this.root.setValue(value);
+    this.root.setValue(value);// 设置rootEditor的值
     return this;
   },
   validate: function(value) {
     if(!this.ready) throw "JSON Editor not ready yet.  Listen for 'ready' event before validating";
     
     // Custom value
-    if(arguments.length === 1) {
+    if(arguments.length === 1) {// 用jsoneditor.validator校验指定值
       return this.validator.validate(value);
     }
     // Current value (use cached result)
     else {
-      return this.validation_results;
+      return this.validation_results; // 返回缓存的校验结果
     }
   },
-  destroy: function() {
+  destroy: function() {// 销毁jsoneditor (dom元素和缓存数据)
     if(this.destroyed) return;
     if(!this.ready) return;
     
     this.schema = null;
     this.options = null;
-    this.root.destroy();
+    this.root.destroy();// 销毁rootEditor
     this.root = null;
     this.root_container = null;
     this.validator = null;
@@ -120,7 +120,7 @@ JSONEditor.prototype = {
     
     this.destroyed = true;
   },
-  on: function(event, callback) {
+  on: function(event, callback) {// event system, very cool~  callbacks: {evName: [cb1, cb2], ..}
     this.callbacks = this.callbacks || {};
     this.callbacks[event] = this.callbacks[event] || [];
     this.callbacks[event].push(callback);
@@ -160,7 +160,7 @@ JSONEditor.prototype = {
     
     return this;
   },
-  setOption: function(option, value) {
+  setOption: function(option, value) {// 运行时 修改option 暂时支持 show_errors
     if(option === "show_errors") {
       this.options.show_errors = value;
       this.onChange();
@@ -192,14 +192,14 @@ JSONEditor.prototype = {
 
     return JSONEditor.defaults.editors[classname];
   },
-  createEditor: function(editor_class, options) {
-    options = $extend({},editor_class.options||{},options);
-    return new editor_class(options);
+  createEditor: function(editor_class, options) {// 创建并返回 rootEditor
+    options = $extend({},editor_class.options||{},options); //合并选项 editor构造函数的options 和 传入的options
+    return new editor_class(options); // 实例化 root editor
   },
   onChange: function() {
     if(!this.ready) return;
     
-    if(this.firing_change) return;
+    if(this.firing_change) return; // digesting
     this.firing_change = true;
     
     var self = this;
@@ -209,30 +209,30 @@ JSONEditor.prototype = {
       if(!self.ready) return;
 
       // Validate and cache results
-      self.validation_results = self.validator.validate(self.root.getValue());
+      self.validation_results = self.validator.validate(self.root.getValue());// 重新验证rootEditor
       
-      if(self.options.show_errors !== "never") {
+      if(self.options.show_errors !== "never") {// show validation errors
         self.root.showValidationErrors(self.validation_results);
       }
-      else {
+      else {// hide validation errors
         self.root.showValidationErrors([]);
       }
       
       // Fire change event
-      self.trigger('change');
+      self.trigger('change'); // for propogation?
     });
     
     return this;
   },
-  compileTemplate: function(template, name) {
-    name = name || JSONEditor.defaults.template;
+  compileTemplate: function(template, name) {// 编译模板
+    name = name || JSONEditor.defaults.template;// 模板引擎的名称 eg: ejs, handlebars..
 
     var engine;
 
     // Specifying a preset engine
-    if(typeof name === 'string') {
+    if(typeof name === 'string') {// 指定预设的模板引擎
       if(!JSONEditor.defaults.templates[name]) throw "Unknown template engine "+name;
-      engine = JSONEditor.defaults.templates[name]();
+      engine = JSONEditor.defaults.templates[name](); // {compile: function() { return renderFn; }}
 
       if(!engine) throw "Template engine "+name+" missing required library.";
     }
@@ -244,13 +244,13 @@ JSONEditor.prototype = {
     if(!engine) throw "No template engine set";
     if(!engine.compile) throw "Invalid template engine set";
 
-    return engine.compile(template);
+    return engine.compile(template);// 预编译的模板，待填入数据
   },
-  _data: function(el,key,value) {
+  _data: function(el,key,value) {// 缓存数据的读写
     // Setting data
-    if(arguments.length === 3) {
+    if(arguments.length === 3) {// _data(el, 'foo', 'fooval')
       var uuid;
-      if(el.hasAttribute('data-jsoneditor-'+key)) {
+      if(el.hasAttribute('data-jsoneditor-'+key)) {// <element data-jsoneditor-foo="3">..  jsoneditor.__data: {'3': {some:'val'} }
         uuid = el.getAttribute('data-jsoneditor-'+key);
       }
       else {
@@ -268,8 +268,8 @@ JSONEditor.prototype = {
       return this.__data[el.getAttribute('data-jsoneditor-'+key)];
     }
   },
-  registerEditor: function(editor) {
-    this.editors = this.editors || {};
+  registerEditor: function(editor) {// 注册editor
+    this.editors = this.editors || {}; // jsoneditor.editors:{ editorPath: editor, ..}
     this.editors[editor.path] = editor;
     return this;
   },
@@ -278,18 +278,18 @@ JSONEditor.prototype = {
     this.editors[editor.path] = null;
     return this;
   },
-  getEditor: function(path) {
+  getEditor: function(path) {// 从缓存对象 jsoneditor.editors 获取editor
     if(!this.editors) return;
     return this.editors[path];
   },
   watch: function(path,callback) {
-    this.watchlist = this.watchlist || {};
+    this.watchlist = this.watchlist || {};// jsoneditor.watchlist: {path: [cb1, cb2,..], ..}
     this.watchlist[path] = this.watchlist[path] || [];
     this.watchlist[path].push(callback);
     
     return this;
   },
-  unwatch: function(path,callback) {
+  unwatch: function(path,callback) {// like event system
     if(!this.watchlist || !this.watchlist[path]) return this;
     // If removing all callbacks for a path
     if(!callback) {
@@ -299,19 +299,19 @@ JSONEditor.prototype = {
     
     var newlist = [];
     for(var i=0; i<this.watchlist[path].length; i++) {
-      if(this.watchlist[path][i] === callback) continue;
+      if(this.watchlist[path][i] === callback) continue; // skip saving
       else newlist.push(this.watchlist[path][i]);
     }
     this.watchlist[path] = newlist.length? newlist : null;
     return this;
   },
-  notifyWatchers: function(path) {
+  notifyWatchers: function(path) {// 通知watchers， 执行回调列表
     if(!this.watchlist || !this.watchlist[path]) return this;
     for(var i=0; i<this.watchlist[path].length; i++) {
       this.watchlist[path][i]();
     }
   },
-  isEnabled: function() {
+  isEnabled: function() {// rootEditor是否可用
     return !this.root || this.root.isEnabled();
   },
   enable: function() {
