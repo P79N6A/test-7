@@ -42,6 +42,7 @@ git branch -D unmerged_branch
 
 git diff <branch1>..<branch2> #·ÖÖ§±È½Ï
 
+git diff HEAD HEAD^ --name-only #±È½ÏÁ½´ÎÌá½»µÄ²îÒì ½öÁĞ³öÎÄ¼şÃû
 
 git remote show origin #ÏÔÊ¾Ô¶¶Ë²Ö¿âµÄÏêÏ¸ĞÅÏ¢(fetchUrl pushUrl, branches, "local branches configured for 'git pull'" , "local refs configured for 'git push' ")
 git remote -v #²é¿´Ô¶¶Ë²Ö¿âµÄÅäÖÃĞÅÏ¢
@@ -463,3 +464,14 @@ git rm #°ÑÒ»¸öÎÄ¼ş´ÓÓ²ÅÌÉ¾³ı£¬²¢´Ógit²Ö¿âÒÆ³ı¡£µ«ÊÇ×¢Òâ×îºóÒªÖ´ĞĞgit commit²ÅÕæÕ
 git rm 1.txt  #É¾³ı1.txtÎÄ¼ş£¬²¢°ÑËü´ÓgitµÄ²Ö¿â¹ÜÀíÏµÍ³ÖĞÒÆ³ı¡£
 
 git rm -r myFolder #É¾³ıÎÄ¼ş¼ĞmyFolder£¬²¢°ÑËü´ÓgitµÄ²Ö¿â¹ÜÀíÏµÍ³ÖĞÒÆ³ı¡£
+
+
+
+git cherry-pickÓÃÓÚ°ÑÁíÒ»¸ö±¾µØ·ÖÖ§µÄcommitĞŞ¸ÄÓ¦ÓÃµ½µ±Ç°·ÖÖ§¡£
+Êµ¼ÊÎÊÌâ 
+  ÔÚ±¾µØ master ·ÖÖ§ÉÏ×öÁËÒ»¸öcommit ( 38361a68138140827b31b72f8bbfd88b3705d77a ) £¬ ÈçºÎ°ÑËü·Åµ½ ±¾µØ old_cc ·ÖÖ§ÉÏ£¿ 
+Ê¹ÓÃ cherry-pick, ¶ÔÒÑ¾­´æÔÚµÄcommit ½øĞĞapply (¿ÉÒÔÀí½âÎªÔÙ´ÎÌá½»£©
+¼òµ¥ÓÃ·¨£º
+git cherry-pick <commit id>
+$ git checkout old_cc
+$ git cherry-pick 38361a68
