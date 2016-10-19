@@ -83,7 +83,7 @@ export default function (Vue) {
    * cid. This enables us to create wrapped "child
    * constructors" for prototypal inheritance and cache them.
    */
-   //:每个组件类(包括Vue)都有cid属性
+   //:每个组件类(包括Vue)都有cid属性 classId?
   Vue.cid = 0
   var cid = 1
 
@@ -96,7 +96,7 @@ export default function (Vue) {
   Vue.extend = function (extendOptions) {
     extendOptions = extendOptions || {}
     var Super = this
-    var isFirstExtend = Super.cid === 0
+    var isFirstExtend = Super.cid === 0 //子类派生自Vue
     if (isFirstExtend && extendOptions._Ctor) {
       return extendOptions._Ctor //:扩展选项保存生成的构造函数 extendOptions._Ctor Vue.extend(sameOptions)时 直接返回上次的构造函数
     }
@@ -113,18 +113,18 @@ export default function (Vue) {
     var Sub = createClass(name || 'VueComponent') //:以options.name作为构造函数名
     Sub.prototype = Object.create(Super.prototype) //:子类的原型对象的原型指向父类的原型对象
     Sub.prototype.constructor = Sub
-    Sub.cid = cid++
+    Sub.cid = cid++ //表示第几次派生的类
     Sub.options = mergeOptions(
       Super.options,
       extendOptions
     )
-    Sub['super'] = Super
+    Sub['super'] = Super //保存对父类的引用
     // allow further extension
-    Sub.extend = Super.extend //:Vue.extend直接赋值给Sub.extend
+    Sub.extend = Super.extend //:Vue.extend直接赋值给Sub.extend 子类可再派生子类
     // create asset registers, so extended classes
     // can have their private assets too.
     config._assetTypes.forEach(function (type) {
-      Sub[type] = Super[type] //:注册vue资源的方法(Vue.directive(..), Vue.component(..), ..) 同样释放到子类
+      Sub[type] = Super[type] //:注册vue资源的方法(Vue.directive(..), Vue.component(..), ..) 同样释放到子类 从而子类可注册自身的私有资源
     })
     // enable recursive self-lookup
     if (name) {//:若options.name有指定 则子组件类中注册自身(即在子组件的模板中可调用自己)

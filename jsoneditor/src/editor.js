@@ -124,14 +124,14 @@ JSONEditor.AbstractEditor = Class.extend({
     }
     
     // Dynamic header
-    if(this.schema.headerTemplate) {// 有schema.headerTemplate则将其预编译 并缓存到editor
+    if(this.schema.headerTemplate) {// 处理schema.headerTemplate字段  则将其预编译 并缓存到editor
       this.header_template = this.jsoneditor.compileTemplate(this.schema.headerTemplate, this.template_engine);
     }
   },
   
   addLinks: function() {// 处理schema.links
     // Add links
-    if(!this.no_link_holder) {
+    if(!this.no_link_holder) {// container > linksHolder(link + link)
       this.link_holder = this.theme.getLinksHolder();
       this.container.appendChild(this.link_holder);// 添加占位元素
       if(this.schema.links) {
@@ -168,10 +168,10 @@ JSONEditor.AbstractEditor = Class.extend({
     
     return this.theme.setButtonText(button, text, icon, title);
   },
-  addLink: function(link) {
+  addLink: function(link) {//append子元素
     if(this.link_holder) this.link_holder.appendChild(link);
   },
-  getLink: function(data) {
+  getLink: function(data) {// 根据data的信息 返回包含链接的holder元素
     // data: {mediaType:.., download:.., href:.., rel:.., class:..}
     var holder, link;
         
@@ -179,7 +179,7 @@ JSONEditor.AbstractEditor = Class.extend({
     var mime = data.mediaType || 'application/javascript';
     var type = mime.split('/')[0];
     
-    // Template to generate the link href
+    // Template to generate the link href, // 预编译data.href
     var href = this.jsoneditor.compileTemplate(data.href,this.template_engine);
 
     // Template to generate the link's download attribute
@@ -198,7 +198,7 @@ JSONEditor.AbstractEditor = Class.extend({
       // <div class="hoder"><a target="_blank" ..><img src=..
       var image = document.createElement('img');
       
-      this.theme.createImageLink(holder,link,image);
+      this.theme.createImageLink(holder,link,image);// p > a > img
     
       // When a watched field changes, update the url  
       this.link_watchers.push(function(vars) {
@@ -337,7 +337,7 @@ JSONEditor.AbstractEditor = Class.extend({
       }
     }
   },
-  setValue: function(value) {
+  setValue: function(value) {// 设置editor的值
     this.value = value;
   },
   getValue: function() {
@@ -352,7 +352,7 @@ JSONEditor.AbstractEditor = Class.extend({
   destroy: function() {// 取消注册editor, 取消监听editorPath
     var self = this;
     this.unregister(this); // editors: {editorName: editor, ..}
-    $each(this.watched,function(name,adjusted_path) {
+    $each(this.watched,function(name,adjusted_path) {// 取消watch
       self.jsoneditor.unwatch(adjusted_path,self.watch_listener);
     });
     this.watched = null;
@@ -370,7 +370,7 @@ JSONEditor.AbstractEditor = Class.extend({
     this.key = null;
     this.parent = null;
   },
-  getDefault: function() {// 获取editor的默认值 schema.default , schema.enum[0]
+  getDefault: function() {// 获取editor的默认值 schema.default , schema.enum[0] , 或不同数据类型的默认值
     if(this.schema["default"]) return this.schema["default"];
     if(this.schema["enum"]) return this.schema["enum"][0];
     

@@ -34,7 +34,7 @@ let uid = 0
  */
 //:watcher会解析表达式，收集依赖；当表达式值变化时，触发回调
 export default function Watcher (vm, expOrFn, cb, options) {
-  // mix in options
+  // mixin options
   if (options) {
     extend(this, options)
   }
@@ -56,7 +56,7 @@ export default function Watcher (vm, expOrFn, cb, options) {
     this.getter = expOrFn
     this.setter = undefined
   } else {//: 最终表达式都是被解析为函数 如 v-model="user" 同 v-model="getUser()"
-    var res = parseExpression(expOrFn, this.twoWay)
+    var res = parseExpression(expOrFn, this.twoWay) // => {get: fn, set:fn}
     this.getter = res.get
     this.setter = res.set
   }
@@ -92,16 +92,16 @@ Watcher.prototype.get = function () {
   }
   // "touch" every property so they are all tracked as
   // dependencies for deep watching
-  if (this.deep) {
+  if (this.deep) {// 深度观察 则遍历value对象
     traverse(value)
   }
-  if (this.preProcess) {
+  if (this.preProcess) {//预处理
     value = this.preProcess(value)
   }
-  if (this.filters) {
+  if (this.filters) {//filter过滤处理
     value = scope._applyFilters(value, null, this.filters, false)
   }
-  if (this.postProcess) {
+  if (this.postProcess) {//后处理
     value = this.postProcess(value)
   }
   this.afterGet()
