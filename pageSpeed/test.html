@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>test JS will BLOCK other request</title>
+</head>
+<body>
+    <h1>测试JS对其他资源的阻塞..</h1>
+    <script type="text/javascript">
+    console.log('timing js..', document.body.innerHTML);
+    console.time('reqjs');
+    // debugger;
+    </script>
+    <script type="text/javascript" src="test.js" onload="console.timeEnd('reqjs');console.log('js loaded..');"></script>
+    <script type="text/javascript">
+
+    console.log('timing img..');
+    console.time('reqimg');
+    </script>
+    <img src="test.png" onload="console.timeEnd('reqimg'); console.log('img loaded..');">
+
+    <script type="text/javascript">
+    console.log('js in html...');
+    </script>
+</body>
+</html>
