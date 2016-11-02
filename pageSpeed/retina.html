@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>retina test</title>
+    <style type="text/css">
+    img {
+        width: 100%;
+    }
+    
+    html,
+    body {
+        padding: 0;
+        margin: 0;
+    }
+    </style>
+</head>
+
+<body>
+    <h2>750</h2>
+    <img src="http://b.vimage1.com/2016/10/26/9889/14774830985671.jpg">
+    <h2>750/2 w</h2>
+    <img src="./images/mvip_375.jpg">
+
+
+    <script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script type="text/javascript">
+
+
+
+        $(window).one('load', function() {
+            console.info('window load triger cb..');
+        });
+
+
+        window.onload = function() {
+            console.info('native win.onload..');  
+        };
+    </script>
+</body>
+
+</html>

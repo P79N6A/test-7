@@ -6,12 +6,12 @@ git checkout master #切换到mater分支
 
 
 ----
-Git checkout -- + 需要恢复的文件名
+Git checkout -- + 需要恢复的文件名  # index tree -> work space
 
 但是，需要注意的是，如果该文件已经 add 到暂存队列中，上面的命令就不灵光喽
 需要先让这个文件取消暂存：
 
-git reset HEAD -- + 需要取消暂存的文件名
+git reset HEAD -- + 需要取消暂存的文件名 # repo -> index tree
 
 然后再使用第一条命令。
 
@@ -429,20 +429,3 @@ pick 92b495b 2009-08-08: ×××××××
 # If you remove a line here THAT COMMIT WILL BE LOST.
 # However, if you remove everything, the rebase will be aborted.
 #
-
-
-3. 命令行显示：
-
-Rebasing (1/1)
-You can amend the commit now, with
-
-git commit --amend
-
-
-4. 使用 git commit --amend 进行修改，完成后 :wq 退出
-
-5. 使用 git rebase --continue 完成操作
-
------------------
-#从仓库删除文件
-git rm -- yourfile  

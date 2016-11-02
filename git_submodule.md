@@ -64,7 +64,7 @@ git submodule 使用实例
     mkdir submd/repos
     cd submd/repos
     git --git-dir=lib1.git init --bare
-    git --git-dir=bli2.git init --bare
+    git --git-dir=lib2.git init --bare
     git --git-dir=prj1.git init --bare
     git --git-dir=prj2.git init --bare
 

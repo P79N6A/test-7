@@ -10,5 +10,5 @@ var c = 0;
 
 while(new Date().getTime() - now < delay) c++;
 
-console.log('c=', c);
+console.log('I am test.js ; c=', c);
 
