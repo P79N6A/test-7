@@ -127,7 +127,7 @@ export default function (Vue) {
       Sub[type] = Super[type] //:注册vue资源的方法(Vue.directive(..), Vue.component(..), ..) 同样释放到子类 从而子类可注册自身的私有资源
     })
     // enable recursive self-lookup
-    if (name) {//:若options.name有指定 则子组件类中注册自身(即在子组件的模板中可调用自己)
+    if (name) {//:若options.name有指定 则子组件类中注册自身(即在子组件的模板中可调用自己), 以便递归调用自己
       Sub.options.components[name] = Sub 
     }
     // cache constructor
@@ -170,9 +170,9 @@ export default function (Vue) {
     var args = toArray(arguments, 1)
     args.unshift(this) //:Vue.use(plugin,...)的参数列表 替换参数1为Vue后传给plugin/plugin.install方法
     if (typeof plugin.install === 'function') {
-      plugin.install.apply(plugin, args)
+      plugin.install.apply(plugin, args) // install(Vue, arg1, arg2..)
     } else {
-      plugin.apply(null, args)
+      plugin.apply(null, args) // plugin(Vue, arg1, arg2..)
     }
     plugin.installed = true
     return this //:返回Vue 可以链式调用方法
@@ -219,7 +219,7 @@ export default function (Vue) {
           definition.name = id
           definition = Vue.extend(definition) //:自动调用Vue.extend(...) 返回构造函数
         }
-        this.options[type + 's'][id] = definition
+        this.options[type + 's'][id] = definition //缓存子类
         return definition
       }
     }

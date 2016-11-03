@@ -44,7 +44,7 @@ p.put = function (key, value) {
     }
     this._keymap[key] = entry
     if (this.tail) {//:更新链表节点的前后指向
-      this.tail.newer = entry
+      this.tail.newer = entry  // entry: {key, value, older, newer}
       entry.older = this.tail
     } else {
       this.head = entry

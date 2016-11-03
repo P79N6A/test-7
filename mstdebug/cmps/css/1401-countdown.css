@@ -1,0 +1,9 @@
+@model-base 750;
+  .plugin-countdown{max-width:640px;margin:0 auto;}
+  .countdonw-float {left:50%;}
+  .plugin-countdown{height: 1.35rem;}
+  .countdown-wrap{padding-top: .075rem;}
+
+  .bg-black .counter span {background:#fff; color:#333;}
+  .bg-black .counter span.msec{ background-color: #da1b22; color: #f8dfdf;}
+  .bg-black .txt {color:#AAA}

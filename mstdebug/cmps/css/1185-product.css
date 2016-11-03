@@ -1,0 +1,19 @@
+.mst-product-v3{box-sizing:border-box}
+
+body .mst-product-v3 .mst-product-info {
+    padding-top: .2rem;
+}
+
+body .mst-product-v3 .mst-logo {
+    margin-bottom: 0;
+}
+
+@media screen and (min-width: 632px){
+    body .mst-product-v3 .mst-product-info {
+        padding-top: 7px;
+    }
+
+    body .mst-product-v3 .mst-logo {
+        margin-bottom: 0;
+    }
+}

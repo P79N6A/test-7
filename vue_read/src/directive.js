@@ -62,7 +62,7 @@ export default function Directive (descriptor, vm, el, host, scope, frag) {
   this._host = host
   this._scope = scope
   this._frag = frag
-  // store directives on node in dev mode
+  // store directives on node in dev mode //el._vue_directives 保存元素相关的指令对象
   if (process.env.NODE_ENV !== 'production' && this.el) {
     this.el._vue_directives = this.el._vue_directives || []
     this.el._vue_directives.push(this) //:若为开发环境则指令对象保存到dom对象上(this.el._vue_directives)
@@ -114,7 +114,7 @@ Directive.prototype._bind = function () {
   ) {
     // wrapped updater for context
     var dir = this
-    if (this.update) {
+    if (this.update) {//包装this.update的新方法 绑定上下文为指令对象
       this._update = function (val, oldVal) {//:包装this.update为this._update
         if (!dir._locked) {
           dir.update(val, oldVal)
@@ -129,6 +129,7 @@ Directive.prototype._bind = function () {
     var postProcess = this._postProcess
       ? bind(this._postProcess, this)
       : null
+      // new Watch(vm, expr, cb, opts)
     var watcher = this._watcher = new Watcher(//:指令对象_watcher保存对应的数据观察
       this.vm,
       this.expression,
@@ -162,7 +163,9 @@ Directive.prototype._setupParams = function () {
   if (!this.params) {
     return
   }
-  var params = this.params
+  // <div foo="hello" :bar="mybar" v-dir />
+  // Vue.directive('dir', {name: 'dir', params: ['foo', 'bar']})
+  var params = this.params 
   // swap the params array with a fresh object.
   this.params = Object.create(null)
   var i = params.length
@@ -201,7 +204,7 @@ Directive.prototype._setupParamWatcher = function (key, expression) {
     if (called) {
       var cb = self.paramWatchers && self.paramWatchers[key]
       if (cb) {
-        cb.call(self, val, oldVal)
+        cb.call(self, val, oldVal) // paramWatchers: {bar: callback, ..}
       }
     } else {
       called = true
@@ -314,7 +317,7 @@ Directive.prototype._teardown = function () {
     if (this._watcher) {//:销毁watcher
       this._watcher.teardown()
     }
-    var listeners = this._listeners
+    var listeners = this._listeners // dom listeners 
     var i
     if (listeners) {
       i = listeners.length
