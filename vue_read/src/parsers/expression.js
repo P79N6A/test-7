@@ -23,9 +23,14 @@ const improperKeywordsRE =
 
 const wsRE = /\s/g
 const newlineRE = /\n/g
+// { person : 'sindy' , person2 : "cici", person3: `co${name}co`, person4: `dodoe`, person5: new Person() }
+// 应该识别为字符串的部分 或 js表达式的(new .. , typeof..)
 const saveRE = /[\{,]\s*[\w\$_]+\s*:|('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\]|\\.)*\$\{|\}(?:[^`\\]|\\.)*`|`(?:[^`\\]|\\.)*`)|new |typeof |void /g
+// "12"
 const restoreRE = /"(\d+)"/g
-const pathTestRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['.*?'\]|\[".*?"\]|\[\d+\]|\[[A-Za-z_$][\w$]*\])*$/
+// person.name person['name'], person["name"] person[name]
+const pathTestRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['.*?'\]|\[".*?"\]|\[\d+\]|\[[A-Za-z_$][\w$]*\])*$/ 
+// person,  (person), 2 * person.age
 const identRE = /[^\w$\.](?:[A-Za-z_$][\w$]*)/g
 const booleanLiteralRE = /^(?:true|false)$/
 
@@ -137,7 +142,7 @@ function compileGetter (exp) {
 function makeGetterFn (body) {
   try {
     /* eslint-disable no-new-func */
-    return new Function('scope', 'return ' + body + ';')
+    return new Function('scope', 'return ' + body + ';')// function getter(scope) { reutrn body; }
     /* eslint-enable no-new-func */
   } catch (e) {
     process.env.NODE_ENV !== 'production' && warn(
@@ -158,7 +163,7 @@ function compileSetter (exp) {
   var path = parsePath(exp)
   if (path) {
     return function (scope, val) {
-      setPath(scope, path, val)
+      setPath(scope, path, val) // setPath(scope, 'person.fav', 'football')
     }
   } else {
     process.env.NODE_ENV !== 'production' && warn(
@@ -188,13 +193,13 @@ export function parseExpression (exp, needSet) {
   var res = { exp: exp }
   res.get = isSimplePath(exp) && exp.indexOf('[') < 0
     // optimized super simple getter
-    ? makeGetterFn('scope.' + exp)
+    ? makeGetterFn('scope.' + exp)// makeGetterFn(scope.person.fav) -> function (scope) { return scope.person.fav; }
     // dynamic getter
     : compileGetter(exp)
   if (needSet) {
     res.set = compileSetter(exp)
   }
-  expressionCache.put(exp, res)
+  expressionCache.put(exp, res)// {exp, get, set}
   return res
 }
 

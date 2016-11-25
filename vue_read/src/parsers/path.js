@@ -177,7 +177,7 @@ function parse (path) {
     }
   }
 
-  actions[APPEND] = function () {
+  actions[APPEND] = function () {// 逐字符组成key
     if (key === undefined) {
       key = newChar
     } else {
