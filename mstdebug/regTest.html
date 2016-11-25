@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>test reg</title>
+  <style type="text/css">
+    input,
+    textarea {
+      width: 100%;
+      margin-top: 20px;
+    }
+    
+    input{
+    	line-height: 2;
+    }
+    textarea {
+      height: 300px;
+    }
+    button{
+    	font-size: 30px;
+    	line-height: 1.3;
+    }
+  </style>
+</head>
+
+<body>
+  <input type="text" id="re">
+  <textarea name="str" id="str" cols="30" rows="10">
+  </textarea>
+  <button onclick="match()">Test</button>
+  <script type="text/javascript">
+    var $id = function(id) {
+      return document.getElementById(id);
+    }
+
+    var re, str, r;
+    var re2;
+
+    function match () {
+	    var reSource = $id('re').value;
+      re = new RegExp(reSource, 'img');
+	    re2 = new RegExp(reSource, 'im');
+	    str = $id('str').value;
+	    console.log(r = str.match(re));
+    }
+
+  </script>
+</body>
+
+</html>
