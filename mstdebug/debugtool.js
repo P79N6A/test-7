@@ -1,10 +1,11 @@
+var settings = require('./settings');
 var path = require('path');
 var fs = require('fs');
 
 
-var indexHtml = 'p1.html';
+var indexHtml = settings.html;
 var htmlPath = path.resolve(indexHtml);
-var isOverride = false;
+var isOverride = settings.isOverride;
 
 var html, modMap, config;
 var re = /<script>[^>]*var config = (\{[\s\S]*?)<\/script>/im;
@@ -32,6 +33,7 @@ function init() {
             config.data.moduleList.forEach(function(module, i) {
                 modMap[module.style_id] = module.style_id + '-' + module.module_type_id;
             });
+            // console.log(config);
         } catch (e) {
             console.warn('[warn]: parse json err...');
         }
@@ -39,6 +41,7 @@ function init() {
         console.warn('[warn]: do not match the script');
     }
 }
+
 
 function map2files(type) { // js, css, html
     init();
@@ -69,15 +72,23 @@ function map2files(type) { // js, css, html
     }
 
     var key = type + 'List';
+    if (!Object.keys(config.data[key]).length) {
+        console.log('[msg]: %s is empty!', key);
+    }
     eachKey(config.data[key], map2file);
 }
-
 
 function files2map (type) {
 	init();
 	var map = {};
 
 	function file2map (fname) {
+        if(modMap){
+            var styleId = fname.split('-')[0];
+            if (!modMap[styleId]) {
+                return;
+            }
+        }
 		var fpath = path.resolve(folder, fname);
 		var fcon = fs.readFileSync(fpath, 'utf8');
 		var key = fname.split('-').shift();
@@ -93,7 +104,7 @@ function files2map (type) {
 	config.data[key] = map;
 
 	var strConf = JSON.stringify(config).replace(/<\/script>/g, '<\\/script>');
-	html = html.replace('__config_holder__'+'\n\t\t', strConf);
+	html = html.replace('__config_holder__', strConf+'\r\n');
 	fs.writeFileSync(htmlPath, html);
 
 	console.log('update html for [' + type + '] OK!');
