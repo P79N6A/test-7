@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>hello world vue2</title>
+    <script src="/node_modules/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- js expression, or methodName or single statement -->
+        <button v-on:click="counter += 1">increment by 1</button>
+        <p>按钮被点击了 {{counter}} 次</p>
+
+        <!--
+            <button v-on:click="greet">Greet</button>
+             <button v-on:click="say('hi', $event)">Say hi</button>
+        -->
+
+        <!--
+            事件修饰符: .stop, .prevent, .capture, .self, .once, .native
+        -->
+        <!-- .once 无效 v2.1.8-->
+        <a @click.once="doThis">once event</a> 
+        <button @click.self="selfclick" style="padding: 20px"><strong>click self</strong><em>try it</em></button>
+
+        <!--
+            按键修饰符: .enter, .tab, .space, .delete, .esc, ... .ctrl, .alt, .shift, .meta
+            Vue.config.keyCodes
+        -->
+    </div>
+    <script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            counter: 0
+        },
+        methods: {
+            doThis: function() {
+                console.log('once only..');
+            },
+            selfclick: function() {
+                alert('click the button self..');
+            }
+        }
+    });
+    </script>
+</body>
+
+</html>

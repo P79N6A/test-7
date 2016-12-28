@@ -17,6 +17,7 @@
             Not sorry
         </div>
 
+        <!-- v-if v-else-if v-else -->
         <strong>type:</strong>
         <span v-if="type ==='A'">A</span>
         <span v-else-if="type ==='B'">B</span>
@@ -24,7 +25,7 @@
         <span v-else="type ==='E'">E</span>
 
         <p></p>
-
+        <!-- template v-if -->
         <template v-if="loginType === 'username'">
             <label>Username</label>
             <!-- key 标识vnode, 决定是否复用 -->
