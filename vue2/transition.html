@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>hello world vue2</title>
+    <script src="/node_modules/vue/dist/vue.js"></script>
+    <style>
+    .fade-enter-active, .fade-leave-active {
+    transition: all 0.5s
+    }
+    .fade-enter, .fade-leave-active {
+    opacity: 0
+    }
+
+    .bounce-enter-active {
+    animation: bounce-in .5s;
+    }
+    .bounce-leave-active {
+    animation: bounce-out .5s;
+    }
+    @keyframes bounce-in {
+    0% {
+        transform: scale(0);
+    }
+    50% {
+        transform: scale(1.5);
+    }
+    100% {
+        transform: scale(1);
+    }
+    }
+    @keyframes bounce-out {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.5);
+    }
+    100% {
+        transform: scale(0);
+    }
+    }
+
+    .dis-ib{
+        display: inline-block;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="demo">
+        <button v-on:click="show = !show">toggle</button>
+        <!-- 自动添加样式类 fade-enter fade-enter-active fade-leave fade-leave-active 实现动画效果 -->
+        <!-- 
+            show===true && 若为transition动画 
+            add (fade-enter .. fade-enter-active), remove(fade-enter)触发动画 .. transitionEnd动画结束 remove(fade-enter-active)
+            show===false && 若为transition动画
+            add (fade-leave .. fade-leave-active), remove(fade-leave) fade-leave-active触发动画 .. transitionEnd remove(fade-leave-active)
+        -->
+        <transition name="fade">
+            <h1 v-show="show" id="head1">hello</h1>
+        </transition>
+        <transition name="bounce">
+            <h2 v-show="show" class="dis-ib" id="head2">world</h2>
+        </transition>
+    </div>
+    <script>
+    // inline-template dom会被替换，所以编译后，绑定的事件都没有了..
+    function onready(){
+        var head1 = document.querySelector('#head1');
+        var head2 = document.querySelector('#head2');
+        
+        head1.addEventListener('transitionend', function(e){
+            console.log('transitionEnd: className->', head1.className);
+        });
+        
+    }
+
+    var app = new Vue({
+        el: '#demo',
+        data: {
+            show: true
+        },
+        mounted: function() {
+            onready();
+        }
+    });
+    </script>
+</body>
+
+</html>

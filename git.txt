@@ -562,3 +562,24 @@ git stash clear: Çå¿ÕGitÕ»¡£´ËÊ±Ê¹ÓÃgitgµÈÍ¼ÐÎ»¯¹¤¾ß»á·¢ÏÖ£¬Ô­À´stashµÄÄÄÐ©½Úµã¶
 ÔÚÕâÀïË³±ãÌáÏÂgit format-patch -n , nÊÇ¾ßÌåÄ³¸öÊý×Ö£¬ ÀýÈç 'git format-patch -1' ÕâÊ±±ã»á¸ù¾ÝlogÉú³ÉÒ»¸ö¶ÔÓ¦µÄ²¹¶¡£¬Èç¹û 'git format-patch -2' ÄÇÃ´±ã»áÉú³É2¸ö²¹¶¡£¬µ±È»Ç°ÌáÊÇÄãµÄlogÉÏÓÐÖÁÉÙÓÐÁ½¸ö¼ÇÂ¼¡£
 
 ¿´¹ýÉÏÃæµÄÐÅÏ¢£¬¾Í¿ÉÒÔÖªµÀÊ¹ÓÃ³¡ºÏÁË£ºµ±Ç°¹¤×÷ÇøÄÚÈÝÒÑ±»ÐÞ¸Ä£¬µ«ÊÇ²¢Î´Íê³É¡£ÕâÊ±BossÀ´ÁË£¬ËµÇ°ÃæµÄ·ÖÖ§ÉÏÃæÓÐÒ»¸öBug£¬ÐèÒªÁ¢¼´ÐÞ¸´¡£¿ÉÊÇÎÒÓÖ²»ÏëÌá½»Ä¿Ç°µÄÐÞ¸Ä£¬ÒòÎªÐÞ¸ÄÃ»ÓÐÍê³É¡£µ«ÊÇ£¬²»Ìá½»µÄ»°£¬ÓÖÃ»ÓÐ°ì·¨checkoutµ½Ç°ÃæµÄ·ÖÖ§¡£´ËÊ±ÓÃGit Stash¾ÍÏàµ±ÓÚ±¸·Ý¹¤×÷ÇøÁË¡£È»ºóÔÚCheckout¹ýÈ¥ÐÞ¸Ä£¬¾ÍÄÜ¹»´ïµ½±£´æµ±Ç°¹¤×÷Çø£¬²¢¼°Ê±»Ö¸´µÄ×÷ÓÃ¡£
+
+
+
+1. ±¾µØ·ÖÖ§ÖØÃüÃû
+
+Git branch -m oldbranchname newbranchname
+
+2. Ô¶³Ì·ÖÖ§ÖØÃüÃû (¼ÙÉè±¾µØ·ÖÖ§ºÍÔ¶³Ì¶ÔÓ¦·ÖÖ§Ãû³ÆÏàÍ¬)
+
+a. ÖØÃüÃûÔ¶³Ì·ÖÖ§¶ÔÓ¦µÄ±¾µØ·ÖÖ§
+
+git branch -m old-local-branch-name new-local-branch-name
+
+b. É¾³ýÔ¶³Ì·ÖÖ§
+
+git push origin  :old-local-branch-name
+
+c. ÉÏ´«ÐÂÃüÃûµÄ±¾µØ·ÖÖ§
+
+git push origin  new-local-branch-name: new-local-branch-name
+
