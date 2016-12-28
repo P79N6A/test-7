@@ -116,12 +116,12 @@ function stringToFragment (templateString, raw) {
 
     node.innerHTML = prefix + templateString + suffix
     while (depth--) {
-      node = node.lastChild
+      node = node.lastChild //node最终为 templateString对应的node
     }
 
     var child
     /* eslint-disable no-cond-assign */
-    while (child = node.firstChild) {
+    while (child = node.firstChild) {// node的所有直接子节点 都存到frag
     /* eslint-enable no-cond-assign */
       frag.appendChild(child)
     }

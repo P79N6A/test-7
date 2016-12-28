@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>hello world vue2</title>
+    <script src="/node_modules/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- vue2 中 filter 只能用于模板插值 和 v-bind指令中 -->
+        <h3>message: {{msg | capitalize}}</h3>
+
+        <!-- filter in v-bind expression -->
+        <h4 v-bind:id="id | formatId">check attr id</h4>
+
+        <!-- use filter with args.. -->
+        <p>say: {{ name | greet(hi, '!') | capitalize }}</p>
+    </div>
+    <script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            msg: 'welcome',
+            id: 'sport channel',
+            name: 'alice',
+            hi: 'nice to meet you'
+        },
+        filters: {
+            capitalize: function(v) {
+                if(!v) return '';
+                v = v.toString();
+                return v.charAt(0).toUpperCase() + v.slice(1);
+            },
+            formatId: function(v) {
+                return v.replace(/\s+/g, '-');
+            },
+            greet: function(v, prefix, sign) {
+                return prefix + ', ' + v + sign;
+            }
+        }
+    });
+    </script>
+</body>
+</html>

@@ -56,7 +56,7 @@ export function parseText (text) {
     return null
   }
   var tokens = []
-  var lastIndex = tagRE.lastIndex = 0
+  var lastIndex = tagRE.lastIndex = 0  // 重置 re.lastIndex 
   var match, index, html, value, first, oneTime
   /* eslint-disable no-cond-assign */
   while (match = tagRE.exec(text)) {
@@ -75,17 +75,17 @@ export function parseText (text) {
     oneTime = first === 42 // *
     value = oneTime
       ? value.slice(1)
-      : value
+      : value  // *name -> name
     tokens.push({
       tag: true,
       value: value.trim(),
-      html: html,
-      oneTime: oneTime
+      html: html, // isHtml
+      oneTime: oneTime // isOneTime
     })
     lastIndex = index + match[0].length
   }
   if (lastIndex < text.length) {
-    tokens.push({
+    tokens.push({// push last part
       value: text.slice(lastIndex)
     })
   }
@@ -145,11 +145,11 @@ function formatToken (token, vm, single) {
 
 var filterRE = /[^|]\|[^|]/
 function inlineFilters (exp, single) {
-  if (!filterRE.test(exp)) {
+  if (!filterRE.test(exp)) {// attr={{name}} 
     return single
       ? exp
       : '(' + exp + ')'
-  } else {
+  } else {// attr={{name | upper}} 
     var dir = parseDirective(exp)
     if (!dir.filters) {
       return '(' + exp + ')'
