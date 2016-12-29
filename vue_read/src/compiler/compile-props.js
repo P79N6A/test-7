@@ -63,7 +63,7 @@ export function compileProps (el, propOptions, vm) {
       )
       continue
     }
-
+    
     prop = {
       name: name, //is-show   attr's name
       path: path, //isShow  obj's keypath

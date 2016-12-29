@@ -1,5 +1,7 @@
 var gulp = require('gulp');
+var clean = require('gulp-clean');
 var tool = require('./debugtool');
+
 
 // ------------
 
@@ -52,5 +54,17 @@ gulp.task('watchHtml', function () {
 });
 
 
+gulp.task('watch', ['watchCss', 'watchJs', 'watchHtml']);
 // --------------
 
+gulp.task('clean', function () {
+	gulp.src(['cmps/css/*', 'cmps/html/*', 'cmps/js/*'])
+			.pipe(clean());
+	console.log('all html, css, js clean..');
+});
+
+// --------------
+
+gulp.task('default',function () {
+	gulp.start('extract', 'watch');
+});

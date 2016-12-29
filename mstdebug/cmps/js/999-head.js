@@ -11,7 +11,7 @@ var tmpl = '<a href="javascript:" class="link" style="position:absolute;left:${l
     anchor,url , imgSrc,
     client = VIP.getQueryString('client') ? VIP.getQueryString('client') : 'wap',
     $wrap;
-console.log('pppppppp');
+
 $wrap = dom.find('.plugin-tupian');
 
 function checkTiming(){
@@ -115,6 +115,128 @@ img.appendTo($wrap)
     VIP.Mars.set(index);
 });
 
+/**
+ * 临时修复mars 相关问题
+ * @param  {[type]} VIP.Mars [description]
+ * @return {[type]}          [description]
+ */
+if(VIP.Mars) {
+    VIP.Mars.get = function (data,rank) {
+        var mars = {
+                "page" : encodeURIComponent(document.title),
+                "wap_id" : VIP.defaultParam.wap_id,
+                "special_id" : VIP.defaultParam.special_id,
+                "banner_id" : VIP.defaultParam.extra_banner || "0",
+                // "brand_id" : "档期ID",
+                // "goods_id" : "商品ID",
+                // "brand_rank" : "档期所在坑位ID",
+                // "brandtyp" : "档期类型0-档期；1-商品；2-品购",
+                // "target_type" : "目标类型",X
+                // "target_id": "根据目标类型，填对应目标id",
+                // "module" : "组件序号",
+                // "seq" : "当前坑位序号",
+                // "tag" : "销售归因tag"
+            },
+            data = data.split('|'),
+            ranks = rank ? rank.split('_') : [];
+
+        if(data.length == 0) {
+            return mars
+        }
+
+        switch(data[0]){
+            case 'brand':
+                mars.target_type = data[0];
+                mars.target_id = data[1];
+                mars.brand_id = data[1];
+                mars.brand_rank = rank;
+                mars.brandtyp = '0';
+                break;
+
+            case 'product':
+                mars.target_type = data[0];
+                mars.target_id = data[2];
+                mars.brand_id = data[1];
+                mars.goods_id = data[2];
+                mars.brand_rank = rank;
+                mars.brandtyp = '1';
+                break;
+            case 'url':
+                data[0] && (mars.target_type = data[0]);
+                data[1] && (mars.target_id = VIP.getIdByUrl(data[1]));
+                break;
+
+            default:
+                data[0] && (mars.target_type = data[0]);
+                data[1] && (mars.target_id = data[1]);
+                ranks[0] && (mars.module = ranks[0]);
+                ranks[1] && (mars.seq = ranks[1]);
+                break;
+        }
+
+        return mars;
+    }
+
+    VIP.Mars.set = function (index) {
+            var $dom = win.renderer.pluginList[index];
+
+            if(!$dom){
+                return
+            }
+
+            ++index;
+
+            // 设置曝光埋点
+            $dom.find('[mst-mars]').each(function (key, value) {
+                var $this = $(this),
+                    mars = $this.attr('mst-mars') && $this.attr('mst-mars').split('|'),
+                    target = mars[0],
+                    rank = index + '_' + (key + 1),
+                    speicalId = VIP.defaultParam.special_id || 0,
+                    bannerId = VIP.defaultParam.extra_banner || 0,
+                    tag = '',
+                    timeStamp = new Date().getTime(),
+                    pre = bannerId + '_' + speicalId + '_' + rank + '_' + timeStamp;
+
+                $this.attr('mst-rank', rank);
+
+                switch(target){
+                    case 'brand':
+                        if(mars[1]){
+                            $this.attr('mars_exposure_sead', 'special_slide_expose')
+                                 .attr('mars_exposure_module', 'mst|brands|'+ mars[1] +'|'+ rank + '|0');
+                        }
+
+                        tag = pre + '_' + mars[1];
+
+                        break;
+                    case 'product':
+                        if(mars[1] && mars[2]){
+                            $this.attr('mars_exposure_sead', 'special_slide_expose')
+                                 .attr('mars_exposure_module', 'mst|products|'+ mars[1] +'|'+ rank + '|1|'+ mars[2]);
+                        }
+
+                        tag = pre + '_' + mars[2];
+
+                        break;
+                    case 'url':
+                        tag = pre + '_' + VIP.getIdByUrl(mars[1]);
+
+                        break;
+                    case 'vis':
+                        tag = pre + '_' + VIP.getIdByUrl(mars[1]);
+
+                        break;
+                    default :
+                        tag = pre + '_' + (mars[1] ? mars[1] : 0);
+                        break;
+                }
+
+                $this.attr('mst-tag', tag);
+            })
+        }
+}
+/*end*/
 
 //临时fixdbug,当视窗太小时出现滚动条,布局错乱问题，重新触发rem计算修复
 setTimeout(function () {

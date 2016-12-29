@@ -102,12 +102,12 @@ export function parseDirective (s) {
       c === 0x7C && // pipe
       str.charCodeAt(i + 1) !== 0x7C &&
       str.charCodeAt(i - 1) !== 0x7C
-    ) {
+    ) {//包含过滤器的情况 'a+1 | uppercase '
       if (dir.expression == null) {
         // first filter, end of expression
         lastFilterIndex = i + 1
         dir.expression = str.slice(0, i).trim()
-      } else {
+      } else {//包含多个过滤器  a+1 | uppercase | reverse
         // already has filter
         pushFilter()
       }
@@ -131,6 +131,6 @@ export function parseDirective (s) {
     pushFilter()
   }
 
-  cache.put(s, dir) //:缓存解析到的指令对象
+  cache.put(s, dir) //:缓存解析到的指令对象 {expression, filters: [{value, dynamic}]}
   return dir
 }

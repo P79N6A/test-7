@@ -4,7 +4,7 @@ if(config.model === null || Array.isArray(config.model) || config.model === fals
     return
 }
 
-
+console.log('kmkmkm');
 // 埋点为 brand_brandid，product_brandid_productid
 var tmpl = '<a href="javascript:" data-product-id="${product_id}" data-brand-id="${brand_id}" mars_sead="${mars_sead}" class="link {{if notInSale}}notInSale{{/if}}" style="position:absolute;left:${left};top:${top}; width:${width}; height:${height};" {{if click}}onclick="${click}"{{/if}} {{if mst_mars}}mst-mars="${mst_mars}"{{/if}}></a>',
     html = '',
@@ -196,7 +196,7 @@ function imgLoaded () {
                     break;
                 case 4:
                     v.click = "VIP.router(this, 'app-category', '"+ (v.category_one_id + "|" + v.category_two_id + "|" + v.category_two_title) +"')";
-                    v.mst_mars = "category|"+ v.category_two_id;
+                    v.mst_mars = "category|"+ v.category_one_id + '|' + v.category_two_id;
                     break;
                 case 5:
                     v.click = "VIP.router(this, 'subchannel', '"+ (v.channelId + "|" + v.channelMenu) +"')";

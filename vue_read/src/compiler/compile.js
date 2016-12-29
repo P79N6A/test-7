@@ -17,7 +17,8 @@ import {
   getAttr
 } from '../util/index'
 
-// 特殊的绑定前缀 v-bind v-on : @ v-show v-show:m.b.c  v-bind:transition :transition
+// 特殊的绑定前缀 v-bind v-on : @  eg:  v-bind:transition :transition  v-on:click @click
+// 指令属性 v-show v-show:m.b.c  
 // special binding prefixes
 const bindRE = /^v-bind:|^:/
 const onRE = /^v-on:|^@/
