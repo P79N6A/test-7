@@ -1,0 +1,13 @@
+{
+  "name": "vtui",
+  "version": "1.0.0",
+  "description": "test how to build vue-ui",
+  "main": "dist/bundle.js",
+  "scripts": {
+    "dev": "cross-env NODE_EVN=develop webpack -w -c --progress --display-error-details",
+    "build:demo": "cross-env NODE_ENV=production webpack --config webpack.demo.js -w -c --progress --display-error-details",
+    "build:lib": "rmdir -S -Q dist & cross-env NODE_ENV=production  webpack --config webpack.lib.js -w -c --progress --display-error-details"
+  },
+  "author": "",
+  "license": "ISC"
+}

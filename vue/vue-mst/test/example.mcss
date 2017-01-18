@@ -1,0 +1,33 @@
+@import "~css/vars.less";
+
+.test-css-loader{
+	color: blue;
+}
+
+.test-url{
+	background: pink url(../src/assets/images/4.jpg) no-repeat;
+}
+.foo-url{
+	background: pink url(~img/avatar.jpg) no-repeat;
+}
+:local .baz-url{
+	background: pink url(img/avatar.jpg) no-repeat;
+}
+
+.bar-url{
+	padding:10px;
+	background: skyblue url(/4.jpg) no-repeat;
+}
+
+:local(.classname){
+	background: red;
+}
+
+:local(.subclass){
+	composes: classname;
+	color: blue;
+}
+
+:local(.classname .subclass){
+	color: green;
+}

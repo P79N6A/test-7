@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>hello world vue2</title>
+    <script src="/node_modules/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app" :title="ttl">
+        <!-- interpolate -->
+        {{message}}
+
+        <!-- v-if -->
+        <p v-if="seen">now you can see me </p>
+        
+        <!-- v-model -->
+        <input type="text" v-model="message" placeholder="input message" />
+        
+        <!-- v-for -->
+        <ul class="todos">
+            <li v-for="todo in todos">{{todo.text}}</li>
+        </ul>
+        
+        <!-- v-on -->
+        <button @click="reverse">reverse message!!</button>
+
+        <!-- v-bind -->
+        <!--<ol data-foo="test {{ttl}}">   属性插值不再可用-->
+        <ol :data-foo="'test ' + ttl">
+
+            <!-- custom component -->
+            <todo-item></todo-item>
+        </ol>
+    </div>
+    <script>
+
+        Vue.component('todo-item', {
+            template: '<li>this is a todo item</li>'
+        });
+
+        // life circle: (create, mount, update, destroy) 
+        // beforeCreate, created, beforeMounte, mounted, beforeUpdate, updated, beforeDestroy, destroyed
+        var app = new Vue({
+            el: '#app',
+            data: {
+                ttl: 'hello vue',
+                seen: true,
+                message: 'Hello World',
+                todos: [
+                    { text: 'Learn JavaScript' },
+                    { text: 'Learn Vue' },
+                    { text: 'Build something awesome' }
+                ]
+            },
+            methods: {
+                reverse: function () {
+                    this.message = this.message.split('').reverse().join('');
+                }
+            },
+            beforeCreate: function() {
+                this.$on('hello', function(a,b){
+                    console.log(a, b);
+                });
+            },
+            created: function(){
+                // vm.$emit 触发事件并传递数据给回调
+                this.$emit('hello', 'a', 'b');
+            }
+        });
+
+
+    </script>
+</body>
+
+</html>

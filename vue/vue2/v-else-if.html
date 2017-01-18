@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>hello world vue2</title>
+    <script src="/node_modules/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- v-if  v-else -->
+        <div v-if="Math.random() > 0.5">
+            Sorry
+        </div>
+        <div v-else>
+            Not sorry
+        </div>
+
+        <!-- v-if v-else-if v-else -->
+        <strong>type:</strong>
+        <span v-if="type ==='A'">A</span>
+        <span v-else-if="type ==='B'">B</span>
+        <span v-else-if="type ==='C'">C</span>
+        <span v-else="type ==='E'">E</span>
+
+        <p></p>
+        <!-- template v-if -->
+        <template v-if="loginType === 'username'">
+            <label>Username</label>
+            <!-- key 标识vnode, 决定是否复用 -->
+            <input placeholder="Enter your username" key="username-input">
+        </template>
+        <template v-else>
+            <label>Email</label>
+            <input placeholder="Enter your email address" key="email-input">
+        </template>
+        <button @click="toggle">toggle loginType</button>
+    </div>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                type: 'A',
+                loginType: 'username'
+            },
+            beforeUpdate: function () {
+                console.log(arguments);
+                console.log('before update');
+            },
+            methods: {
+                toggle: function () {
+                    this.loginType = this.loginType === 'username' ? 'rem' : 'username';
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,7 @@
+<img src="/img/4.jpg" alt="test-img">
+<img src="${require('img/4.jpg')}" alt="test-img">
+<h2>${ 2+4 }</h2>
+<h2>${ VIP.camelize('hello-idle') }</h2>
+<style type="text/css">
+	${require('css!./example.mcss')}
+</style>

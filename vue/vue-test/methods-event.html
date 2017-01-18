@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>方法和事件处理器</title>
+	<style>
+	.container, .box{padding: 20px; background-color: #eee; border: 1px dashed #ccc; margin: 20px;}
+	.d-ib{display: inline-block; }
+	</style>
+</head>
+<body>
+	<div id="app">
+		<!-- 
+		v-on:click 指令的属性值
+		可以是vm的方法名(greet, 自动将$event传入) 
+		或 调用表达式 (greet($event, 'idle') , $event需要被显式的传入) 
+		-->
+		<button v-on:click="greet">greet</button>  
+		<button v-on:click="greet($event, 'hihi!')">happy greeting</button>	
+
+
+		<!--事件修饰符 .stop, .prevent , .capture( addEventListener(ev,cb, isCapture), 指明是capture阶段的事件),  .self(事件是在元素本身触发的  event.target===event.currentTarget) -->
+		<div class="container" v-on:click="hi">
+			<!-- 阻止事件冒泡 -->
+			<button v-on:click.stop="doThis">stop</button>
+			<button v-on:click="doThis">do not stop</button>
+			<button v-on:click.stop.prevent="doThis">stop and prevent</button>
+
+			<a href="javascript:;" class="box d-ib" v-on:click.self="greet">
+				<span>click me not say hi, try click bg</span>
+			</a>
+		</div>
+
+		<!-- 按键修饰符 .enter .13 .tab, .delete, .esc, .down,  .up,  .space .... 单字母按键别名 自定义按键别名 -->
+		<label>input and press enter: <input type="text" @keyup.enter="hi" /></label>
+	</div>
+	<script src="/bower_components/vue/dist/vue.js"></script>
+	<script>
+	var vm = new Vue({
+		el: '#app',
+		data: {
+			name: 'vue.js'
+		},
+		methods: {
+			greet: function (event) {
+				console.log(arguments);
+				//this 指向vm, 默认有event(原生的事件对象)传入
+
+				event && console.log(event.target.tagName);
+				event.preventDefault();
+				event.stopPropagation();
+
+				alert('hello '+ this.name);
+			},
+			hi: function (event) {
+				alert('hi');
+			},
+			doThis: function (event) {
+				alert('let us do this job');
+			}
+		}
+	});
+
+	// vm.greet(); //直接调用
+
+	/**
+	 * 自定义按键别名 
+	 */
+	Vue.directive('on').keyCodes.f1 = 112;
+	
+	</script>
+</body>
+</html>

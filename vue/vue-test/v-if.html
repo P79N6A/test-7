@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>条件渲染</title>
+</head>
+<body id="app">
+	<h1>条件渲染</h1>
+	<!-- v-if  v-else -->
+	<h2  v-if="ok">Yes</h2>
+	<h2 v-else>No</h2>
+	
+	<!-- 若要切换多个并列的元素，不可能每个元素都v-if,  这时可以用 template  v-if -->
+	<template v-if="ok">
+		<h1>title</h1>
+		<p>this is owsome</p>
+		<p>can you catch it?</p>
+	</template>
+
+	<!-- v-show  ,  v-else 可用于 v-show v-if  注意v-else需紧跟在v-if 或 v-show 后面 -->
+	<h3 v-show="ok">hello, night</h3>
+	<h3 v-else>hello morning</h3>
+
+	<!-- v-if是真实的条件渲染，有销毁和重建(事件监听器和子组件)的过程 -->
+	<!-- v-if是惰性的，若初始为false 则它什么也不做， 条件为真时 局部编译和缓存 -->
+
+	<!-- v-if 切换条件开销大， v-show初始渲染开销大 ，不需要频繁切换则 v-if  -->
+
+
+	<script src="/bower_components/vue/dist/vue.js"></script>
+	<script>
+	var vm = new Vue({
+		el: '#app',
+		data: {
+			ok: true
+		}
+	});
+	</script>
+</body>
+</html>

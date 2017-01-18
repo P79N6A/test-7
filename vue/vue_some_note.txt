@@ -1,0 +1,87 @@
+1.loading app-tips
+2.resource
+
+
+loading: require('./Loading.vue')	
+
+
+<div class="loading" id="loading" v-show="isLoading"><img src="/src/assets/images/loading.gif" alt="loading"></div>
+
+vm = $0.__vue__
+l = vm.links;
+l
+
+------------
+
+vm = $0.__vue__
+vm.asideLinks;
+
+---------
+vm = $0.__vue__
+vm.$store.state.breadCrumbs
+
+
+.nav > li > a:hover, .nav > li > a:focus
+
+#CADEED
+
+
+
+侧边栏子导航
+模态框
+
+表格
+分页
+
+/foo/bar  必须是子路由吗?
+
+
+
+--------------
+
+pageSize
+pageTotal
+pageSizeList
+pages
+activePage
+viewSize
+
+
+分发进来的html 和 组件 在不同scope
+分发进来的组件，$parent 使用本组件scope的数据
+
+可变部分且依赖组件数据的，动态组件，默认组件
+0. babel also for *.js
+
+1. 原生元素 <nav is="vnav"..>
+
+2.*.vue  style:  less 选择器嵌套
+
+3. 子组件直接修改父组件的数据是糟糕的做法(调用父组件的方法相对好一点)  tab
+
+4. {events: {someEvent: callback} } 若是子组件 $dispatch上来的事件, 用声明的方式更直观一点
+<child @someEvent="callback" >...</child>
+
+5. $emit $dispatch $broadcast //$emit  触发vm自身事件 事件不冒泡
+
+6. vue-loader 
+
+
+7. router-view animated
+
+8. 组件多态： 动态注册子组件， 组件继承/混合
+import Vtbody from 'components/Vtbody';
+....
+props:{
+ vtbody:{ type: Object, default:()=>Vtbody}
+},
+components:{
+ Vtbody(resolve){ resolve(this.vtbody);}
+}
+
+
+
+<na
+<NavItem >
+
+

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>hello world vue2</title>
+    <script src="/node_modules/vue/dist/vue.js"></script>
+    <style>
+    .fade-enter-active, .fade-leave-active, .zoom-enter-active, .zoom-leave-active{
+        transition: all .5s ease;
+    }
+    .fade-enter, .fade-leave-active{
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    .zoom-enter, .zoom-leave-active{
+        transform: scale(1.4);
+    }
+    .dis-ib{
+        display: inline-block;
+    }
+    .pos-a{
+        position: absolute;
+    }
+    .t0{
+        top: 0;
+    }
+    .mt50{
+        margin-top: 50px;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 过渡可以通过 Vue 的组件系统实现复用。 -->
+        <my-transition :name="effect">
+            <p v-show="show" class="dis-ib pos-a t0">hello show: {{show}}</p>
+        </my-transition>
+
+        <p class="mt50"></p>
+        <label for="chk">
+            show: 
+            <input type="checkbox" name="chk" id="chk" v-model="show">
+            {{show}}
+        </label>
+
+        <!-- 函数组件 -->
+        <p class="mt50"></p>
+        <my-transition-func>
+            <h2 v-show="show" class="dis-ib">world</h2>
+        </my-transition-func>
+
+        <!-- 动态过渡效果 -->
+        <p class="mt50"></p>
+        <my-transition-func :name="effect">
+            <h2 v-show="show" class="dis-ib">dynamic world</h2>
+        </my-transition-func>
+        <p></p>
+        <label for="sel">
+            effect:
+            <select name="sel" id="sel" v-model="effect" >
+                <option value="fade">fade</option>
+                <option value="zoom">zoom</option>
+            </select>
+        </label>
+
+
+    </div>
+    <script type="text/x-template" id="tpl">
+        <transition :name="name" mode="out-in">
+            <slot></slot>
+        </transition>
+    </script>
+<script>
+    Vue.component('my-transition', {
+        props: ['name'],
+        template: '#tpl'
+    });
+
+
+    // 函数组件
+    Vue.component('my-transition-func', {
+        functional: true,
+        render: function (createElement, context) {
+            console.log(context, context.data.attrs);
+            var data = {
+                props: {
+                    mode: 'out-in',
+                    name: context.data.attrs ? context.data.attrs.name : 'fade'
+                }
+            };
+            return createElement('transition', data, context.children);
+        }
+    });
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            show: true,
+            effect: 'zoom'
+        }
+    });
+</script>
+</body>
+
+</html>

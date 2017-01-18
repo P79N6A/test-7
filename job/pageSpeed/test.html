@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>test JS will BLOCK other request</title>
+    <style type="text/css">
+    li{margin: 20px; margin-left: 0; line-height: 1.5; color: #333;}
+
+    </style>
+</head>
+<body>
+    <h1>测试JS对其他资源的阻塞..</h1>
+    <script type="text/javascript">
+    var arr = ['test-m.png', 'test-l.png'];
+    arr.forEach(function(src) {
+        var img = new Image();
+        img.src = src;
+    });
+
+    console.info('after req images...');
+
+    </script>
+    <ul>
+        <li>浏览器对tcp链接的复用带有随机性：比如 my.com/a.html my.com/a.js 共用同一个tcp链接; 浏览器在my.com上有剩余的并发链接数，此时的 my.com/a.png 的请求, 可能会复用之前的tcp链接，也可能新建tcp链接</li>
+        <li>浏览器是边解析边渲染或执行的(顺序渲染dom元素，如遇到的是style/link则加载 并应用样式；如遇到的是script则会加载并执行，在加载和执行结束前，不会继续往下渲染dom元素, 但是静态资源的请求不会被阻塞，如js加载和执行的过程中，图片的请求能发出，但不会展示到页面上, 直到对应的dom元素被渲染</li>
+        <li>若图片是通过img标签引入，而不是js生成img标签，那么js的长时间执行也不会阻塞图片请求的发起,只是影响加载完的图片渲染到页面的时间</li>
+        <li>若图片是通过js生成img标签的方式加载的, 那么图片请求的发起总是js执行结束之后；在js执行之前，通过new Image(url)的方式，可提前发起图片请求</li>
+        <li>network面板中replay xhr, 会重新请求，但ajax的success回调不会触发</li>
+        <li>DOMContentLoaded事件触发时，页面上的所有dom元素(div style link script)都解析和执行</li>
+        <li>内联脚本用async, defer无效果; defer的script在DOMContentLoaded之前执行</li>
+        <li>eval的性能要比new Function差</li>
+    </ul>
+
+    <style type="text/css">
+        body{background-color: #fcc; margin-top: 300px;}
+    </style>
+
+    <script type="text/javascript">
+
+    console.log('timing js..');
+    // console.log('timing js..', document.body.innerHTML);
+    console.time('reqjs');
+    // debugger;
+    </script>
+    <script type="text/javascript" src="test.js" onload="console.timeEnd('reqjs');console.log('js loaded..');"></script>
+    <style type="text/css">
+        body{background-color: #cff; margin-top: 100px;}
+    </style>
+
+    <div id="imgDiv"></div>
+    <script type="text/javascript">
+    function sleep (s) {
+        var start = new Date;
+        while(new Date - start < s * 1000);
+    }
+
+    // sleep(2);
+
+    console.log('timing img..');
+    console.time('reqimg');
+    var imgs = '<img src="test-m.png"> <img src="test-l.png">';
+    var imgDiv = document.querySelector('#imgDiv');
+    imgDiv.innerHTML = imgs;
+
+    document.addEventListener('DOMContentLoaded', function(ev) {
+        console.log('dom ready..');
+    }, false);
+
+    </script>
+    <img src="test.png" onload="console.timeEnd('reqimg'); console.log('img loaded..');">
+    
+    <!-- <img src="test-m.png">
+    <img src="test-l.png"> -->
+
+    <div id="article"></div>
+    <div id="article2"></div>
+    <div id="article3"></div>
+    <script type="text/javascript">
+    console.log('js in html...');
+
+    function getJson() {
+        var xhr = new XMLHttpRequest();
+        
+        xhr.onreadystatechange = function(ev) {
+            // console.log(arguments);
+            // console.log(xhr.readyState, xhr.status);
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                console.log('res:', xhr.responseText);
+            }
+
+        };
+        xhr.open('GET', 'example.json', true);
+        xhr.send();
+    }
+
+    getJson();
+
+    console.log('i am the last dom node, a script node');
+    // var start = new Date , c = 0;
+    // while(new Date - start < 3000) c++; // sleep 1s;
+    // console.log('c:', c);
+    
+    // 测试dom操作对性能的影响 100次append(p) 和 1次 append(100p);
+    function testDomOperation() {
+        var articleDiv = document.getElementById('article');
+        var articleDiv2 = document.getElementById('article2');
+        var articleDiv3 = document.getElementById('article3');
+        var frag = document.createDocumentFragment();
+        console.time('one');
+        var i = j = 0;
+        while(i++<100) {
+            articleDiv.appendChild(document.createElement('p'));
+        }
+        console.timeEnd('one');
+
+        console.time('two');
+        while(j++<100) {
+            frag.appendChild(document.createElement('p'));    
+        }
+        articleDiv2.appendChild(frag);
+        console.timeEnd('two');
+
+        //async 多次操作dom dom操作确实较慢
+        var k = 0;
+        function addP () {
+            articleDiv3.appendChild(document.createElement('p'));
+            k++ < 100 && setTimeout(addP, 0);
+            k >= 100 && console.timeEnd('three');
+        }
+        // console.time('three');
+        // addP();
+        
+    }
+
+    testDomOperation();
+
+    </script>
+</body>
+</html>
