@@ -1,9 +1,0 @@
-.plugin-tupian { width: 100%; margin: 0 auto; position: relative; overflow: hidden;} 
-.plugin-tupian img {max-width: 100%; display:block;} 
-.plugin-tupian .link { position: absolute;}
-
-#specialContent .lazy-load,#specialContent .pingou-lazy {background-color: transparent; -webkit-background-size: contain; background-size: contain;}
-
-/*特殊处理loading问题*/
-body .plugin-loaded,body .plugin-head-group .plugin,body .plugin-head-group {background: none;}
-body .plugin-loaded {overflow: visible;}

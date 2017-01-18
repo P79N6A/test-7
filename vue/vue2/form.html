@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>hello world vue2</title>
+    <script src="/node_modules/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- v-model 本质上不过是语法糖，它负责监听用户的输入事件以更新数据 -->
+
+        <!-- v-model所在控件的初始值，取决于绑定数据 而非value-->
+        <input type="text" name="user" id="user" v-model="user">
+
+        <!-- checkbox v-model checkbox默认值true/false 与数据绑定 -->
+        <input type="checkbox" id="checkbox" v-model="checked">
+        <label for="checkbox">{{ checked }}</label>
+
+        <!-- false-value true-value checkbox  v-model -->
+        <input type="checkbox" id="checkbox" v-model="checked2" false-value="no" true-value="yes">
+        <label for="checkbox">{{ checked2 }}</label>
+
+        <p></p>
+
+        <!-- checkbox v-model="arr" -->
+        <input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
+        <label for="jack">Jack</label>
+        <input type="checkbox" id="john" value="John" v-model="checkedNames">
+        <label for="john">John</label>
+        <input type="checkbox" id="mike" value="Mike" v-model="checkedNames">
+        <label for="mike">Mike</label>
+        <br>
+        <span>Checked names: {{ checkedNames }}</span>
+
+
+        <!-- v-model的修饰符 .lazy .number .trim -->
+        
+    </div>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                user: 'aclie',
+                checked: false,
+                checked2: 'no',
+                checkedNames: []
+            }
+        });
+    </script>
+</body>
+
+</html>
