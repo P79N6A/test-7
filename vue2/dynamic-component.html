@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>hello world vue2</title>
+    <script src="/node_modules/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+
+        <label for="sel">select view:</label>
+        <select name="sel" id="sel" v-model="currentView">
+            <option value="home">home</option>
+            <option value="posts">posts</option>
+            <option value="detail">detail</option>
+        </select>
+
+        <keep-alive>
+            <component :is="currentView">
+                <!-- 非活动组件将被缓存！ -->
+            </component>
+        </keep-alive>
+
+        <!--
+            Vue 组件的 API 来自三部分 - props, events 和 slots ：
+            Props 允许外部环境传递数据给组件
+            Events 允许组件触发外部环境的副作用
+            Slots 允许外部环境将额外的内容组合在组件中。
+        -->
+
+        <!--
+            ref
+             <user-profile ref="profile"></user-profile>
+            ref 和 v-for 一起使用时， ref 是一个数组或对象，包含相应的子组件。
+        -->
+
+
+        <!-- 异步组件 -->
+        <async-example></async-example>
+
+
+        <!-- 在字符串模版中可以用任何你喜欢的方式! -->
+        <!--
+            <my-component></my-component>
+            <myComponent></myComponent>
+            <MyComponent></MyComponent>
+        -->
+
+
+        <!--
+            组件的循环依赖问题
+            假设: TreeFolder  TreeFolderContents 循环依赖
+            //解决方法: TreeFolder beforeCreate 时，动态定义局部组件 TreeFolderContents
+            beforeCreate: function () {
+                this.$options.components.TreeFolderContents = require('./tree-folder-contents.vue')
+            }
+        -->
+
+        <!--
+            当组件中包含大量静态内容时，可以考虑使用 v-once 将渲染结果缓存起来
+            Vue.component('terms-of-service', {
+                template: '\
+                    <div v-once>\
+                    <h1>Terms of Service</h1>\
+                    ... a lot of static content ...\
+                    </div>\
+                '
+                })
+        -->
+    </div>
+    <script>
+
+        /*
+            异步组件
+        */
+        // async-example组件有被使用时，才会执行factory
+        Vue.component('async-example', function (resolve, reject) {
+            console.log('in async component callback');
+            setTimeout(function () {
+                // Pass the component definition to the resolve callback
+                resolve({
+                    template: '<div>I am async!</div>'
+                })
+            }, 1000)
+        });
+
+        // 推荐配合使用 ：Webpack 的代码分割功能：
+        /*
+        Vue.component('async-webpack-example', function (resolve) {
+            // 这个特殊的 require 语法告诉 webpack
+            // 自动将编译后的代码分割成不同的块，
+            // 这些块将通过 Ajax 请求自动下载。
+            require(['./my-async-component'], resolve)
+            })
+        */
+
+        // 你可以使用 Webpack 2 + ES2015 的语法返回一个 Promise resolve 函数：
+        /*
+            Vue.component('async-webpack-example', () => System.import('./my-async-component'))
+        */
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                currentView: 'home'
+            },
+            components: {
+                home: {
+                    template: '<h2> this is home page</h2>'
+                },
+                posts: {
+                    template: '<h2> this is posts page</h2>'
+                },
+                detail: {
+                    template: '<h2> this is detail page</h2>'
+                }
+            }
+        });
+
+        
+    </script>
+</body>
+
+</html>
