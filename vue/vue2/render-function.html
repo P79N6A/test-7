@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>hello world vue2</title>
+    <script src="/node_modules/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div>
+            <label for="sel">level:</label>
+            <select name="sel" id="sel" v-model="level">
+                <option v-for="n in 6" :value="n">{{n}}</option>
+            </select>
+        </div>
+        <anchored-heading :level="level">
+            this is a heading...
+        </anchored-heading>
+
+
+        <word-list :items="words"></word-list>
+
+        <!-- v-model inside -->
+        <p>
+            <input type="text" :value="msg" v-on:input="msg = $event.target.value"> {{msg}}
+        </p>
+
+        <my-input></my-input>
+
+        <slot-cmp>
+            <p>自定义组件内部被分发的内容</p>
+        </slot-cmp>
+
+
+        <scoped-slot-cmp>
+            <template scope="props">
+                这是scoped slot, 可以使用组件内部的数据, {{props.text}}
+            </template>
+        </scoped-slot-cmp>
+
+        <jsx-example2></jsx-example2>
+    </div>
+    <script>
+
+        Vue.component('jsx-example2', {
+            render: function (createElement) {
+                return createElement('div', { attrs: { id: 'kiki' } }, ['hello render fn..']);
+            }
+        });
+
+        // render 函数创建模板
+        Vue.component('anchored-heading', {
+            render: function (createElement) {
+                return createElement('h' + this.level, this.$slots.default);
+            },
+            props: {
+                level: {
+                    type: Number,
+                    required: true
+                }
+            }
+        });
+
+        Vue.component('word-list', {
+            render: function (createElement) {
+                if (this.items.length) {
+                    return createElement('ul', this.items.map(function (item) {
+                        return createElement('li', item);
+                    }));
+                } else {
+                    return createElement('p', 'no items');
+                }
+            },
+            props: {
+                items: Array
+            }
+        });
+
+        Vue.component('my-input', {
+            render: function (createElement) {
+                var self = this;
+                var inputNode = createElement('input', {
+                    domProps: {
+                        value: this.value
+                    },
+                    on: {
+                        input: function (event) {
+                            self.value = event.target.value;
+                        }
+                    }
+                });
+
+                return createElement(
+                    'div',
+                    {
+                        class: ['my-input']
+                    },
+                    [inputNode, this.value]
+                );
+            },
+            data: function () {
+                return { value: 'hihi' };
+            }
+        });
+
+        Vue.component('slot-cmp', {
+            render: function (createElement) {
+                return createElement('div', { class: ['slot-example'] }, this.$slots.default);
+            }
+        });
+
+        Vue.component('scoped-slot-cmp', {
+            render: function (createElement) {
+                return createElement('div', { class: ['scoped-slot-example'] }, [this.$scopedSlots.default({ text: this.msg })])
+            },
+            data: function () {
+                return { msg: 'data from component, cool..' };
+            }
+        });
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                level: 1,
+                words: ['what', 'why', 'where'],
+                msg: 'hello',
+                value: 'kiki'
+            }
+        });
+    </script>
+</body>
+
+</html>

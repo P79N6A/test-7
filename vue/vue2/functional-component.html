@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>hello world vue2</title>
+    <script src="/node_modules/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 函数化组件 (纯函数组件)  无状态(data) 无实例(this) -->
+        <functional-cmp age="13" foo="fmm" bar="bmm"><strong>old content</strong></functional-cmp>
+
+        <smart-list :items="items" :is-ordered="true"></smart-list>
+
+    </div>
+    <script>
+        Vue.component('functional-cmp', {
+            functional: true,
+            render: function (createElement, context) {
+                console.log('context:', context);
+                // context
+                /*props: 提供props 的对象
+                children: VNode 子节点的数组
+                slots: slots 对象
+                data: 传递给组件的 data 对象
+                parent: 对父组件的引用*/
+                return createElement('div', { class: ['functional-example'] }, ['hello functional cmp..', context.props.age]);
+            },
+            props: {
+                age: [Number, String]
+            }
+        });
+
+
+        var EmptyList = {
+            template: '<p> it is nothing..</p>'
+        };
+        var TableList = {
+            template: '<ul><li> this is a table list</li></ul>'
+        };
+        var OrderList = {
+            template: '<ul><li> this is a order list</li></ul>'
+        };
+        var UnorderList = {
+            template: '<ul><li> this is a unorder list</li></ul>'
+        };
+
+        Vue.component('smart-list', {
+            functional: true,
+            render: function (createElement, context) {
+                console.log('smart list render> context:', context);
+                function appropriateListComponent() {
+                    var items = context.props.items;
+                    if (items.length === 0) return EmptyList;
+                    if (typeof items[0] === 'object') return TableList;
+                    if(context.props.isOrdered) return OrderList;
+
+                    return UnorderList;
+                }
+
+                return createElement(
+                    appropriateListComponent(),
+                    context.data,
+                    context.children
+                )
+            },
+            props: {
+                items: {
+                    type: Array,
+                    required: true
+                },
+                isOrdered: {
+                    type: null,
+                    default: 100
+                }
+            }
+        });
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                items: ['how', 'do ', 'you', 'going', 'today']
+            }
+        });
+    </script>
+</body>
+
+</html>

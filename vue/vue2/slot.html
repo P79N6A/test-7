@@ -26,6 +26,7 @@
                 <!-- scope=props标记为分发到scopedSlot中, 分发的内容在scopedSlot中编译 对应的slot提供props对象 -->
                 <template scope="props" slot="foo">
                     <span>hello from parent</span>
+                    <br/>
                     <span>{{ props.text }}</span>
                     <p>{{props}}</p>
                 </template>
@@ -49,7 +50,7 @@
     
     <script type="text/x-template" id="childTpl">
         <div class="child">
-            <slot text="hello from child" name="foo" con="cool con"></slot>
+            <slot name="foo" text="hello from child"  con="cool content..."></slot>
         </div>
     </script>
 <script>
@@ -69,7 +70,7 @@
     var app = new Vue({
         el: '#app',
         data: {
-            msg: 'welcom to vue2'
+            msg: 'welcome to vue2'
         }
     })
 </script>

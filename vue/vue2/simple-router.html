@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>hello world vue2</title>
+    <script src="/node_modules/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+    </div>
+    <script>
+        var NotFound = {template: '<h3>Page not found</h3>'};
+        var Home = {template: '<h3>Page Home</h3>'};
+        var About = {template: '<h3>Page About</h3>'};
+
+        var routes = {
+            '/': Home,
+            'about': About
+        };
+        
+        function getDeepLinkPath (hash) {
+            hash = hash.replace(/^#\/?|\?.*$/g, '');
+            if(!hash) return '/';
+            
+            var firstPath = hash.split('/')[0];
+            return firstPath;
+        }
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                currentRoute: getDeepLinkPath(window.location.hash)
+            },
+            mounted: function() {
+                window.onhashchange = ev => {
+                    this.currentRoute = getDeepLinkPath(window.location.hash);
+                };
+            },
+            computed: {
+                ViewComponent: function(){
+                    return routes[this.currentRoute] || NotFound;
+                }
+            },
+            render: function(h) {
+                return h(this.ViewComponent);
+            }
+        });
+        
+    </script>
+</body>
+
+</html>

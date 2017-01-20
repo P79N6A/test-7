@@ -36,16 +36,36 @@
 
 
         <!-- v-model的修饰符 .lazy .number .trim -->
-        
+
+        <!-- Vue.config.errorHandler  fail test -->
+        <p>
+            <button v-on:click="addUser">addUser</button> users: {{users}}
+        </p>
     </div>
     <script>
+        Vue.config.errorHandler = function (err) {
+            console.log('print  err:', err);
+        };
+
         var app = new Vue({
             el: '#app',
             data: {
                 user: 'aclie',
                 checked: false,
                 checked2: 'no',
-                checkedNames: []
+                checkedNames: [],
+                users: []
+            },
+            mounted: function () {
+                this.$nextTick(function () {
+                    throw new Error('some error for test'); // 触发运行时错误.. can not be caught by the errorHandler..
+                    this.users = '';
+                });
+            },
+            methods: {
+                addUser: function () {
+                    this.users.push(this.user);
+                }
             }
         });
     </script>
