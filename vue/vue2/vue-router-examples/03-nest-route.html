@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="vue.js"></script>
+    <script src="vue-router.js"></script>
+    <div id="app">
+        <h1>Hello App!</h1>
+
+        <router-view></router-view>
+    </div>
+
+    <script>
+        const User = {
+            template: '<div class="user"> \
+                    <h3>user: {{$route.params.id}} </h3>\
+                    <router-view></router-view>\
+                </div>'
+        };
+
+        const UserHome = { template: '<h4>{{$route.params.id}}\'s Home Page</h4>' };
+        const UserProfile = { template: '<h4>{{$route.params.id}}\'s Profile Page</h4>' };
+        const UserPosts = { template: '<h4>{{$route.params.id}}\'s Posts Page</h4>' };
+
+        const router = new VueRouter({
+            routes: [
+                {
+                    path: '/user/:id',
+                    component: User,
+                    children: [
+                        // 当 /user/:id 匹配成功，
+                        // UserHome 会被渲染在 User 的 <router-view> 中
+                        {
+                            path: '',
+                            component: UserHome
+                        },
+                        {
+                            // 当 /user/:id/profile 匹配成功，
+                            // UserProfile 会被渲染在 User 的 <router-view> 中
+                            path: 'profile',
+                            component: UserProfile
+                        },
+                        {
+                            // 当 /user/:id/posts 匹配成功
+                            // UserPosts 会被渲染在 User 的 <router-view> 中
+                            path: 'posts',
+                            component: UserPosts
+                        }
+                    ]
+                }
+            ]
+        });
+
+        const app = new Vue({
+            router
+        }).$mount('#app');
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="vue.js"></script>
+    <script src="vue-router.js"></script>
+    <div id="app">
+        <h1>Hello App!</h1>
+
+        <router-link to="/a">redirect to /b</router-link>
+        
+        <router-view></router-view>
+
+    </div>
+
+    <script>
+        const CmpB = { template: '<h2>CmpB Part</h2>' };
+        const Boat = { template: '<h2>Boat Part</h2>' };
+
+        const router = new VueRouter({
+            mode: 'history',
+            routes: [
+                // 重定向
+                {
+                    path: '/a',
+                    redirect: '/b'
+                },
+                {
+                    path: '/aoo',
+                    redirect: {name: 'boo'}
+                },
+                {
+                    path: '/acc',
+                    redirect: function(to) {
+                        return '/kcc';
+                    }
+                },
+                {
+                    path: '/b',
+                    component: CmpB
+                },
+
+                // 别名
+                /*
+                『重定向』的意思是，当用户访问 /a时，URL 将会被替换成 /b，然后匹配路由为 /b，那么『别名』又是什么呢？
+
+                /a 的别名是 /b，意味着，当用户访问 /b 时，URL 会保持为 /b，但是路由匹配则为 /a，就像用户访问 /a 一样。
+                */
+                {
+                    path: '/boat',
+                    component: Boat,
+                    alias: '/bt'
+                }
+            ]
+        });
+
+        const app = new Vue({
+            router
+        }).$mount('#app');
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="vue.js"></script>
+    <script src="vue-router.js"></script>
+    <div id="app">
+        <h1>Hello App!</h1>
+
+        <router-view></router-view>
+    </div>
+
+    <script>
+        const User = {
+            template: '<h2>user: {{$route.params.id}} </h2>',
+            created: function(){
+                console.log('$route:', this.$route);
+            },
+            watch: {
+                '$route': function(to, from) {
+                    // 对路由变化作出响应...
+                    console.log('to:', to.path, ', from:', from.path);
+                }
+            }
+        };
+        
+        const router = new VueRouter({
+            routes: [
+                // 动态路径参数 以冒号开头
+                { path: '/user/:id', component: User }
+            ]
+        });
+
+        const app = new Vue({
+            router
+        }).$mount('#app');
+
+        /*
+        一个『路径参数』使用冒号 : 标记。当匹配到一个路由时，参数值会被设置到 this.$route.params，可以在每个组件内使用
+
+        一个路由中设置多段『路径参数』
+         /user/:username/post/:post_id  
+         /user/evan/post/123	
+         { username: 'evan', post_id: 123 }
+
+         $route.params
+         $route.query
+         $route.hash
+         $route.path
+         $route.fullPath
+         $route.name
+
+
+         vue-router 使用 path-to-regexp 作为路径匹配引擎，所以支持很多高级的匹配模式
+
+         匹配优先级
+        有时候，同一个路径可以匹配多个路由，此时，匹配的优先级就按照路由的定义顺序：谁先定义的，谁的优先级就最高。
+        */
+
+    </script>
+</body>
+
+</html>

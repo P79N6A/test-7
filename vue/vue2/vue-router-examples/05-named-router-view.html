@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="vue.js"></script>
+    <script src="vue-router.js"></script>
+    <div id="app">
+        <h1>Hello App!</h1>
+
+        <!-- 可以在界面中拥有多个单独命名的视图，而不是只有一个单独的出口 -->
+        <router-view class="view one"></router-view>
+        <router-view class="view two" name="a"></router-view>
+        <router-view class="view three" name="b"></router-view>
+
+    </div>
+
+    <script>
+        const Home = { template: '<h2>Home Part</h2>' };
+        const Foo = { template: '<h2>Foo Part</h2>' };
+        const Bar = { template: '<h2>Bar Part</h2>' };
+
+        const router = new VueRouter({
+            routes: [
+                {
+                    path: '/',
+                    components: {
+                        default: Home,
+                        a: Foo,
+                        b: Bar
+                    }
+                }
+            ]
+        });
+
+        const app = new Vue({
+            router
+        }).$mount('#app');
+
+    </script>
+</body>
+
+</html>

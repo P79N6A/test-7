@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="vue.js"></script>
+    <script src="vue-router.js"></script>
+</head>
+
+<body>
+
+
+    <div id="app">
+        <h1>Hello App!</h1>
+
+        <!-- 路由出口 -->
+        <!-- 路由匹配到的组件将渲染在这里 -->
+        <router-view></router-view>
+    </div>
+
+    <script>
+    /*
+    router.push(location)
+    这个方法会向 history 栈添加一个新的记录，所以，当用户点击浏览器后退按钮时，则回到之前的 URL。
+
+    当你点击 <router-link> 时，这个方法会在内部调用，所以说，点击 <router-link :to="..."> 等同于调用 router.push(...)。
+
+    {path, params, query, name}
+    // 字符串
+    router.push('home')
+
+    // 对象
+    router.push({ path: 'home' })
+
+    // 命名的路由
+    router.push({ name: 'user', params: { userId: 123 }})
+
+    // 带查询参数，变成 /register?plan=private
+    router.push({ path: 'register', query: { plan: 'private' }})
+
+
+    <router-link :to="...">  router.push(...)
+    */
+
+
+    /*
+    router.replace(location)
+
+    <router-link :to="..." replace>  router.replace(...)
+    */
+
+    /*
+    router.go(n)
+
+    // 在浏览器记录中前进一步，等同于 history.forward()
+    router.go(1)
+
+    // 后退一步记录，等同于 history.back()
+    router.go(-1)
+
+    // 前进 3 步记录
+    router.go(3)
+
+    // 如果 history 记录不够用，那就默默地失败呗
+    router.go(-100)
+    router.go(100)
+
+    你也许注意到 router.push、 router.replace 和 router.go 跟 window.history.pushState、 
+    window.history.replaceState 和 window.history.go好像， 
+    实际上它们确实是效仿 window.history API 的。
+    */
+
+
+    /*
+    命名路由
+
+    const router = new VueRouter({
+        routes: [
+            {
+            path: '/user/:userId',
+            name: 'user',
+            component: User
+            }
+        ]
+        })
+
+        <router-link :to="{ name: 'user', params: { userId: 123 }}">User</router-link>
+        //router.push({ name: 'user', params: { userId: 123 }})
+    */
+
+    </script>
+</body>
+
+</html>
