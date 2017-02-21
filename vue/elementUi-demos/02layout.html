@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello ElementUI</title>
+    <link rel="stylesheet" href="//unpkg.com/element-ui/lib/theme-default/index.css">
+    <style type="text/css">
+        .el-row{height: 70px; min-height: 50px; background: beige; padding: 10px;}
+        .el-col{height: 50px; background-color: pink; border-radius: 5px;}
+        .el-col:nth-of-type(even){background-color: skyblue;}
+        .grid-content{height: 100%; background-color: burlywood;}
+
+        .test-form{position: fixed; top: 200px; left: 50px; border: 3px solid #eee; padding: 20px;}
+    </style>
+</head>
+<body>
+    <div id="app">
+        <el-row :gutter="gutter" :type="type" :style="{height: height+'px'}" :justify="justify" :align="align">
+            <el-col :span="spans[0]" :offset="offsets[0]"><div class="grid-content"></div></el-col>
+            <el-col :span="spans[1]" :offset="offsets[1]"><div class="grid-content"></div></el-col>
+            <el-col :span="spans[2]" :offset="offsets[2]"><div class="grid-content"></div></el-col>
+        </el-row>
+
+        <form class="test-form">
+            <p>height: <input type="number" step="20" v-model="height" /></p>
+            <p>gutter: <input type="number" step="20" v-model="gutter" /></p>
+            <p>
+                type: 
+                <select v-model="type">
+                    <option value=""></option>
+                    <option value="flex">flex</option>
+                </select>
+            </p>
+        </form>
+    </div>
+    <script src="//unpkg.com/vue/dist/vue.js"></script>
+    <!-- 
+     -->
+    <script src="//unpkg.com/element-ui/lib/index.js"></script>
+    <script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            height: 70,
+            
+            gutter: 20,
+            type: '',
+            justify: 'start',
+            align: 'top',
+
+            spans: [6, 6, 6],
+            offsets: [1, 0, 0]
+        }
+    });
+    </script>
+</body>
+</html>

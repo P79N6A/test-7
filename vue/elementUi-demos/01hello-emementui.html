@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello ElementUI</title>
+    <link rel="stylesheet" href="//unpkg.com/element-ui/lib/theme-default/index.css">
+</head>
+<body>
+    <div id="app">
+        <el-button @click="visible = true">{{visible? '隐藏' : '显示'}}</el-button>
+        <el-dialog v-model="visible" title="Hello World">
+            <p>欢迎使用 Element</p>
+        </el-dialog>
+    </div>
+    <script src="//unpkg.com/vue/dist/vue.js"></script>
+    <script src="//unpkg.com/element-ui/lib/index.js"></script>
+    <script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            visible: false
+        }
+    });
+    </script>
+</body>
+</html>
