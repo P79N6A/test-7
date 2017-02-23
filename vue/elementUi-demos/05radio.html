@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello ElementUI</title>
+    <link rel="stylesheet" href="//unpkg.com/element-ui/lib/theme-default/index.css">
+    <style type="text/css">
+    form{border: 3px solid chocolate; padding: 10px; margin:20px 0; width: 500px;}
+
+    .floor{height:100px; border: 1px solid blue; padding: 10px;}
+    .high-div{height:300px; margin-bottom:30px; background: beige;}
+    </style>
+</head>
+<body>
+    <div class="css-test">
+      <div class="floor">
+        <div class="high-div">high-div</div>
+      </div>
+      <div class="floor">
+        <h2>sdfdf</h2>
+      </div>
+    </div>
+    <div id="app">
+      <p>
+        <el-radio v-model="radio" label="1" :disabled="disabled">唱歌</el-radio>
+        <el-radio v-model="radio" label="2" :disabled="disabled">跳舞</el-radio>
+        radio value: {{radio}}
+      </p>
+  
+
+      <p>
+        单选按钮组:
+        <el-radio-group v-model="radio2">
+          <el-radio :label="3">星期三</el-radio>
+          <el-radio :label="5">星期五</el-radio>
+          <el-radio :label="6">星期六</el-radio>
+        </el-radio-group>
+      </p>
+
+      <form>
+        <p>
+          <input type="checkbox" v-model="disabled" /> disabled
+        </p>
+        <!-- 
+        <p>
+          type: 
+          <select v-model="ra" >
+            <option>default</option>
+            <option>text</option>
+            <option>primary</option>
+            <option>warning</option>
+            <option>success</option>
+            <option>danger</option>
+            <option>info</option>
+          </select>
+        </p>
+        <p>
+          <input type="checkbox" v-model="loading">loading
+        </p>
+        <p>
+          size:
+          <select v-model="size">
+            <option>large</option>
+            <option>middle</option>
+            <option>small</option>
+            <option>mini</option>
+          </select>
+        </p>
+        <p>
+          nativeType:
+          <select v-model="nativeType">
+            <option>button</option>
+            <option>submit</option>
+            <option>reset</option>
+          </select>
+        </p>
+         -->
+      </form>
+
+    </div>
+    <script src="//unpkg.com/vue/dist/vue.js"></script>
+    <script src="//unpkg.com/element-ui/lib/index.js"></script>
+    <script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+          radio: '1',
+          disabled: false,
+          radio2: 3
+        }
+    });
+    </script>
+</body>
+</html>

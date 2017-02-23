@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello ElementUI</title>
+    <link rel="stylesheet" href="//unpkg.com/element-ui/lib/theme-default/index.css">
+    <style type="text/css">
+    form{border: 3px solid chocolate; padding: 10px; margin: 20px; width: 500px;}
+    </style>
+</head>
+<body>
+    <div id="app">
+      <p>type: <el-button :type="type" :disabled="disabled" :plain="plain" :size="size">按钮</el-button></p>
+
+      <p>
+        图标按钮: 
+        <el-button :type="type" icon="edit"></el-button>
+        <el-button :type="type" icon="share"></el-button>
+        <el-button :type="type" icon="delete"></el-button>
+        <el-button :type="type" icon="search">搜索</el-button>
+        <!-- 自定义按钮图标 -->
+        <el-button :type="type" >上传 <i class="el-icon-upload el-icon-right"></i></el-button>
+      </p>
+
+      <p>
+        按钮组:
+        <el-button-group>
+          <el-button :type="type" icon="arrow-left">上一页</el-button>
+          <el-button :type="type" >下一页 <i class="el-icon-arrow-right el-icon-right"></i></el-button>
+        </el-button-group>
+        <el-button-group>
+          <el-button :type="type" icon="share"></el-button>
+          <el-button :type="type" icon="edit"></el-button>
+          <el-button :type="type" icon="delete"></el-button>
+        </el-button-group>
+      </p>
+
+      <p>
+        加载中: <el-button :type="type" :loading="loading">加载中</el-button>
+      </p>
+  
+      <p>
+        autofocus: <el-button :type="type" :autofocus="true" :size="size">自动获得焦点</el-button>
+      </p>
+  
+      <!-- 还有 native-type 属性 -->
+      <p>
+        native-type: <el-button :type="type" :autofocus="true" :size="size" :native-type="nativeType">按钮</el-button>
+      </p>
+
+
+      <form>
+        <p>
+          type: 
+          <select v-model="type" >
+            <option>default</option>
+            <option>text</option>
+            <option>primary</option>
+            <option>warning</option>
+            <option>success</option>
+            <option>danger</option>
+            <option>info</option>
+          </select>
+        </p>
+        <p>
+          <input type="checkbox" v-model="disabled" /> disabled , <input type="checkbox"  v-model="plain"> plain
+        </p>
+        <p>
+          <input type="checkbox" v-model="loading">loading
+        </p>
+        <p>
+          size:
+          <select v-model="size">
+            <option>large</option>
+            <option>middle</option>
+            <option>small</option>
+            <option>mini</option>
+          </select>
+        </p>
+        <p>
+          nativeType:
+          <select v-model="nativeType">
+            <option>button</option>
+            <option>submit</option>
+            <option>reset</option>
+          </select>
+        </p>
+      </form>
+
+    </div>
+    <script src="//unpkg.com/vue/dist/vue.js"></script>
+    <script src="//unpkg.com/element-ui/lib/index.js"></script>
+    <script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            type: 'default',
+            disabled: false,
+            plain: false,
+            loading: true,
+            size: 'middle',
+            nativeType: 'submit'
+        }
+    });
+    </script>
+</body>
+</html>
