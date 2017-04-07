@@ -135,9 +135,9 @@ duplexer2@0.0.2:
   dependencies:
     readable-stream "~1.1.9"
 
-element-ui@^1.1.6:
-  version "1.1.6"
-  resolved "http://registry.npm.taobao.org/element-ui/download/element-ui-1.1.6.tgz#f3b19394857886a0f9b5be20bbd0959711b10251"
+element-ui@^1.2.1:
+  version "1.2.1"
+  resolved "http://registry.npm.taobao.org/element-ui/download/element-ui-1.2.1.tgz#02b93500c07d7596faa73985b1450226865a2928"
   dependencies:
     async-validator "^1.6.6"
     babel-helper-vue-jsx-merge-props "^2.0.0"

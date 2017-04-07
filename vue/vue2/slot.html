@@ -23,7 +23,7 @@
         <!-- scopedSlot -->
         <div class="parent">
             <child>
-                <!-- scope=props标记为分发到scopedSlot中, 分发的内容在scopedSlot中编译 对应的slot提供props对象 -->
+                <!-- scope=props标记为分发到scopedSlot中, 分发的内容在scopedSlot中编译 对应的slot传入的对象作为props参数 -->
                 <template scope="props" slot="foo">
                     <span>hello from parent</span>
                     <br/>

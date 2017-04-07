@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hello ElementUI</title>
+</head>
+
+<body>
+    <div id="app">
+
+        <div class="floor">
+            <!-- 设置height 则固定表头, row-class-name函数返回row的className -->
+            <el-table :data="tableData" height="200" style="width:80%;" :stripe="stripe" :border="border" :row-class-name="getRowClassName">
+                <el-table-column prop="name" label="姓名" width="180"></el-table-column>
+                <el-table-column prop="date" label="日期" width="180"></el-table-column>
+                <el-table-column prop="address" label="地址"></el-table-column>
+            </el-table>
+        </div>
+
+
+        <div class="floor">
+            <!-- fixed: true, left, right 固定列 -->
+            <el-table :data="tableData" height="200" style="width:50%;" :border="border" :stripe="stripe" >
+                <el-table-column fixed prop="date" label="日期" width="120"></el-table-column>
+                <el-table-column prop="name" label="姓名" width="120"></el-table-column>
+                <el-table-column prop="province" label="省份" width="100"></el-table-column>
+                <el-table-column fixed prop="city" label="城市" width="120"></el-table-column>
+                <el-table-column prop="address" label="地址" width="300"></el-table-column>
+                <el-table-column prop="zip" label="邮编" width="120"></el-table-column>
+                <el-table-column fixed="right" label="操作" width="120">
+                    <!-- 列不一定要绑定某个prop 自定义列的内容 -->
+                    <template scope="scope">
+                        <el-button @click="handleClick(scope)" type="text" size="small">查看</el-button>
+                        <el-button type="text" size="small">编辑</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+
+        <div class="floor">
+            <!--
+            超出 max-height 才固定表头 
+            highlight-current-row  @current-change="handler" 点选行
+            <el-table-column type=index ../> 序号列
+            <el-table-column type=selection .. /> checkbox列
+            <el-table-column prop=.. label=.. width=.. /> 列的基本属性   
+            -->
+            <el-table :data="tableData" max-height="250" style="width:55%;" :border="border" :stripe="stripe" highlight-current-row @current-change="handleRowSelect">
+                <el-table-column type="index" width="80"></el-table-column>
+                <el-table-column prop="date" label="日期" width="120"></el-table-column>
+                <el-table-column prop="name" label="姓名" width="120"></el-table-column>
+                <el-table-column prop="city" label="城市" width="120"></el-table-column>
+                <el-table-column prop="address" label="地址" width="300"></el-table-column>
+                <el-table-column prop="zip" label="邮编" width="120"></el-table-column>
+                <el-table-column fixed="right" label="操作" width="120">
+                    <template scope="scope">
+                        <el-button @click="handleClick(scope)" type="text" size="small">查看</el-button>
+                        <el-button type="text" size="small">编辑</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+
+
+        <div class="floor">
+            <!--
+            <el-table-column show-overflow-tooltip .. />
+            <el-table-column type=selection .. />
+            scope.row.date 获取内部的行数据
+            -->
+            <el-table :data="tableData" max-height="300" style="width:60%;" :border="border" :stripe="stripe" @selection-change="handleSelectionChange">
+                <el-table-column type="selection" width="60"></el-table-column>
+                <el-table-column prop="date" label="日期" width="120">
+                    <template scope="scope">{{scope.row.date}}</template>
+                </el-table-column>
+                <el-table-column prop="name" label="姓名" width="120"></el-table-column>
+                <el-table-column prop="address" label="地址" show-overflow-tooltip></el-table-column>
+            </el-table>
+        </div>
+
+
+        <div class="floor">
+            <!-- 
+                <el-table-column formatter sortable .. />
+                <el-table default-sort .. />
+            -->
+            <el-table :data="tableData" max-height="300" style="width: 70%;" :border="border" :stripe="stripe" @selection-change="handleSelectionChange" :default-sort="{prop: 'date', order: 'descending'}">
+                <el-table-column type="selection" width="60"></el-table-column>
+                <el-table-column sortable prop="date" sortable label="日期" width="120"></el-table-column>
+                <el-table-column sortable prop="name" label="姓名" width="120" sortable=""></el-table-column>
+                <el-table-column prop="address" label="地址" :formatter="formatter"></el-table-column>
+            </el-table>
+        </div>
+
+        <el-form class="form-try" label-position="right" label-width="120px">
+            <el-form-item label="">
+                <el-checkbox v-model="stripe">斑马线效果 stripe</el-checkbox>
+                <el-checkbox v-model="border">带边框 border</el-checkbox>
+            </el-form-item>
+        </el-form>
+
+    </div>
+
+    <style>
+        .el-table .info-row {
+            background-color: #c9e5f5;
+        }
+        
+        .el-table .success-row {
+            background-color: #e2f0e4;
+        }
+    </style>
+
+    <script src="//cdn.bootcss.com/seajs/3.0.2/runtime-debug.js"></script>
+    <script src="demos.js"></script>
+
+    <script type="text/javascript">
+        var options = {
+            data: {
+                tableData: [{
+                    date: '2016-05-03',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-02',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-04',
+                    name: '王大虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-04',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-04',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-04',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-01',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }],
+                stripe: false,
+                border: false,
+
+                selections: [],
+                loged: false
+            },
+            methods: {
+                getRowClassName(row, index) {
+                    if (index === 0) {
+                        return 'info-row';
+                    } else if (index === 3) {
+                        return 'success-row';
+                    } else {
+                        return '';
+                    }
+                },
+                handleClick(scope) {
+                    console.log('scope:', scope);
+                },
+                handleRowSelect(row, oldrow) {
+                    console.log(row, oldrow);
+                },
+                handleSelectionChange(val) {
+                    console.log('selections: ', val);
+                    this.selections = val;
+                },
+                formatter(row, column) {
+                    !this.loged && console.log(row, column);
+                    this.loged = true;
+
+                    return row.address + '  3333';
+                }
+            }
+        };
+    </script>
+</body>
+
+</html>

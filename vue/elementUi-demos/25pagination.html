@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hello ElementUI</title>
+</head>
+
+<body>
+    <div id="app">
+        
+        <div class="floor">
+            <el-pagination :layout="layout" :total="total"></el-pagination>
+        </div>
+
+        <el-form class="form-try" label-position="right" label-width="120px">
+            <el-form-item label="layout: ">
+                prev, pager, next, total, jumper, size(报错..)
+                <el-input :value="layout" @input="setLayout" />
+            </el-form-item>
+            <el-form-item label="total: ">
+                <el-input v-model.number="total" />
+            </el-form-item>
+        </el-form>
+
+    </div>
+
+    <script src="//cdn.bootcss.com/seajs/3.0.2/runtime-debug.js"></script>
+    <script src="demos.js"></script>
+
+    <script type="text/javascript">
+        function debounce (fn, delay) {
+            return function() {
+                var args = [].slice.call(arguments);
+
+                fn.timer && clearTimeout(fn.timer);
+                fn.timer = setTimeout(function() {
+                    fn.apply(this, args);
+                }, delay || 2000);
+            };
+        }
+        var options = {
+            data: {
+                layout: 'prev, pager, next',
+                total: 100
+            },
+            created() {
+                this.setLayout = debounce(this.updateLayout.bind(this));
+            },
+            methods: {
+                updateLayout(val) {
+                    console.log(val, '<--');
+                    this.layout = val;
+                }
+            }
+        };
+    </script>
+</body>
+
+</html>

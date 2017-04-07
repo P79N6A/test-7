@@ -36,17 +36,19 @@
             <input placeholder="Enter your email address" key="email-input">
         </template>
         <button @click="toggle">toggle loginType</button>
+
+        <!-- vue2.x v-show 不能搭配 v-else -->
     </div>
     <script>
         var app = new Vue({
             el: '#app',
             data: {
                 type: 'A',
-                loginType: 'username'
+                loginType: 'username',
+                show: true
             },
             beforeUpdate: function () {
-                console.log(arguments);
-                console.log('before update');
+                console.log('before update, arguments:', arguments);
             },
             methods: {
                 toggle: function () {

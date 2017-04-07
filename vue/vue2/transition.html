@@ -6,45 +6,51 @@
     <title>hello world vue2</title>
     <script src="/node_modules/vue/dist/vue.js"></script>
     <style>
-    .fade-enter-active, .fade-leave-active {
-    transition: all 0.5s
-    }
-    .fade-enter, .fade-leave-active {
-    opacity: 0
-    }
-
-    .bounce-enter-active {
-    animation: bounce-in .5s;
-    }
-    .bounce-leave-active {
-    animation: bounce-out .5s;
-    }
-    @keyframes bounce-in {
-    0% {
-        transform: scale(0);
-    }
-    50% {
-        transform: scale(1.5);
-    }
-    100% {
-        transform: scale(1);
-    }
-    }
-    @keyframes bounce-out {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.5);
-    }
-    100% {
-        transform: scale(0);
-    }
-    }
-
-    .dis-ib{
-        display: inline-block;
-    }
+        .fade-enter-active,
+        .fade-leave-active {
+            transition: all 0.5s
+        }
+        
+        .fade-enter,
+        .fade-leave-active {
+            opacity: 0
+        }
+        
+        .bounce-enter-active {
+            animation: bounce-in .5s;
+        }
+        
+        .bounce-leave-active {
+            animation: bounce-out .5s;
+        }
+        
+        @keyframes bounce-in {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.5);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes bounce-out {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.5);
+            }
+            100% {
+                transform: scale(0);
+            }
+        }
+        
+        .dis-ib {
+            display: inline-block;
+        }
     </style>
 </head>
 
@@ -78,7 +84,6 @@
             v-leave: 定义离开过渡的开始状态。在离开过渡被触发时生效，在下一个帧移除。
             v-leave-active: 定义离开过渡的结束状态。在离开过渡被触发时生效，在 transition/animation 完成之后移除。
         -->
-
 
         <!--
             CSS 动画用法同 CSS 过渡，区别是在动画中 v-enter 类名在节点插入 DOM 后不会立即删除，而是在 animationend 事件触发时删除。
@@ -160,7 +165,6 @@
             推荐对于仅使用 JavaScript 过渡的元素添加 v-bind:css="false"，Vue 会跳过 CSS 的检测。这也可以避免过渡过程中 CSS 的影响。
         -->
 
-
         <!-- 可以通过 appear 特性设置节点的在初始渲染的过渡 -->
         <!--
             <transition
@@ -172,7 +176,6 @@
             </transition>
         -->
 
-
         <!-- 多元素的过渡 -->
         <transition name="fade" appear>
             <button :key="isEditing" style="position:absolute">
@@ -180,13 +183,11 @@
             </button>
         </transition>
 
-
         <p style="margin-top:30px"></p>
-        <input type="checkbox" name="chk-edit" v-model="isEditing" >{{isEditing}}
+        <input type="checkbox" name="chk-edit" v-model="isEditing">{{isEditing}}
 
         <!-- 过渡模式 out-in  in-out -->
         <!-- <transition name="fade" mode="out-in"></transition> -->
-
 
     </div>
     <script>
@@ -194,20 +195,17 @@
         function onready() {
             var head1 = document.querySelector('#head1');
             var head2 = document.querySelector('#head2');
-
-            head1.addEventListener('transitionend', function (e) {
+            head1.addEventListener('transitionend', function(e) {
                 console.log('transitionEnd: className->', head1.className);
             });
-
         }
-
         var app = new Vue({
             el: '#demo',
             data: {
                 show: true,
                 isEditing: false
             },
-            mounted: function () {
+            mounted: function() {
                 onready();
             }
         });

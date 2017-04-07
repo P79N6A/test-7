@@ -56,10 +56,6 @@ template元素指令可以和 v-if v-for 流程控制指令结合使用
         <p key="p2">another p</p>
     </template>
 
-
-    <h1 v-show="ok">hello</h1>
-    <h1 v-else>some error</h1>
-
 v-show 不能和template 元素指令一起使用, 如:
 
     <template v-show="ok"> <!--can not do this-->

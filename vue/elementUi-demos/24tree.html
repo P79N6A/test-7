@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hello ElementUI</title>
+</head>
+
+<body>
+    <div id="app">
+        <el-tree :data="treeData" :props="defaultProps" @node-click="handleNodeClick" :show-checkbox="showCheckbox"></el-tree>
+        
+        <el-tree :data="treeData" :props="defaultProps" show-checkbox></el-tree>
+
+        <el-tree :data="treeData" :props="defaultProps" accordion></el-tree>
+
+        <el-form class="form-try" label-position="right" label-width="120px">
+            
+            <el-form-item label="show-checkbox: ">
+                <el-checkbox v-model="showCheckbox">show-checkbox 不支持动态设置</el-checkbox>
+            </el-form-item>
+
+            <el-form-item label="accordion: ">
+                <el-checkbox v-model="accordion">accordion 不支持动态设置</el-checkbox>
+            </el-form-item>
+            
+        </el-form>
+
+    </div>
+
+    <script src="//cdn.bootcss.com/seajs/3.0.2/runtime-debug.js"></script>
+    <script src="demos.js"></script>
+
+    <script type="text/javascript">
+        var options = {
+            data: {
+                treeData: [{
+                    label: '一级 1',
+                    children: [{
+                        label: '二级 1-1',
+                        children: [{
+                            label: '三级 1-1-1'
+                        }]
+                    }]
+                }, {
+                    label: '一级 2',
+                    children: [{
+                        label: '二级 2-1',
+                        children: [{
+                            label: '三级 2-1-1'
+                        }]
+                    }, {
+                        label: '二级 2-2',
+                        children: [{
+                            label: '三级 2-2-1'
+                        }]
+                    }]
+                }, {
+                    label: '一级 3',
+                    children: [{
+                        label: '二级 3-1',
+                        children: [{
+                            label: '三级 3-1-1'
+                        }]
+                    }, {
+                        label: '二级 3-2',
+                        children: [{
+                            label: '三级 3-2-1'
+                        }]
+                    }]
+                }],
+                defaultProps: {
+                    children: 'children',
+                    label: 'label'
+                },
+
+                showCheckbox: false,
+                accordion: false
+            },
+            methods: {
+                handleNodeClick(data) {
+                    console.log(data);
+                }
+            }
+        };
+    </script>
+</body>
+
+</html>

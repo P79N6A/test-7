@@ -9,10 +9,10 @@
 
 <body>
     <div id="app">
-        <!-- 函数化组件 (纯函数组件)  无状态(data) 无实例(this) -->
+        <!-- 函数化组件 (纯函数组件)  无状态 无实例(this) -->
         <functional-cmp age="13" foo="fmm" bar="bmm"><strong>old content</strong></functional-cmp>
 
-        <smart-list :items="items" :is-ordered="true"></smart-list>
+        <smart-list :items="items" :is-ordered="isOrdered"></smart-list>
 
     </div>
     <script>
@@ -22,9 +22,9 @@
                 console.log('context:', context);
                 // context
                 /*props: 提供props 的对象
-                children: VNode 子节点的数组
-                slots: slots 对象
                 data: 传递给组件的 data 对象
+                slots: slots 对象
+                children: VNode 子节点的数组
                 parent: 对父组件的引用*/
                 return createElement('div', { class: ['functional-example'] }, ['hello functional cmp..', context.props.age]);
             },
@@ -81,6 +81,7 @@
         var app = new Vue({
             el: '#app',
             data: {
+                isOrdered: true,
                 items: ['how', 'do ', 'you', 'going', 'today']
             }
         });

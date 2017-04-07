@@ -37,9 +37,9 @@
             template: '#tpl',
             props: ['value'],
             methods: {
-                updateValue: function(value, arg, ev){
-                    console.log('inner: ', arg, ev);
-                    var formatedValue = value.trim().slice(0, value.indexOf('.')+3);
+                updateValue: function(value, args, ev){
+                    console.log('inner: ', args, ev);
+                    var formatedValue = value.trim().slice(0, value.indexOf('.')+3);// some bug , only 2 digtials
                     if(formatedValue !== value) {
                         this.$refs.input.value = formatedValue; //约束为 货币类型的数值
                     }

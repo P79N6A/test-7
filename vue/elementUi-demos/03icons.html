@@ -1,32 +1,47 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Hello ElementUI</title>
-    <link rel="stylesheet" href="//unpkg.com/element-ui/lib/theme-default/index.css">
-    <style type="text/css">
-        body{font-size: 30px; color: chocolate;}
-    </style>
 </head>
+
 <body>
     <div id="app">
-       <i class="el-icon-edit"></i>
-       <i class="el-icon-save"></i>
-       <i class="el-icon-delete"></i>
-       <i class="el-icon-arrow-down"></i>
-       <i class="el-icon-arrow-right"></i>
-       <i class="el-icon-caret-bottom"></i>
-       <i class="el-icon-circle-check"></i>
+        <div class="icons-demo">
+        
+            <i class="el-icon-edit"></i>
+            <i class="el-icon-share"></i>
+            <i class="el-icon-delete"></i>
+            <i class="el-icon-arrow-down"></i>
+            <i class="el-icon-arrow-right"></i>
+            <i class="el-icon-caret-bottom"></i>
+            <i class="el-icon-circle-check"></i>
+    
+            <el-button type="primary" icon="search">搜索</el-button>
+
+
+            <!--
+            el-icon-arrow-down/up/right/left
+            el-icon-caret-bottom/top/right/left
+            el-icon-edit
+            el-icon-delete
+            el-icon-search
+            el-icon-check
+            ...
+            -->
+        </div>
+
+        <div class="floor">
+            <el-icon name="search"></el-icon>
+            <el-icon name="share"></el-icon>
+        </div>
+        
     </div>
-    <script src="//unpkg.com/vue/dist/vue.js"></script>
-    <script src="//unpkg.com/element-ui/lib/index.js"></script>
-    <script>
-    var vm = new Vue({
-        el: '#app',
-        data: {
-            visible: false
-        }
-    });
-    </script>
+
+    <script src="//cdn.bootcss.com/seajs/3.0.2/runtime-debug.js"></script>
+    <script src="demos.js"></script>
+
 </body>
+
 </html>

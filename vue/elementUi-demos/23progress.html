@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hello ElementUI</title>
+</head>
+
+<body>
+    <div id="app">
+
+        <div class="floor w50p">
+            <el-progress 
+                :percentage="percentage" 
+                :status="status" 
+                :text-inside="textInside" 
+                :stroke-width="strokeWidth" 
+                :type="type"
+                :show-test="showText">
+            </el-progress>
+            
+        </div>
+
+        <el-form class="form-try" label-position="right" label-width="120px">
+            <el-form-item label="percentage:">
+                <el-input type="number" step="20" v-model.number="percentage"></el-input>
+            </el-form-item>
+            <el-form-item label="status:">
+                <el-select v-model="status">
+                    <el-option value=""></el-option>
+                    <el-option value="success"></el-option>
+                    <el-option value="exception"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="text-inside: ">
+                <el-checkbox v-model="textInside">text-inside</el-checkbox>
+            </el-form-item>
+            <el-form-item label="stroke-width: ">
+                <el-input type="number" v-model.number="strokeWidth" />
+            </el-form-item>
+            <el-form-item label="type: ">
+                <el-radio-group v-model="type">
+                    <el-radio label="line"></el-radio>
+                    <el-radio label="circle"></el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item label="show-text">
+                <el-checkbox v-model="showText">show-text</el-checkbox>
+            </el-form-item>
+
+        </el-form>
+
+    </div>
+
+    <script src="//cdn.bootcss.com/seajs/3.0.2/runtime-debug.js"></script>
+    <script src="demos.js"></script>
+
+    <script type="text/javascript">
+        var options = {
+            data: {
+                status: '',
+                percentage: 20,
+
+                strokeWidth: 18,
+                textInside: true,
+                showText: true,
+                type: 'line'
+            }
+        };
+    </script>
+</body>
+
+</html>

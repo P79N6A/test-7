@@ -36,7 +36,9 @@
 
         -->
 
-        <div class="dir-example" v-demo:hello.a.b="msg"></div>
+        <div class="dir-example" v-demo:hello.a.b="msg" v-if="show"></div>
+        <h3>{{fav}}</h3>
+        fav: <input type="text" v-model="fav">
 
 
         <p v-color="color">directive only use the bind or update hook, can provide a fun only</p>
@@ -49,16 +51,18 @@
     <script>
         Vue.directive('focus', {
             bind: function(){
+                console.log('in bind hook, arguments:', arguments);
                 
             },
             inserted: function(el){
+                console.log('in inserted hook, arguments:', arguments);
                 el.focus();
             }
         });
 
 
         Vue.directive('demo', {
-            bind: function(el, binding, vnode) {
+            bind: function(el, binding, vnode, oldVnode) {
                 console.log('binding:', binding);
                 console.log('vnode:', vnode);
                 var s = JSON.stringify;
@@ -69,6 +73,18 @@
                     modifiers: ${s(binding.modifiers)} <br>
                     vnode keys: ${Object.keys(vnode).join(',')}
                 `;
+            },
+            inserted: function(el, binding, vnode) {
+                console.log('[log]: inserted v-demo, arguments:', arguments);
+            },
+            update: function() {
+                console.log('[log]: update v-demo, arguments:', arguments);
+            },
+            componentUpdated: function() {
+                console.log('[log]: componentUpdated v-demo, arguments:', arguments);
+            },
+            unbind: function() {
+                console.log('[log]: unbind v-demo, arguments:', arguments);
             }
         });
 
@@ -80,7 +96,9 @@
             el: '#app',
             data: {
                 msg: 'someday',
-                color: 'pink'
+                color: 'pink',
+                fav: 'sleeping',
+                show: true
             }
         });
     </script>

@@ -25,7 +25,7 @@ Vue.component('jsx-example', {
             console.log('got click event..');
         },
         nativeClickHandler() {
-            console.log('got native click event..'); // click , not exec this..
+            console.log('got native click event..'); // click , not exec this method..
         }
 
     }

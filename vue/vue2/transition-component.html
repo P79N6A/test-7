@@ -83,7 +83,7 @@
     Vue.component('my-transition-func', {
         functional: true,
         render: function (createElement, context) {
-            console.log(context, context.data.attrs);
+            console.log('-->content:', context, ', attrs:', context.data.attrs);
             var data = {
                 props: {
                     mode: 'out-in',
