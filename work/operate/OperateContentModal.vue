@@ -1,25 +1,25 @@
 <template>
     <div class="operate-content-modal">
     	<el-dialog :title="title" v-model="show">
-    		<el-form model="current" label-width="100px">
+    		<el-form model="opInfo" label-width="100px">
     			<el-form-item label="内容名称"  required>
-    				<el-input v-model="current.name"></el-input>
+    				<el-input v-model="opInfo.name"></el-input>
     			</el-form-item>
     			<el-form-item label="选择运营位" required>
     				<el-input v-if="!isEdit" v-model="operatePosName" readonly @click="popOpLayoutList"></el-input>
     				<p v-else>{{operatePosName}}</p>
     			</el-form-item>
-				<el-form-item label="排序" required>
-					<el-input v-model="current.weight"></el-input>
-				</el-form-item>
+  				<el-form-item label="排序" required>
+  					<el-input v-model="opInfo.weight"></el-input>
+  				</el-form-item>
 				<el-form-item label="平台" required>
-					<el-select v-model="current.resource_app_type">
+					<el-select v-model="opInfo.resource_app_type">
 						<el-option label="用户" :value="1"></el-option>
 						<el-option label="BA" :value="2"></el-option>
 					</el-select>
 				</el-form-item>
-				<el-form-item label="IOS" required v-if="current.condition_obj.ios_version">
-					<el-row class="f-cl" v-for="(ios_item, index) in current.condition_obj.ios_version">
+				<el-form-item label="IOS" required v-if="opInfo.condition_obj.ios_version">
+					<el-row class="f-cl" v-for="(ios_item, index) in opInfo.condition_obj.ios_version">
 					    <el-col :span="2"><el-input v-model="ios_item.start.a" />.</el-col>
 					    <el-col :span="2"><el-input v-model="ios_item.start.b" />.</el-col>
 					    <el-col :span="2"><el-input v-model="ios_item.start.c" /></el-col>
@@ -32,8 +32,8 @@
 					    	<el-button type="text" @click.stop="addIosVersion">增加</el-button>
 					    </el-col>
 				</el-form-item>
-				<el-form-item label="Android" required v-if="current.condition_obj.android_version">
-					<el-row class="f-cl" v-for="(android_item, index) in current.condition_obj.android_version">
+				<el-form-item label="Android" required v-if="opInfo.condition_obj.android_version">
+					<el-row class="f-cl" v-for="(android_item, index) in opInfo.condition_obj.android_version">
 					    <el-col :span="2"><el-input v-model="android_item.start.a" />.</el-col>
 					    <el-col :span="2"><el-input v-model="android_item.start.b" />.</el-col>
 					    <el-col :span="2"><el-input v-model="android_item.start.c" /></el-col>
@@ -46,36 +46,36 @@
 					    	<el-button type="text" @click.stop="addAndroidVersion">增加</el-button>
 					    </el-col>
 				</el-form-item>
-				<el-form-item label="Android渠道" required  v-if="current.condition_obj.android_channel">
-					<el-row v-for="(channel, index) in current.condition_obj.android_channel">
+				<el-form-item label="Android渠道" required  v-if="opInfo.condition_obj.android_channel">
+					<el-row v-for="(channel, index) in opInfo.condition_obj.android_channel">
 					    <el-col :span="4">
-					    	<el-input v-model="current.condition_obj.android_channel[index]" />
+					    	<el-input v-model="opInfo.condition_obj.android_channel[index]" />
 					    </el-col>
 					    <el-button type="text" @click.stop="removeChannel(index)">删除</el-button>
 					</div>
 				    <el-button type="text" @click.stop="addChannel">增加</el-button>
 				</el-form-item>
-				<el-form-item label="类型" required v-if="current.resource_type">
-					<p>{{current.resource_type | typeText}}</p>
+				<el-form-item label="类型" required v-if="opInfo.resource_type">
+					<p>{{opInfo.resource_type | typeText}}</p>
 				</el-form-item>
-				<div v-if="current.resource_type == 1">
+				<div v-if="opInfo.resource_type == 1">
 					<el-form-item label="选择图片" required >
 						<p class="block-tips"> (200*100)</p> 
 						<div class="upload-logo upload-img">
-						    <img v-show="current.image_url" :src="current.image_url" />
+						    <img v-show="opInfo.image_url" :src="opInfo.image_url" />
 						</div>
 					</el-form-item>
 					<el-form-item label="文案" required>
-						<el-input v-model="current.text"></el-input>
+						<el-input v-model="opInfo.text"></el-input>
 					</el-form-item>
 					<el-form-item label="图片跳转URL(APP)" required>
-						<el-input v-model="current.forward_protocol" readonly @click.prevent="popProtocolList" />
+						<el-input v-model="opInfo.forward_protocol" readonly @click.prevent="popProtocolList" />
 						<span>伪协议前缀</span> 
-						<el-input v-model="current.forward_param"></el-input>
-						<span>参数提示：{{current.forward_remark}}</span>
+						<el-input v-model="opInfo.forward_param"></el-input>
+						<span>参数提示：{{opInfo.forward_remark}}</span>
 					</el-form-item>
 				</div>
-				<div v-if="current.resource_type == 2">
+				<div v-if="opInfo.resource_type == 2">
 					<el-form-item label="选择商品" required>
 						<el-input v-model="opInfo.item_group_id" readonly @click.prevent="popItemGroupList"></el-input>
 					</el-form-item>
@@ -89,7 +89,7 @@
             </div>
 					 -->
 				</div>			
-				<div v-if="current.resource_type == 3">
+				<div v-if="opInfo.resource_type == 3">
 					<!-- 
 <div class="form-group form-group-sm">
     <label class="control-label col-4"><span class="form-required">*</span>选择专题：</label>
@@ -131,25 +131,27 @@
 </template>
 
 <script>
-
+import newOperateContent from './newOperateContent';
 
 export default {
 	name: 'OperateContentModal',
 	props: {
 		show: Boolean,
-		current: {
-			type: Object,
-			default() {
-				return {};
-			}
-		}
+    operateId: {
+      type: [String, Number],
+      default: ''
+    }
 	},
+  data: {
+    opInfo: newOperateContent,
+    count: 0
+  },
 	computed: {
 		isEdit() {
-			return !!this.current.id;
+			return !!this.operateId;
 		},
 		title() {
-			const action = this.current.id ? '编辑' : '录入';
+			const action = this.isEdit ? '编辑' : '录入';
 			return `${action}运营内容`;
 		}
 	},

@@ -48,7 +48,7 @@
     			</div>
 				
 				<!-- 表格 -->
-				<el-table stripe :data="operateContents" :default-sort="{prop: 'id', order: 'descending'}" @selection-change="handleSelectionChange">
+				<el-table stripe :data="operateContents" :default-sort="{prop: 'id', order: 'descending'}" @selection-change="onchecked">
 					<el-table-column align="center" type="selection" width="60"></el-table-column>
 					<el-table-column align="center" label="ID" width="80" prop="id" sortable></el-table-column>
 					<el-table-column align="center" label="内容名称" prop="name" sortable width="200">
@@ -132,45 +132,10 @@
 
 <script>
 
-import Vue from 'vue';
 import OperateContentModal from './OperateContentModal';
-
-var defSearch = {
-	name: '',
-	id: '',
-	app_type: '',
-	resource_id: '',
-	status: '',
-	expire: ''
-};
-
-function onsuccess(callback, tips) {
-	return function(res) {
-		var result = res.data;
-		var data = result.data.data;
-		if (result.code - 0 === 10000) {
-			callback(data, result);
-			tips && Vue.prototype.$message.success(tips === true ? result.msg : tips);
-		} else {
-			Vue.prototype.$message.error('请求失败:' + result.msg);
-		}
-	};	
-}
-
-function eachKey(obj, fn) {
-	Object.keys(obj).forEach(key => {
-		fn(obj[key], key, obj);
-	});
-}
-
-function queryStringify(obj) {
-	var pairs = [];
-	eachKey(obj, (val, key) => {
-		pairs.push(encodeURI(`${key}=${JSON.stringify(val).replace(/['"]/g, '')}`));
-	});
-	return pairs.join('&');
-}
-
+import mixin from './mixin';
+import {defSearch} from './operateData';
+import {successHandler, queryStringify} from './helper';
 
 export default {
 	name: 'OperateView',
@@ -197,7 +162,7 @@ export default {
 
     	},
     	resetSearch() {
-    		this.search = defSearch;
+    		this.search = Object.assign({}, defSearch);
     	},
     	doSearch() {
     		this.loadTable();
@@ -209,12 +174,12 @@ export default {
     	setStatus(ids, status) {
     		const action = status === 'ACTIVE' ? '激活' : '取消激活';
     		const data = {ids, status};
-    		this.axios.post('/resource/set_data_status.do', queryStringify(data)).then(onsuccess(data => {
+    		this.axios.post('/resource/set_data_status.do', queryStringify(data)).then(successHandler(data => {
     			// reload table
     			this.loadTable();
     		}, `${action}成功`));
     	},
-    	handleSelectionChange(checkeds) {
+    	onchecked(checkeds) {
     		this.checkedIds = checkeds.map(checked => checked.id);
     	},
     	setStatusForChecked(status) {
@@ -232,20 +197,10 @@ export default {
     	loadTable(curPage) {
     		curPage && (this.currentPage = curPage);
     		var data = Object.assign({}, this.pagingData, this.search);
-    		this.axios.post('/resource/query_data.do', queryStringify(data)).then(onsuccess((data, res) => {
+    		this.axios.post('/resource/query_data.do', queryStringify(data)).then(successHandler((data, res) => {
     			this.operateContents = data;
     			this.total = res.data.total_count - 0;
     		}));
-    	}
-    },
-    filters: {
-    	typeText(i) {
-    		var types = ['', '图片', '商品', '专题'];
-    		return types[i] || '';
-    	},
-    	statusText(i) {
-    		var statuses = ['未激活', '激活'];
-    		return statuses[i] || '';
     	}
     },
     components: {
