@@ -133,12 +133,13 @@
 <script>
 
 import OperateContentModal from './OperateContentModal';
-import mixin from './mixin';
+import operateMixin from './operateMixin';
 import {defSearch} from './operateData';
 import {successHandler, queryStringify} from './helper';
 
 export default {
 	name: 'OperateView',
+    mixins: [operateMixin],
     data(){
         return {
         	activeTab: 'operatePosTab',
