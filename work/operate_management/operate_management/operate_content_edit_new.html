@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="keywords" content=""/>
+    <meta name="description" content=""/>
+    <meta name="robots" content="noindex">
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>店铺管理后台-莴笋</title>
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- inject:js -->
+    <!-- endinject -->
+</head>
+
+<body>
+
+<!-- 头部导航部分 -->
+<div class="j-nav-render"></div>
+
+<div class="container">
+    <div class="main-wrap clearfix">
+
+        <!-- 侧边栏 -->
+        <div class="j-subnav-render"></div>
+
+        <div class="content">
+            <div class="ui-tab">
+                <ul>
+                    <li><a href="operate_content_list.html">运营内容管理</a></li>
+                    <li class="active"><a href="operate_position_list.html">运营位管理</a></li>
+                    <li><a href="cache_manager.html">APP缓存管理</a></li>
+                </ul>
+            </div>
+            <div class="ui-box">
+                <div class="widget-list" style="margin:0 auto;width:800px;">
+                    <div class="list-filter">
+                        <form class="form-horizontal"  role="form" style="width: 800px;">
+                            <div class="form-group">
+                                <div class="col-sm-10">运营位编号：
+                                    <input type="text" class="form-control" style="width: 80%;" id="op_code" placeholder="请输入运营位编号">
+                                </div>
+                                <div class="col-sm-10">
+                                    <p style="color: red;">运营位编号输入说明：1-启动页广告位；2-首页弹窗运营位；3-日笺运营位；4-门店Banner；5-启动页新人礼包运营位；6-BA列表主题图；7-首页Banner运营位-7；8-首页四格运营位；
+                                        <br>
+                                        还有很多，可以看wiki<a href="http://10.66.48.166:8090/pages/viewpage.action?pageId=3081037" target="_blank">运营位说明</a>了解
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-10">
+                                    <input type="hidden" id="op_id">运营位名称：
+                                    <input type="text" class="form-control" id="op_name" style="width: 80%;"  placeholder="请输入运营位名称">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-10">运营位别名：
+                                    <input type="text" class="form-control" id="op_byname" style="width: 80%;" placeholder="请输入运营位别名">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-10">内容限制条数：
+                                    <input type="text" class="form-control" style="width: 80%;" id="op_content_limit" placeholder="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-10">平台：
+                                    <select class="form-control input-sm page-status" style="width: 80%;" id="op_platform">
+                                        <option value="">请选择</option>
+                                        <option value="1">莴笋APP</option>
+                                        <option value="2">BA</option>
+                                        <option value="3">莴笋WAP</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-10">权重：
+                                    <input type="text" class="form-control input-sm" style="width: 80%;" id="op_weight" cb-node="" placeholder="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div>状态：
+                                    <div class="col-sm-10" id="op_status_div" style="width: 80%;">
+                                        <div class="radio">
+                                            <label>
+                                                <input type="radio" name="op_status" id="enActivation" value="1" checked>激活
+                                            </label>
+                                        </div>
+                                        <div class="radio">
+                                            <label>
+                                                <input type="radio" name="op_status" id="disActivation" value="0">未激活
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <span class="input-group-btn">
+                                    <a href="javascript:;" class="btn btn-success btn-sm op_summit" style="width: 50px;">提交</a>
+                                    <a href="operate_position_list.html" class="btn btn-success btn-sm" style="width: 50px;">取消</a>
+                                </span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!--#insert file="../common/footer.html" -->
+<!--#insert file="../common/templates/nav_render.html" -->
+
+<script id="cate-info" type="text/template">
+    <div class="cate-wrapper">
+        <p>默认分类页面暂不支持编辑。</p>
+        <p>如果默认分类页面无法满足您的需求，可通过<a href="page_list.html">营销页面</a>组建一个新的分类页面，并将新的分类页面链接配置到<a href="page_nav.html">底部导航</a>中。</p>
+        <p>
+            <span class="vt">样式举例：</span>
+            <img src="http://img01.taojae.com/party/a83c12544afd3e3aeb13a3befaaf4cd5.png">
+        </p>
+        <p class="tc">该页面可通过，导航链接与TAB链接配置；<br>可通过其它组件自由组合，满足更多需求。</p>
+    </div>
+</script>
+</body>
+</html>

@@ -26,6 +26,7 @@
 		events: {
 			userinfo: function(user){
 				this.user = user;
+				console.log('userinfo event cb for mycmp~');
 				// return true;
 			}
 		},
@@ -36,7 +37,8 @@
 			}
 		},*/
 		created: function () {
-			this.$emit('userinfo', 'sindy');
+			this.$emit('userinfo', 'sindy');// 先执行 userinfo的回调再执行下面这句
+			console.log('after $emit event userinfo~');
 			// this.$dispatch('userinfo', 'sindy');
 		}
 	});
@@ -51,6 +53,7 @@
 		events: {
 			userinfo: function (user) {
 				this.user = user;
+				console.log('userinfo event cb for app~');
 			}
 		},
 		methods: {

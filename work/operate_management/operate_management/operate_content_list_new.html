@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="keywords" content=""/>
+    <meta name="description" content=""/>
+    <meta name="robots" content="noindex">
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>店铺管理后台-莴笋</title>
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- inject:js -->
+    <!-- endinject -->
+</head>
+<body>
+<!-- 头部导航部分 -->
+<div class="j-nav-render"></div>
+<div class="container">
+    <div class="main-wrap clearfix">
+        <!-- 侧边栏 -->
+        <div class="j-subnav-render"></div>
+        <div class="content" id="operateEl">
+            <div class="ui-tab">
+                <ul>
+                    <li><a href="operate_layout_list.html">新运营位管理</a></li>
+                    <li class="active"><a href="operate_content_list_new.html">新运营内容管理</a></li>
+                    <li><a href="cache_manager.html">APP缓存管理</a></li>
+                </ul>
+            </div>
+            <div class="ui-box">
+                <div class="list-btn add-operate">
+                    <a class="btn btn-success btn-sm w100 J_newpage" @click="addOperate">添加内容+</a>
+                </div>
+                <div class="list-filter">
+                    <form class="form-inline">
+                        <div class="form-group">
+                            内容名称：<input type="text" class="form-control input-sm" id="op_name" v-model="search.name" placeholder="">
+                        </div>
+                        <div class="form-group">
+                            内容ID：<input type="text" class="form-control input-sm" id="op_content_id" v-model="search.id" placeholder="">
+                        </div>
+                        <div class="form-group">
+                            平台：
+                            <select class="form-control input-sm page-status" id="op_platform" v-model="search.app_type">
+                                <option value="">请选择</option>
+                                <option value="1">莴笋APP</option>
+                                <option value="2">BA</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            运营位ID：
+                            <input type="text" class="form-control input-sm" id="op_id" v-model="search.resource_id" placeholder="">
+                        </div>
+                        <div class="form-group">
+                            是否激活：
+                            <select class="form-control input-sm page-status" id="op_status" v-model="search.status">
+                                <option value="">请选择</option>
+                                <option value="1">激活</option>
+                                <option value="0">未激活</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            是否过期：
+                            <select class="form-control input-sm page-status" id="op_status" v-model="search.expire">
+                                <option value="">请选择</option>
+                                <option value="1">过期</option>
+                                <option value="0">未过期</option>
+                            </select>
+                        </div>
+                        <div class="form-group btn-search">
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <a href="javascript:;" class="btn btn-default btn-sm op_search" @click="opContentSearch">查询</a>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group btn-reset">
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <a href="javascript:;" class="btn btn-default btn-sm op_reset" @click="searchReset">重置</a>
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="ui-box">
+                <table class="ui-table">
+                    <thead>
+                    <tr>
+                        <th class="tc">选择</th>
+                        <th class="tc">ID</th>
+                        <th class="tc">内容名称</th>
+                        <th class="tc">内容</th>
+                        <th class="tc">版本号</th>
+                        <th class="tc">排序</th>
+                        <th class="tc">运营位</th>
+                        <th class="tc">持续时间</th>
+                        <th class="tc">状态</th>
+                        <th class="tc">操作人</th>
+                        <th class="tc">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody class="J_getPageList" id="op_tb_list">
+                        <tr v-cloak v-for="item in dataList" v-bind:id="item.id" @click="selectedOp(item)">
+                            <td>
+                                <input v-bind:id="item.id" name="opItemCheckbox" type="checkbox" v-model="item.checked">
+                            </td>
+                            <td>{{item.id}}</td>
+                            <td><a href="javascript:;" @click.stop="getOperate(item.id)">{{item.name}}</a></td>
+                            <td><img v-show="item.image_url" :src="item.image_url"></td>
+                            <td>
+                                <template v-if="item.condition_obj.ios_version">
+                                    <div class="ios-wrap f-cl">
+                                        <div class="f-fl" style="width: 30%">
+                                            IOS版本：
+                                        </div>
+                                        <div class="f-fl" style="width: 70%">
+                                            <p v-for="ios_item in item.condition_obj.ios_version">
+                                                <span class="version-start">
+                                                    >={{ios_item.start.a}}.{{ios_item.start.b}}.{{ios_item.start.c}}
+                                                </span>
+                                                <span>&&</span>
+                                                <span class="version-end">
+                                                    <={{ios_item.end.a}}.{{ios_item.end.b}}.{{ios_item.end.c}}
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template v-if="item.condition_obj.android_version">
+                                    <div class="android-wrap f-cl">
+                                        <div class="f-fl" style="width: 30%">
+                                            Android版本：
+                                        </div>
+                                        <div class="f-fl" style="width: 70%">
+                                            <p v-for="android_item in item.condition_obj.android_version">
+                                                <span class="version-start">
+                                                    >={{android_item.start.a}}.{{android_item.start.b}}.{{android_item.start.c}}
+                                                </span>
+                                                <span>&&</span>
+                                                <span class="version-end">
+                                                    <={{android_item.end.a}}.{{android_item.end.b}}.{{android_item.end.c}}
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </td>
+                            <td>{{item.weight}}</td>
+                            <td>{{item.resource_type | filterType}}{{item.resource_id}}：{{item.resource_name}}</td>
+                            <td>
+                                <p>{{item.start_time}}</p>
+                                <p>{{item.end_time}}</p>
+                            </td>
+                            <td>{{item.status | filterActivateStatus}}</td>
+                            <td>{{item.operator}}</td>
+                            <td>
+                                <a href="javascript:;" @click.stop="getOperate(item.id)">编辑</a>
+                                <a href="javascript:;" @click.stop="setOpStatus(item.id, item.status)">{{item.status | filterActivateReverse}}</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tr v-if="!(dataList && dataList.length)"><td colspan="11" style="text-align: center;">无记录</td></tr>
+                </table>
+                <div class="list-btn operate-all-wrap">
+                    <label><input id='allOpIdCheckbox' name='opItemCheckbox' type='checkbox' v-model="checkAllFlag" @click="selectAllOp"/>全选</label>
+                    <a class="btn btn-success btn-sm w100" href="javascript:;" @click="setOpStatus('ACTIVE')">激活</a>
+                    <a class="btn btn-success btn-sm w100" href="javascript:;" @click="setOpStatus('FREEZE')">取消激活</a>
+                </div>
+                <!-- 页码开始 -->
+                <div class="ui-box">
+                    <div class="widget-list pagination-wrap">
+                        <div></div>
+                        <div class="list-page">
+                            <div id="p-opcontent" class="ui-pagination pagination"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 页码结束 -->
+            </div>
+        </div>
+    </div>
+</div>
+<!--#insert file="../common/footer.html" -->
+<!--#insert file="../common/templates/nav_render.html" -->
+<script id="J-add-operate" type="text/template">
+    <div class="formvalidate" id="opInfoTemplate">
+        <div class="form-group form-group-sm">
+            <label class="control-label col-4"><span class="form-required">*</span>内容名称：</label>
+            <div class="col-4">
+                <input class="form-control" v-model="opInfo.name">
+            </div>
+        </div>
+        <div class="form-group form-group-sm">
+            <label class="control-label col-4"><span class="form-required">*</span>选择运营位：</label>
+            <div class="col-4 form-radio">
+                <template v-if="editStatus=='add'">
+                    <input type="text" class="form-control" v-model="op_name" readonly="readonly" @click.prevent="popOpLayoutList">
+                </template>
+                <template v-if="editStatus=='edit'">
+                    <p>{{op_name}}</p>
+                </template>
+            </div>
+        </div>
+        <div class="form-group form-group-sm">
+            <label class="control-label col-4"><span class="form-required">*</span>排序：</label>
+            <div class="col-4">
+                <input type="text" class="form-control" v-model="opInfo.weight">
+            </div>
+        </div>
+        <template v-if="opInfo.resource_app_type">
+            <div class="form-group form-group-sm">
+                <label class="control-label col-4"><span class="form-required">*</span>平台：</label>
+                <div class="col-4 form-radio">
+                    <p v-if="opInfo.resource_app_type == 1">用户</p>
+                    <p v-if="opInfo.resource_app_type == 2">BA</p>
+                </div>
+            </div>
+        </template>
+        <div class="form-group form-group-sm">
+            <template v-if="opInfo.condition_obj.ios_version">
+                <div class="ios-wrap f-cl">
+                    <label class="control-label col-4"><span class="form-required">*</span>IOS：</label>
+                    <div class="col-8 form-radio">
+                        <div class="f-cl" v-for="(ios_item, index) in opInfo.condition_obj.ios_version">
+                            <div class='f-fl col-1'><input type="text" class="form-control" v-model="ios_item.start.a"></div>
+                            <div class='f-fl'>.</div>
+                            <div class='f-fl col-1'><input type="text" class="form-control" v-model="ios_item.start.b"></div>
+                            <div class='f-fl'>.</div>
+                            <div class='f-fl col-1'><input type="text" class="form-control" v-model="ios_item.start.c"></div>
+                            <div class='f-fl' style="padding: 0px 10px">--</div>
+                                <!-- <div class='f-fl col-1'><input type="text" class="form-control" v-model="opInfo.ios_version_start"></div> -->
+                            <div class='f-fl col-1'><input type="text" class="form-control" v-model="ios_item.end.a"></div>
+                            <div class='f-fl'>.</div>
+                            <div class='f-fl col-1'><input type="text" class="form-control" v-model="ios_item.end.b"></div>
+                            <div class='f-fl'>.</div>
+                            <div class='f-fl col-1'><input type="text" class="form-control" v-model="ios_item.end.c"></div>
+                            <span class="version-btn del-btn"><a href="javascript:;" @click.stop="removeIosVersion(index)">-</a></span>
+                        </div>
+                        <span class="version-btn add-btn"><a href="javascript:;" @click.stop="addIosVersion">+</a></span>
+                    </div>
+                </div>
+            </template>
+            <template v-if="opInfo.condition_obj.android_version">
+                <div class="android-wrap f-cl">
+                    <label class="control-label col-4"><span class="form-required">*</span>Android：</label>
+                    <div class="col-8 form-radio">
+                        <div class="f-cl" v-for="(android_item, index) in opInfo.condition_obj.android_version">
+                            <div class='f-fl col-1'><input type="text" class="form-control" v-model="android_item.start.a"></div>
+                            <div class='f-fl'>.</div>
+                            <div class='f-fl col-1'><input type="text" class="form-control" v-model="android_item.start.b"></div>
+                            <div class='f-fl'>.</div>
+                            <div class='f-fl col-1'><input type="text" class="form-control" v-model="android_item.start.c"></div>
+                            <div class='f-fl' style="padding: 0px 10px">--</div>
+                                <!-- <div class='f-fl col-1'><input type="text" class="form-control" v-model="opInfo.ios_version_start"></div> -->
+                            <div class='f-fl col-1'><input type="text" class="form-control" v-model="android_item.end.a"></div>
+                            <div class='f-fl'>.</div>
+                            <div class='f-fl col-1'><input type="text" class="form-control" v-model="android_item.end.b"></div>
+                            <div class='f-fl'>.</div>
+                            <div class='f-fl col-1'><input type="text" class="form-control" v-model="android_item.end.c"></div>
+                            <span class="version-btn del-btn"><a href="javascript:;" @click.stop="removeAndroidVersion(index)">-</a></span>
+                        </div>
+                        <span class="version-btn add-btn"><a href="javascript:;" @click.stop="addAndroidVersion">+</a></span>
+                    </div>
+                </div>
+            </template>
+            <template v-if="opInfo.condition_obj.android_channel">
+                <div class="android-wrap f-cl">
+                    <label class="control-label col-4"><span class="form-required">*</span>Android渠道：</label>
+                    <div class="col-8 form-radio">
+                        <div class="f-cl" v-for="(channel, index) in opInfo.condition_obj.android_channel">
+                            <div class='f-fl col-4'><input type="text" class="form-control" v-model="opInfo.condition_obj.android_channel[index]"></div>
+                            <span class="version-btn del-btn"><a href="javascript:;" @click.stop="removeChannel(index)">-</a></span>
+                        </div>
+                        <!-- <div class="col-4">
+                            <input type="text" class="form-control" v-model="channelArr">
+                        </div> -->
+                        <span class="version-btn add-btn"><a href="javascript:;" @click.stop="addChannel">+</a></span>
+                    </div>
+                </div>
+            </template>
+        </div>
+        <template v-if="opInfo.resource_type">
+            <div class="form-group form-group-sm">
+                <label class="control-label col-4"><span class="form-required">*</span>类型：</label>
+                <div class="col-4 form-radio">
+                    <p v-if="opInfo.resource_type == 1">图片</p>
+                    <p v-if="opInfo.resource_type == 2">商品</p>
+                    <p v-if="opInfo.resource_type == 3">专题</p>
+                </div>
+            </div>
+        </template>
+        <template v-if="opInfo.resource_type == 1">
+            <div class="form-group form-group-sm">
+                <label class="control-label col-4"><span class="form-required">*</span>选择图片：</label> 
+                <div class="col-8">
+                    <p class="form-control-static form-hint"> (200*100)</p> 
+                    <div class="upload-logo upload-img">
+                        <img v-show="opInfo.image_url" :src="opInfo.image_url" style="display: none;">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                <label class="control-label col-4"><span class="form-required">*</span>文案：</label>
+                <div class="col-4">
+                    <label><input type="text" class="form-control" v-model="opInfo.text"></label>
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                <label class="control-label col-4"><span class="form-required">*</span>图片跳转URL(APP)：</label>
+                <div class="col-4">
+                    <input type="text" class="form-control" v-model="opInfo.forward_protocol" readonly="readonly" @click.prevent="popProtocolList"><span>伪协议前缀</span>
+                </div>
+                <div class="col-2" style="margin-left: 10px">
+                    <input type="text" class="form-control" v-model="opInfo.forward_param"><span>参数提示：{{opInfo.forward_remark}}</span>
+                </div>
+            </div>
+        </template>
+        <template v-if="opInfo.resource_type == 2">
+            <div class="form-group form-group-sm">
+                <label class="control-label col-4"><span class="form-required">*</span>选择商品：</label>
+                <div class="col-1">
+                    <label><input type="text" class="form-control" v-model="opInfo.item_group_id" readonly="readonly" @click.prevent="popItemGroupList"></label>
+                </div>
+            </div>
+        </template>
+        <template v-if="opInfo.resource_type == 3">
+            <div class="form-group form-group-sm">
+                <label class="control-label col-4"><span class="form-required">*</span>选择专题：</label>
+                <div class="col-1">
+                    <label><input type="text" class="form-control" v-model="opInfo.topic_id"></label>
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                <label class="control-label col-4"><span class="form-required">*</span>封面图：</label> 
+                <div class="col-8">
+                    <p class="form-control-static form-hint"> (200*100)</p> 
+                    <div class="upload-logo upload-img">
+                        <img v-show="opInfo.image_url" :src="opInfo.image_url" style="display: none;">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                <label class="control-label col-4"><span class="form-required">*</span>展示商品：</label>
+                <div class="col-4 form-radio">
+                    <input type="checkbox" class="" v-model="opInfo.show_item">
+                </div>
+            </div>
+            <div class="form-group form-group-sm">
+                <label class="control-label col-4"><span class="form-required">*</span>展示更多：</label>
+                <div class="col-4 form-radio">
+                    <input type="checkbox" class="" v-model="opInfo.show_more">
+                </div>
+            </div>
+        </template>
+        <div class="form-group form-group-sm">
+            <label class="control-label col-4"><span class="form-required">*</span>仅新客可见：</label>
+            <div class="col-4 form-radio">
+                <input type="checkbox" class="" v-model="opInfo.condition_obj.new_user_only">
+            </div>
+        </div>
+        <div class="form-group form-group-sm">
+            <label class="control-label col-4"><span class="form-required">*</span>开始-结束时间：</label>
+            <div class="col-4">
+                <input class="form-control" id="startTime" type="text" v-model="opInfo.start_time">
+                <div style="text-align: center;">至</div>
+                <input class="form-control" id="endTime" type="text" v-model="opInfo.end_time">
+            </div>
+        </div>
+        <div class="form-group form-group-sm">
+            <label class="control-label col-4"><span class="form-required">*</span>状态：</label>
+            <div class="col-4 form-radio">
+                <label><input type="radio" class="" v-model="opInfo.status" value="1"><span>激活</span></label>
+                <label><input type="radio" class="" v-model="opInfo.status" value="0"><span>未激活</span></label>
+            </div>
+        </div>
+        <div class="form-group form-group-sm">
+            <label class="control-label col-4"><span class="form-required">*</span>备注：</label>
+            <div class="col-6 form-radio">
+                <textarea class="form-control" rows="5" maxlength="120" v-model="opInfo.remark"></textarea>
+            </div>
+        </div>
+    </div>
+</script>
+<!-- 运营位弹窗 -->
+<script id="J-op-layout" type="text/template">
+    <div class="formvalidate" id="opLayoutEl">
+        <div class="ui-box">
+            <div class="list-filter">
+                <form class="form-inline">
+                    <div class="form-group">
+                        运营位名称：<input type="text" class="form-control input-sm" v-model="search.name" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        别名：<input type="text" class="form-control input-sm" v-model="search.code" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        ID：<input type="text" class="form-control input-sm" v-model="search.id" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        平台：
+                        <select class="form-control input-sm page-status" id="op_platform" v-model="search.app_type">
+                            <option value="">请选择</option>
+                            <option value="1">莴笋APP</option>
+                            <option value="2">BA</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        是否激活：
+                        <select class="form-control input-sm page-status" id="op_status" v-model="search.status">
+                            <option value="">请选择</option>
+                            <option value="1">激活</option>
+                            <option value="0">未激活</option>
+                        </select>
+                    </div>
+                    <div class="form-group btn-search">
+                        <div class="input-group">
+                            <span class="input-group-btn">
+                                <a href="javascript:;" class="btn btn-default btn-sm op_search" @click="operateSearch">查询</a>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group btn-reset">
+                        <div class="input-group">
+                            <span class="input-group-btn">
+                                <a href="javascript:;" class="btn btn-default btn-sm op_reset" @click="searchReset">重置</a>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="ui-box">
+            <table class="ui-table">
+                <thead>
+                <tr>
+                    <th class="tc">ID</th>
+                    <th class="tc">运营位名称</th>
+                    <th class="tc">别名</th>
+                    <th class="tc">平台</th>
+                    <th class="tc">类型</th>
+                    <th class="tc">数目限制</th>
+                    <th class="tc">状态</th>
+                    <th class="tc">操作人</th>
+                    <th class="tc">操作时间</th>
+                </tr>
+                </thead>
+                <tbody class="J_getPageList" id="op_tb_list">
+                    <tr v-cloak v-for="item in dataList" v-bind:id="item.id">
+                        <td>{{item.id}}</td>
+                        <td><a href="javascript:;" @click.stop="selectOpLayout(item.id, item.name, item.type, item.app_type)">{{item.name}}</a></td>
+                        <td>{{item.code}}</td>
+                        <td>{{item.app_type | filterAppType}}</td>
+                        <td>{{item.type | filterType}}</td>
+                        <td>{{item.max_size}}</td>
+                        <td>{{item.status | filterActivateStatus}}</td>
+                        <td>{{item.operator}}</td>
+                        <td>{{item.gmt_modified}}</td>
+                    </tr>
+                </tbody>
+                <tr v-if="!(dataList && dataList.length)"><td colspan="11" style="text-align: center;">无记录</td></tr>
+            </table>
+            <!-- 页码开始 -->
+            <div class="ui-box">
+                <div class="widget-list pagination-wrap">
+                    <div></div>
+                    <div class="list-page">
+                        <div id="p-layout" class="ui-pagination pagination"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- 页码结束 -->
+        </div>
+    </div>
+</script>
+<!-- 伪协议列表 -->
+<script id="J-protocol-layout" type="text/template">
+    <div class="formvalidate" id="protocolEl">
+        <div class="ui-box">
+            <table class="ui-table">
+                <thead>
+                <tr>
+                    <th class="tc">伪协议名称</th>
+                    <th class="tc">伪协议别名</th>
+                    <th class="tc">协议</th>
+                    <th class="tc">参数</th>
+                    <th class="tc">备注</th>
+                </tr>
+                </thead>
+                <tbody class="J_getPageList">
+                    <tr v-cloak v-for="item in dataList">
+                        <td><a href="javascript:;" @click.stop="selectProtocol(item)">{{item.name}}</a></td>
+                        <td>{{item.code}}</td>
+                        <td>{{item.protocol}}</td>
+                        <td>{{item.param_list}}</td>
+                        <td>{{item.remark}}</td>
+                    </tr>
+                </tbody>
+                <tr v-if="!(dataList && dataList.length)"><td colspan="11" style="text-align: center;">无记录</td></tr>
+            </table>
+            <!-- 页码开始 -->
+            <div class="ui-box">
+                <div class="widget-list pagination-wrap">
+                    <div></div>
+                    <div class="list-page">
+                        <div id="p-protocol" class="ui-pagination pagination"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- 页码结束 -->
+        </div>
+    </div>
+</script>
+<!-- 伪协议列表 -->
+<script id="J-itemgroup-layout" type="text/template">
+    <div class="formvalidate" id="itemgroupEl">
+        <div class="ui-box">
+            <div class="list-filter">
+                <form class="form-inline">
+                    <div class="form-group">
+                        商品组ID：<input type="text" class="form-control input-sm" v-model="searchId" placeholder="">
+                    </div>
+                    <div class="form-group btn-search">
+                        <div class="input-group">
+                            <span class="input-group-btn">
+                                <a href="javascript:;" class="btn btn-default btn-sm op_search" @click="groupSearch">查询</a>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group btn-reset">
+                        <div class="input-group">
+                            <span class="input-group-btn">
+                                <a href="javascript:;" class="btn btn-default btn-sm op_reset" @click="searchReset">重置</a>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="ui-box">
+            <table class="ui-table">
+                <thead>
+                <tr>
+                    <th class="tc">商品组名称</th>
+                    <th class="tc">商品组ID</th>
+                </tr>
+                </thead>
+                <tbody class="J_getPageList">
+                    <tr v-cloak v-for="item in dataList">
+                        <td><a href="javascript:;" @click.stop="selectItemGroup(item)">{{item.item_group_info.name}}</a></td>
+                        <td>{{item.item_group_info.id}}</td>
+                    </tr>
+                </tbody>
+                <tr v-if="!(dataList && dataList.length)"><td colspan="11" style="text-align: center;">无记录</td></tr>
+            </table>
+            <!-- 页码开始 -->
+            <div class="ui-box">
+                <div class="widget-list pagination-wrap">
+                    <div></div>
+                    <div class="list-page">
+                        <div id="p-itemgroup" class="ui-pagination pagination"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- 页码结束 -->
+        </div>
+    </div>
+</script>
+<script id="cate-info" type="text/template">
+    <div class="cate-wrapper">
+        <p>默认分类页面暂不支持编辑。</p>
+        <p>如果默认分类页面无法满足您的需求，可通过<a href="page_list.html">营销页面</a>组建一个新的分类页面，并将新的分类页面链接配置到<a href="page_nav.html">底部导航</a>中。</p>
+        <p>
+            <span class="vt">样式举例：</span>
+            <img src="http://img01.taojae.com/party/a83c12544afd3e3aeb13a3befaaf4cd5.png">
+        </p>
+        <p class="tc">该页面可通过，导航链接与TAB链接配置；<br>可通过其它组件自由组合，满足更多需求。</p>
+    </div>
+</script>
+</body>
+</html>

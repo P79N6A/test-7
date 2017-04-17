@@ -4,6 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Document</title>
+    <style>
+    .subview {
+        border: 1px dashed #ccc;
+        padding: 20px;
+    }
+    .view{
+        border: 1px dashed pink;
+        padding: 20px;
+    }
+    </style>
 </head>
 
 <body>
@@ -11,15 +21,17 @@
     <script src="vue-router.js"></script>
     <div id="app">
         <h1>Hello App!</h1>
-
-        <router-view></router-view>
+        <router-link to="/user/alice">/user/alice</router-link>
+        <router-link to="/user/alice/posts">/user/alice/posts</router-link>
+        <router-link to="/user/alice/profile">/user/alice/profile</router-link>
+        <router-view class="view"></router-view>
     </div>
 
     <script>
         const User = {
             template: '<div class="user"> \
                     <h3>user: {{$route.params.id}} </h3>\
-                    <router-view></router-view>\
+                    <router-view class="subview"></router-view>\
                 </div>'
         };
 

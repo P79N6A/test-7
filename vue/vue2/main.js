@@ -19,6 +19,9 @@ Vue.component('jsx-example', {
     mounted: function() {
         console.log('jsx-example mounted..');
         this.$emit('click'); // no effect
+        this.$nextTick(function () {
+            this.$emit('click'); // no effect too
+        })
     },
     methods: {
         clickHandler() {

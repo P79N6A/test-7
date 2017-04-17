@@ -12,8 +12,8 @@
         <!-- 组件的自定义事件input  $event代表的仅仅是参数1而已，非event对象 -->
         <!--<currency-input v-on:input="log(arguments,$event)"></currency-input>-->
 
-        <!-- parentVm.price -> cmp.value 绑定  cmp input事件同步 newvalue -> parentVm.price-->
-        <currency-input v-model="price"></currency-input>
+        <!-- parentVm.price -> cmp.value 绑定  cmp input事件同步 cmp.value -> parentVm.price-->
+        <currency-input v-model="price" v-on:input="log"></currency-input>
         <strong>the price: {{price}}</strong>
 
         <!-- eventBus 非父子组件通信的简单解决方案 -->

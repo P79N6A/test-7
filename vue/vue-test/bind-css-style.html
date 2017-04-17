@@ -39,7 +39,7 @@
         <!-- =============== -->
 
         <!-- v-bind:style="" -->
-        <div v-bind:style="{ color: activeColor, fontSize: fontSize + 'px' } ">绑定样式对象...</div>
+        <div v-bind:style="{ color: activeColor, fontSize: fontSize + 'px' }">绑定样式对象...</div>
         <div v-bind:style="styleObj">绑定样式对象...</div>
         <div v-bind:style="[styleObj, styleObj2]">绑定样式对象...</div>
         <!-- v-bind:style  在添加类似 transform的属性时 自动加浏览器前缀 -->
@@ -50,7 +50,7 @@
 
     <script src="/bower_components/vue/dist/vue.js"></script>
     <script>
-    Vue.direcitve('test', {
+    Vue.directive('test', {
     	bind: function(){
     		console.log('in bind fn..');
     	},

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="keywords" content=""/>
+    <meta name="description" content=""/>
+    <meta name="robots" content="noindex">
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>店铺管理后台-莴笋</title>
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- inject:js -->
+    <!-- endinject -->
+</head>
+<body>
+<!-- 头部导航部分 -->
+<div class="j-nav-render"></div>
+<div class="container">
+    <div class="main-wrap clearfix">
+        <!-- 侧边栏 -->
+        <div class="j-subnav-render"></div>
+        <div class="content">
+            <div class="ui-tab">
+                <ul>
+                    <li class="active"><a href="operate_content_list.html">运营内容管理</a></li>
+                    <li><a href="operate_position_list.html">运营位管理</a></li>
+                    <li><a href="cache_manager.html">APP缓存管理</a></li>
+                </ul>
+            </div>
+            <div class="ui-box">
+                <div class="widget-list">
+                    <div class="list-btn">
+                        <a class="btn btn-success btn-sm w100 J_newpage" href="operate_content_edit.html">添加内容+</a>
+                    </div>
+                    <div class="list-filter">
+                        <form class="form-inline">
+                            <div class="form-group">
+                                内容名称：<input type="text" class="form-control input-sm" id="oc_name" cb-node="" placeholder="">
+                            </div>
+                            <div class="form-group">
+                                平台：
+                                <select class="form-control input-sm page-status" id="oc_platform">
+                                    <option value="">请选择</option>
+                                    <option value="1">莴笋APP</option>
+                                    <option value="2">BA</option>
+                                    <option value="3">莴笋WAP</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                运营位：
+                                <select class="form-control input-sm page-status" id="oc_op_id"></select>
+                            </div>
+                            <div class="form-group">
+                                是否激活：
+                                <select class="form-control input-sm page-status" id="oc_status">
+                                    <option value="">请选择</option>
+                                    <option value="1">激活</option>
+                                    <option value="0">未激活</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                是否过期：
+                                <select class="form-control input-sm page-status" id="oc_is_expired">
+                                    <option value="">请选择</option>
+                                    <option value="1">未过期</option>
+                                    <option value="0">已过期</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    内容ID：<input type="text" class="form-control input-sm" style="width: 50px;" id="oc_id" cb-node="" placeholder="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                        <span class="input-group-btn">
+                                            <a href="javascript:;" class="btn btn-default btn-sm oc_search" style="width: 50px;">查询</a>
+                                        </span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="ui-box">
+                <div class="list-btn">
+                    <label><input id='allOcIdCheckbox' name='ocItemCheckbox' type='checkbox' value='' cb-event='click~checkAllOcItem'/>全选</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a class="btn btn-success btn-sm w100" href="javascript:;" cb-event='click~activationSelect'>激活</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a class="btn btn-success btn-sm w100" href="javascript:;" cb-event='click~cancelActivationSelect'>取消激活</a>
+                </div>
+                <br>
+                <table class="ui-table">
+                    <thead>
+                    <tr>
+                        <th class="tc">选择</th>
+                        <th class="tc">ID</th>
+                        <th class="tc">内容名称</th>
+                        <th class="tc">缩略图</th>
+                        <th class="tc">版本号</th>
+                        <th class="tc">排序</th>
+                        <th class="tc">运营位</th>
+                        <th class="tc">持续时间</th>
+                        <th class="tc">状态</th>
+                        <th class="tc">操作人</th>
+                        <th class="tc">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody class="J_getPageList" id="oc_tb_list"></tbody>
+                </table>
+            </div>
+            <div class="ui-box mt">
+                <div class="widget-list">
+                    <div></div>
+                    <div class="list-page">
+                        <div class="ui-pagination sotrePagination"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--#insert file="../common/footer.html" -->
+<!--#insert file="../common/templates/nav_render.html" -->
+
+<script id="cate-info" type="text/template">
+    <div class="cate-wrapper">
+        <p>默认分类页面暂不支持编辑。</p>
+        <p>如果默认分类页面无法满足您的需求，可通过<a href="page_list.html">营销页面</a>组建一个新的分类页面，并将新的分类页面链接配置到<a href="page_nav.html">底部导航</a>中。</p>
+        <p>
+            <span class="vt">样式举例：</span>
+            <img src="http://img01.taojae.com/party/a83c12544afd3e3aeb13a3befaaf4cd5.png">
+        </p>
+        <p class="tc">该页面可通过，导航链接与TAB链接配置；<br>可通过其它组件自由组合，满足更多需求。</p>
+    </div>
+</script>
+</body>
+</html>

@@ -21,7 +21,8 @@
 	 */
 	var data = {
 			name: 'idle',
-			age: 20
+			age: 20,
+			fav: {name: 'football', reason: {a: 'passion', b: 'funny'}}
 		};
 
 	var vm = new Vue({
@@ -60,7 +61,8 @@
 		template: '<span v-on:click="updateMessage">{{msg}}</span>',
 		data: function () {
 			return {
-				msg: 'not updated'
+				msg: 'not updated',
+				car: car
 			};
 		},
 		methods: {
@@ -98,6 +100,9 @@
 
 	console.log(vm.name);
 	vm.$log('name');
+	vm.$log('fav.name');
+	vm.$log('fav.reason');
+	vm.$log('fav');
 	</script>
 </body>
 </html>

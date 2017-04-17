@@ -32,13 +32,25 @@
             Vue 在内部尝试对异步队列使用原生的 Promise.then 和 MutationObserver，
             如果执行环境不支持，会采用 setTimeout(fn, 0) 代替。
         -->
-        {{message}}
+        <h2>{{message}}</h2>
+        <h3>{{like}}</h3>
     </div>
     <script>
         var vm = new Vue({
+            name: 'App',
             el: '#app',
             data: {
-                message: 'hello world'
+                message: 'hello world',
+                person: {
+                    age: 12
+                }
+            },
+            created() {
+                // Vue.set(this.$data, 'foo', 'foolisth'); // not works
+                Vue.set(this.person, 'foo', 'foolisth'); // works
+                Vue.util.defineReactive(this, 'like', 'eating');
+                this.$set(this.person, 'name', 'sindy'); // 动态添加响应属性
+                // debugger;
             }
         });
         log = console.log.bind(console);
