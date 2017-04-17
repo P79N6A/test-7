@@ -85,7 +85,14 @@
             <el-date-picker v-model="opInfo.end_time"></el-date-picker>
           </el-form-item>
 
+          <el-form-item label="状态" required>
+            <el-radio v-model="opInfo.status" name="status" label="1">激活</el-radio>
+            <el-radio v-model="opInfo.status" name="status" label="0">未激活</el-radio>
+          </el-form-item>
 
+          <el-form-item label="备注" required>
+            <el-input type="textarea" :rows="3" v-model="opInfo.remark"></el-input>
+          </el-form-item>
 
     		</el-form>
     		<div class="dialog-footer" slot="footer">

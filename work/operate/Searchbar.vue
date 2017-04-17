@@ -52,9 +52,14 @@
   export default {
     name: 'Searchbar',
     props: {
-      isOperateCon: {// 运营位内容的搜索条 or  运营位的搜索条
-        type: Boolean,
-        default: true
+      searchFor: {// 运营位内容的搜索条 or  运营位的搜索条
+        type: String,
+        default: 'operateCon'
+      }
+    },
+    computed: {
+      isOperateCon() {
+        return this.searchFor === 'operateCon';
       }
     }
   }
