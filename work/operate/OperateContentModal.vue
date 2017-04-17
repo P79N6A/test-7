@@ -2,125 +2,91 @@
     <div class="operate-content-modal">
     	<el-dialog :title="title" v-model="show">
     		<el-form model="opInfo" label-width="100px">
-    			<el-form-item label="内容名称"  required>
+    			
+          <el-form-item label="内容名称"  required>
     				<el-input v-model="opInfo.name"></el-input>
     			</el-form-item>
-    			<el-form-item label="选择运营位" required>
+    			
+          <el-form-item label="选择运营位" required>
     				<el-input v-if="!isEdit" v-model="operatePosName" readonly @click="popOpLayoutList"></el-input>
     				<p v-else>{{operatePosName}}</p>
     			</el-form-item>
-  				<el-form-item label="排序" required>
+  				
+          <el-form-item label="排序" required>
   					<el-input v-model="opInfo.weight"></el-input>
   				</el-form-item>
-				<el-form-item label="平台" required>
-					<el-select v-model="opInfo.resource_app_type">
-						<el-option label="用户" :value="1"></el-option>
-						<el-option label="BA" :value="2"></el-option>
-					</el-select>
-				</el-form-item>
-				<el-form-item label="IOS" required v-if="opInfo.condition_obj.ios_version">
-					<el-row class="f-cl" v-for="(ios_item, index) in opInfo.condition_obj.ios_version">
-					    <el-col :span="2"><el-input v-model="ios_item.start.a" />.</el-col>
-					    <el-col :span="2"><el-input v-model="ios_item.start.b" />.</el-col>
-					    <el-col :span="2"><el-input v-model="ios_item.start.c" /></el-col>
-					    <el-col :span="3">--</el-col>
-					    <el-col :span="2"><el-input v-model="ios_item.end.a" />.</el-col>
-					    <el-col :span="2"><el-input v-model="ios_item.end.b" />.</el-col>
-					    <el-col :span="2"><el-input v-model="ios_item.end.c" /></el-col>
-					    <el-col :span="6">
-					    	<el-button type="text" @click.stop="removeIosVersion(index)">删除</el-button>
-					    	<el-button type="text" @click.stop="addIosVersion">增加</el-button>
-					    </el-col>
-				</el-form-item>
-				<el-form-item label="Android" required v-if="opInfo.condition_obj.android_version">
-					<el-row class="f-cl" v-for="(android_item, index) in opInfo.condition_obj.android_version">
-					    <el-col :span="2"><el-input v-model="android_item.start.a" />.</el-col>
-					    <el-col :span="2"><el-input v-model="android_item.start.b" />.</el-col>
-					    <el-col :span="2"><el-input v-model="android_item.start.c" /></el-col>
-					    <el-col :span="3">--</el-col>
-					    <el-col :span="2"><el-input v-model="android_item.end.a" />.</el-col>
-					    <el-col :span="2"><el-input v-model="android_item.end.b" />.</el-col>
-					    <el-col :span="2"><el-input v-model="android_item.end.c" /></el-col>
-					    <el-col :span="6">
-					    	<el-button type="text" @click.stop="removeAndroidVersion(index)">删除</el-button>
-					    	<el-button type="text" @click.stop="addAndroidVersion">增加</el-button>
-					    </el-col>
-				</el-form-item>
-				<el-form-item label="Android渠道" required  v-if="opInfo.condition_obj.android_channel">
-					<el-row v-for="(channel, index) in opInfo.condition_obj.android_channel">
-					    <el-col :span="4">
-					    	<el-input v-model="opInfo.condition_obj.android_channel[index]" />
-					    </el-col>
-					    <el-button type="text" @click.stop="removeChannel(index)">删除</el-button>
-					</div>
-				    <el-button type="text" @click.stop="addChannel">增加</el-button>
-				</el-form-item>
-				<el-form-item label="类型" required v-if="opInfo.resource_type">
-					<p>{{opInfo.resource_type | typeText}}</p>
-				</el-form-item>
-				<div v-if="opInfo.resource_type == 1">
-					<el-form-item label="选择图片" required >
-						<p class="block-tips"> (200*100)</p> 
-						<div class="upload-logo upload-img">
-						    <img v-show="opInfo.image_url" :src="opInfo.image_url" />
-						</div>
-					</el-form-item>
-					<el-form-item label="文案" required>
-						<el-input v-model="opInfo.text"></el-input>
-					</el-form-item>
-					<el-form-item label="图片跳转URL(APP)" required>
-						<el-input v-model="opInfo.forward_protocol" readonly @click.prevent="popProtocolList" />
-						<span>伪协议前缀</span> 
-						<el-input v-model="opInfo.forward_param"></el-input>
-						<span>参数提示：{{opInfo.forward_remark}}</span>
-					</el-form-item>
-				</div>
-				<div v-if="opInfo.resource_type == 2">
-					<el-form-item label="选择商品" required>
-						<el-input v-model="opInfo.item_group_id" readonly @click.prevent="popItemGroupList"></el-input>
-					</el-form-item>
-					
-					<!-- 
-				<div class="form-group form-group-sm">
-                <label class="control-label col-4"><span class="form-required">*</span>选择商品：</label>
-                <div class="col-1">
-                    <label><input type="text" class="form-control" v-model="opInfo.item_group_id" readonly="readonly" @click.prevent="popItemGroupList"></label>
-                </div>
-            </div>
-					 -->
-				</div>			
-				<div v-if="opInfo.resource_type == 3">
-					<!-- 
-<div class="form-group form-group-sm">
-    <label class="control-label col-4"><span class="form-required">*</span>选择专题：</label>
-    <div class="col-1">
-        <label><input type="text" class="form-control" v-model="opInfo.topic_id"></label>
-    </div>
-</div>
-<div class="form-group form-group-sm">
-    <label class="control-label col-4"><span class="form-required">*</span>封面图：</label> 
-    <div class="col-8">
-        <p class="form-control-static form-hint"> (200*100)</p> 
-        <div class="upload-logo upload-img">
-            <img v-show="opInfo.image_url" :src="opInfo.image_url" style="display: none;">
-        </div>
-    </div>
-</div>
-<div class="form-group form-group-sm">
-    <label class="control-label col-4"><span class="form-required">*</span>展示商品：</label>
-    <div class="col-4 form-radio">
-        <input type="checkbox" class="" v-model="opInfo.show_item">
-    </div>
-</div>
-<div class="form-group form-group-sm">
-    <label class="control-label col-4"><span class="form-required">*</span>展示更多：</label>
-    <div class="col-4 form-radio">
-        <input type="checkbox" class="" v-model="opInfo.show_more">
-    </div>
-</div>
-					-->
-				</div>			
-				
+
+  				<el-form-item label="平台" required v-if="opInfo.resource_app_type">
+            <p>{{opInfo.resource_app_type | appTypeText}}</p>
+  				</el-form-item>
+          
+          <version-range-list label="IOS" :ranges="opInfo.condition_obj.ios_version"></version-range-list>
+
+          <version-range-list label="Android" :ranges="opInfo.condition_obj.android_version"></version-range-list>
+
+          <android-channels :channels="opInfo.condition_obj.android_channel"></android-channels>
+
+  				<el-form-item label="类型" required v-if="opInfo.resource_type">
+  					<p>{{opInfo.resource_type | typeText}}</p>
+  				</el-form-item>
+
+
+  				<template v-if="opInfo.resource_type == 1">
+  					<el-form-item label="选择图片" required >
+  						<p class="block-tips"> (200*100)</p> 
+  						<div class="upload-logo upload-img">
+  						    <img v-show="opInfo.image_url" :src="opInfo.image_url" />
+  						</div>
+  					</el-form-item>
+
+  					<el-form-item label="文案" required>
+  						<el-input v-model="opInfo.text"></el-input>
+  					</el-form-item>
+
+  					<el-form-item label="图片跳转URL(APP)" required>
+              <el-input v-model="opInfo.forward_protocol" readonly @click.prevent="popProtocolList" ></el-input>
+  						<span>伪协议前缀</span> 
+  						<el-input v-model="opInfo.forward_param"></el-input>
+  						<span>参数提示：{{opInfo.forward_remark}}</span>
+  					</el-form-item>
+  				</template>
+
+  				<template v-if="opInfo.resource_type == 2">
+  					<el-form-item label="选择商品" required>
+  						<el-input v-model="opInfo.item_group_id" readonly @click.prevent="popItemGroupList"></el-input>
+  					</el-form-item>
+  				</template>			
+
+  				<template v-if="opInfo.resource_type == 3">
+            <el-form-item label="选择专题" required>
+              <el-input v-model="opInfo.topic_id"></el-input>
+            </el-form-item>
+            <el-form-item label="封面图" required>
+              <p class="block-tips"> (200*100)</p> 
+              <div class="upload-logo upload-img">
+                  <img v-show="opInfo.image_url" :src="opInfo.image_url" />
+              </div>
+            </el-form-item>
+            <el-form-item label="展示商品" required>
+              <el-input v-model="opInfo.show_item"></el-input>
+            </el-form-item>
+            <el-form-item label="展示更多" required>
+              <el-input v-model="opInfo.show_more"></el-input>
+            </el-form-item>
+          </template>     
+        
+          <el-form-item label="仅新客可见" required>
+            <el-checkbox v-model="opInfo.condition_obj.new_user_only"></el-checkbox>
+          </el-form-item>
+
+          <el-form-item label="开始-结束时间" required>
+            <el-date-picker v-model="opInfo.start_time"></el-date-picker>
+            <span>至</span>
+            <el-date-picker v-model="opInfo.end_time"></el-date-picker>
+          </el-form-item>
+
+
+
     		</el-form>
     		<div class="dialog-footer" slot="footer">
     			<el-button type="primary" @click="save">确定</el-button>
@@ -131,10 +97,13 @@
 </template>
 
 <script>
-import newOperateContent from './newOperateContent';
+import {newOperateCon} from './operateData';
+import VersionRangeList from './VersionRangeList';
+import operateMixin from './operateMixin';
 
 export default {
 	name: 'OperateContentModal',
+  mixins: [operateMixin],
 	props: {
 		show: Boolean,
     operateId: {
@@ -143,7 +112,7 @@ export default {
     }
 	},
   data: {
-    opInfo: newOperateContent,
+    opInfo: newOperateCon,
     count: 0
   },
 	computed: {
@@ -163,12 +132,9 @@ export default {
 
 		}
 	},
-	filters: {
-		typeText(i) {
-			const types = ['', '图片', '商品', '专题'];
-			return types[i];
-		}
-	}
+  components: {
+    VersionRangeList
+  }
 };
 
 </script>

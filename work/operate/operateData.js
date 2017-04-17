@@ -1,7 +1,7 @@
 // 运营位相关的数据结构
 // ----------------------
 
-const deepClone = function(obj) {
+export const deepClone = function(obj) {
     return JSON.parse(JSON.stringify(obj));
 };
 
@@ -26,7 +26,8 @@ export const defSeach = {
     app_type: '',
     resource_id: '',
     status: '',
-    expire: ''
+    expire: '',
+    code: ''
 };
 
 // 新运营位内容对应的数据结构  

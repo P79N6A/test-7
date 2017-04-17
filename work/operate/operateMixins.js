@@ -9,6 +9,10 @@ export default {
     statusText(i) {
       var statuses = ['未激活', '激活'];
       return statuses[i] || '';
+    },
+    appTypeText(i) {
+      var types = ['', '用户', 'BA'];
+      return types[i];
     }
   }
 };
