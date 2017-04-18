@@ -13,6 +13,10 @@ export default {
     appTypeText(i) {
       var types = ['', '用户', 'BA'];
       return types[i];
+    },
+    statusBtnText(i) {
+        const btnTextes = ['激活', '取消激活'];
+        return btnTextes[i] || '';
     }
   }
 };
