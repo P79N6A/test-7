@@ -1,6 +1,6 @@
 <template>
   <div class="searchbar">
-    <el-form :inline="true" label-width="80px" :model="search">
+    <el-form :inline="true" :label-width="isOperateCon ? '80px' : '100px'" :model="search">
 
       <el-form-item :label="isOperateCon ? '内容名称:' : '运营位名称:'">
         <el-input v-model="search.name"></el-input>
@@ -39,7 +39,7 @@
         </el-select>
       </el-form-item>
       
-      <el-form-item>
+      <el-form-item class="form-item-btns">
         <el-button type="primary" @click="$emit('search')">查询</el-button>
         <el-button type="primary" @click="$emit('reset')">重置</el-button>
       </el-form-item>
@@ -55,6 +55,12 @@
       searchFor: {// 运营位内容的搜索条 or  运营位的搜索条
         type: String,
         default: 'operateCon'
+      },
+      search: {
+        type: Object,
+        default() {
+          return {};
+        }
       }
     },
     computed: {

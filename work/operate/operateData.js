@@ -20,13 +20,21 @@ export const defVersionRange = [{
 }];
 
 // 运营位内容搜索栏对应的数据结构
-export const defSeach = {
+export const defSearch = {
     name: '',
     id: '',
     app_type: '',
     resource_id: '',
     status: '',
-    expire: '',
+    expire: ''
+};
+
+// 运营位搜索栏对应的数据结构
+export const defPosSearch = {
+    name: '',
+    id: '',
+    app_type: '',
+    status: '',
     code: ''
 };
 
