@@ -1,0 +1,49 @@
+doctype html
+html
+head
+	title 首页-魔筷科技
+	link(href="/assets/lib/bootstrap/css/bootstrap.min.css",rel="stylesheet")
+	link(href="/assets/home.css",rel="stylesheet")
+	script(src="/assets/lib/jquery.js")
+	script(src="/assets/lib/jquery.cookie/cookie.js")
+
+	include mod/browserlimit
+
+body
+
+	style.
+		.bg-danger{
+			padding:5px 10px;
+			margin:0;
+		}
+		small{
+			float: right;
+		}
+	.top-half
+	.head.col-xs-12
+		.logo
+	.login
+		.login-form
+			form#login-form(role="form", method="post", action="")
+				.form-group
+					span.glyphicon.mk-glyphicon-user.login-form-icon
+					input.j-username.form-control(type="text",placeholder="用户名",name="userName", required)
+				.form-group.mk-mt20
+					span.glyphicon.mk-glyphicon-lock.login-form-icon
+					input.j-password.form-control(type="password",placeholder="密码",name="userPassword", required)
+				- if(errMsg)
+					.form-group.mk-mt20
+						p.bg-danger.text-danger
+							span.glyphicon.glyphicon-remove-circle
+							| !{errMsg}
+				button.btn.mk-btn.mk-btn-xl.mk-mt30.submitbtn(type="submit") 登录
+	p.copyright Copyright©2015 杭州魔筷科技有限公司
+	p.copyright.address 杭州市西湖区文一西路崇义路口•郡原公元里 9幢6单元2F
+	script.
+		var wHeight = window.innerHeight;
+		var wWidth = window.innerWidth;
+		var topHalf = document.getElementsByClassName('top-half');
+		var login = document.getElementsByClassName('login');
+		topHalf[0].style.height = wHeight/2 +'px';
+	script(src="http://assets.mockuai.com/min?mk/lib-storage/1.1.0/storage.js,mk/lib-api/1.2.0/api.js")
+	script(src="/assets/login.js")

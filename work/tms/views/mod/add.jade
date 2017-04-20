@@ -1,0 +1,88 @@
+extend ../layout
+block pageCfg
+	- header.menu = 'mod';
+	- header.ngApp = 'tms';
+	
+block container
+	style.
+		.btn{
+			margin-right:30px;
+		}
+		.tag-con{
+			margin-top: 10px;
+		}
+		.tag-con .label{
+			margin-right: 10px;
+		}
+	div.col-md-offset-two
+		.main
+			.pages-list
+				.row
+					.col-md-12
+						.wrapper
+							- if(modData)
+								h1.main-title 修改模块信息
+							- else
+								h1.main-title 创建模块
+								
+							form.form-horizontal.mk-mt25.col-md-10(role="form", name="buildForm", action="/mod/add", method="post", ng-controller="buildMod")
+								- if(modData)
+									input(type="hidden", name="id", value= modData._id.toString())
+								.form-group
+									label.col-md-2.control-label 模块名
+									.col-md-5
+										input.form-control(type="text", name="title", ng-model="title", required)
+									.col-md-5
+										p.form-control-static.text-danger(ng-show="buildForm.title.$error.required")
+											span.glyphicon.glyphicon-remove-circle
+											|  不能为空 ~
+								.form-group
+									label.col-md-2.control-label 模块icon图片
+									.col-md-5
+										input.form-control(type="text", name="icon", ng-model="icon")
+								.form-group
+									label.col-md-2.control-label 模块iconfont图标
+									.col-md-5
+										input.form-control(type="text", name="icon2", ng-model="icon2")
+								.form-group
+									label.col-md-2.control-label 标签
+									.col-md-5
+										input.form-control(type="text", name="tag", ng-model="tag", required, ng-list=",", ng-pattern="/^[a-z0-9 ,]+$/")
+										input#J_TagList(type="hidden", name="tagList")
+										p.tag-con
+											span.label.label-info(ng-repeat="t in tag") {{t}}
+
+									.col-md-5
+										p.form-control-static.text-warning(ng-show="buildForm.tag.$valid")
+											span.glyphicon.glyphicon-warning-sign
+											|  只能包含英文及数字，用逗号分隔 ~
+										p.form-control-static.text-danger(ng-show="buildForm.tag.$error.pattern")
+											span.glyphicon.glyphicon-remove-circle
+											|  格式有误，只能包含英文及数字 ~
+										p.form-control-static.text-danger(ng-show="buildForm.tag.$error.required")
+											span.glyphicon.glyphicon-remove-circle
+											|  不能为空 ~
+
+								.form-group
+									.col-md-10.col-md-offset-2
+										button.btn.btn-primary.btn-lg(type="button", ng-click="doSubmit()") 
+											- if(modData)
+												| 修改
+											- else
+												| 创建模块
+
+	script.
+		var S = KISSY;
+			ngPageMod = angular.module('tms', []);
+		ngPageMod.controller('buildMod', ['$scope', function($scope){
+			$scope.title = "!{(modData && modData.name) || ''}";
+			$scope.tag = !{JSON.stringify((modData && modData.tag) || [])};
+			$scope.icon = "!{(modData && modData.icon) || ''}";
+			$scope.icon2 = "!{(modData && modData.icon2) || ''}";
+			$scope.doSubmit = function(){
+				if($scope.buildForm.$valid){
+					$('#J_TagList').val($scope.tag.join(','));
+					$('.form-horizontal')[0].submit();
+				}
+			};
+		}]);

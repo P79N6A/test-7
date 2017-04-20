@@ -1,0 +1,158 @@
+mixin searchTypeBtn(key)
+	a.J_SearchType(class= (search.sType === key ? 'btn-info' : 'btn-default'), type="button", data-type= key)
+		block
+
+extend ../layout
+block pageCfg
+	- header.menu = 'page';
+	- header.ngApp = 'tms';
+	
+block content
+	link(rel="stylesheet",href="/assets/list.css")
+	.col-md-offset-two
+		.main
+			nav.navbar.mk-navbar
+				.collapse.navbar-collapse
+					ul.nav.navbar-nav.col-sm-6.my-nav
+						li(class= ((search.sType === "all") ? 'active' : ''))
+							a.J_SearchType(role="button", data-type="all") 全部
+						li(class= (search.sType === "unpublished" ? 'active' : ''))
+							a.J_SearchType(role="button", data-type="unpublished") 未发布
+						li(class= (search.sType === "published" ? 'active' : ''))
+							a.J_SearchType(role="button", data-type="published") 已发布
+						li(class= (search.sType === "fav" ? 'active' : ''))
+							a.J_SearchType(role="button", data-type="fav") 已收藏
+						span.active-arrow
+					form#J_Search.navbar-form.navbar-left.my-search(role="form", method="get", action="")
+						.form-group
+							span.my-search-icon.glyphicon.glyphicon-search
+							input.form-control(type="text", name="q", placeholder="名称、标题、URL ~", value= search.title)
+						button.btn.btn-default(type="submit") 搜索
+					a.create.col-d-2.pull-right.text-right(role='button', href="/page/add")
+						span.glyphicon-padd
+						| 新建页面
+			table.table.table-striped.mk-table
+				thead
+					tr
+						th(width="20%") 名称
+						//th(width="20%") 标题
+						th(width="12%") 状态
+						th(width="12%") 作者
+						th(width="36%") 操作
+							- if(listData.length > 0)
+								+paginationSmall(search.curPage, page.totalPage)
+				tbody
+					- listData.forEach(function(item, i){
+						tr
+							td
+								a(href= '/page/edit/' + item._id.toString(), title= item.name, style= header.permission === 'admin' ? 'max-width: 160px;' : '')
+									span(title= item.name).title.util-ellipsis !{item.name}
+							//td
+							//	a(href= '/page/edit/' + item._id.toString(), title= item.title, style= header.permission === 'admin' ? 'max-width: 160px;' : '')
+							//		span(title= item.title).title.util-ellipsis !{item.title}
+							td 
+								+pageStatus(item, page.statusMap)
+							td 
+								| !{item.owner && item.owner.name}
+							td.operate
+								+pageOperate(item)
+					- });
+					- if(listData.length === 0)
+						tr
+							td(colspan="5") 搜索无结果！
+			+pagination(search.curPage, page, header.menu)
+
+	+pageOperateJs()
+	script(src="/assets/pagination.js")
+	script.
+		var type = request('type');
+
+		function request(paras){
+			var url = location.href; 
+			var paraString = url.substring(url.indexOf("?")+1,url.length).split("&"); 
+			var paraObj = {} 
+			for (i=0; j=paraString[i]; i++){ 
+			paraObj[j.substring(0,j.indexOf("=")).toLowerCase()] = j.substring(j.indexOf("=")+1,j.length); 
+			} 
+			var returnValue = paraObj[paras.toLowerCase()]; 
+			if(typeof(returnValue)=="undefined"){ 
+			return ""; 
+			}else{ 
+			return returnValue; 
+			}
+		}
+		
+		function getQueryString(type) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+			var r = window.location.search.substr(1).match(reg);
+			if (r != null) {
+				return unescape(r[2]);
+			}
+			return null;
+		}
+
+		setActive(type);
+
+		function setActive(type){
+			switch(type){
+				case 'unpublished':
+					$('.active-arrow').css('left','98px');
+					break;
+				case 'published':
+					$('.active-arrow').css('left','196px');
+					break;
+				case 'fav':
+					$('.active-arrow').css('left','294px');
+					break;
+				default:
+					$('.active-arrow').css('left','0');
+			}
+			$('.active-arrow').show();
+		}
+		
+		$('.J_SearchType').on('click', function(){
+			var i = $(this).index();
+			$('.active-arrow').attr('left',i*98+'px').show();
+			$(this).parent().attr('className','active').siblings().removeClass('active');
+			var sType = $(this).attr('data-type');
+			$('.active-arrow').hide();
+			window.location.href = window.location.origin + window.location.pathname + '?type=' + sType;
+		});
+
+		
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

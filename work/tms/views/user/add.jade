@@ -1,0 +1,43 @@
+extend ../layout
+block pageCfg
+    - header.menu = 'admin';
+block content
+    style.
+        .msg-box{text-align: center}
+        .success{color: green;}
+        .fail{color: red}
+
+    div.col-md-offset-two
+        .main
+            .pages-list
+                .row
+                    .col-md-12
+                        .wrapper
+                            h1.main-title 新增用户
+                            - if (msg)
+                            p(class= 'msg-box '+ status) #{msg}
+                            form.form-horizontal(role="form", method="post", action="", style="margin-top: 20px;", autocomplete="off")
+                                .form-group
+                                    label.col-md-2.control-label 用户名：
+                                    .col-md-3
+                                        input.form-control(type="text", name="name", required, placeholder='请输入字母')
+                                .form-group
+                                    label.col-md-2.control-label 密码：
+                                    .col-md-3
+                                        input.form-control(type="password", name="password", required, )
+                                .form-group
+                                    label.col-md-2.control-label 昵称：
+                                    .col-md-3
+                                        input.form-control(type="text", name="nickname", required, placeholder='可以是中文')
+                                .form-group
+                                    label.col-md-2.control-label 邮箱：
+                                    .col-md-3
+                                        input.form-control(type="text", name="email", placeholder='可选')
+                                .form-group
+                                    label.col-md-2.control-label
+                                    .col-md-3
+                                        button.btn.btn-primary.mk-btn.mk-btn-primary(type="submit") 提交
+    script.
+        setTimeout(function () {
+            $('.msg-box').hide();
+        }, 3000)

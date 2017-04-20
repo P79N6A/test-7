@@ -1,0 +1,58 @@
+extend ../layout
+block pageCfg
+    - header.menu = 'dynqrcode';
+
+block content
+    link(rel="stylesheet",href="/assets/list.css")
+    style.
+        .title{
+            position: relative;
+        }
+        .title .desc{
+            display:none;
+            position:absolute;
+            top:0;
+            left:0;
+            z-index:10;
+        }
+        .title:hover .desc{
+            display:block;
+        }
+    .col-md-offset-two
+        .main
+            .qrcodelist
+                h1.main-title 我的活码
+                    a.mk-btn.btn.btn-primary.mk-btn-primary.pull-right(href="/dynqrcode/create") 创建活码
+                table.table.mk-table
+                    thead
+                        tr
+                            th(widht="20%") 名称备注
+                            th(width="15%") 活码图片
+                            th(width="20%") 图片链接
+                            th(width="30%") 跳转地址
+                            th(width="15%") 操作
+
+                    tbody
+                        tr
+                        - listData.forEach(function(item, i){
+                            tr
+                                td
+                                    | !{item.name}
+                                td
+                                    a.title(href= item.url, target="_blank")
+                                        img.micro(src= item.url, height="20")
+                                        img.desc(src= item.url, style="max-width:300px;")
+                                td
+                                    a(href= item.url, target="_blank") 点击获取二维码图片地址
+                                td
+                                    | !{item.content}
+                                td
+                                    a(href= "/dynqrcode/edit/#{item.key}")
+                                        span.glyphicon.glyphicon-edit.mk-glyphicon.mk-glyphicon-edit
+                        - });
+                        - if(listData.length === 0)
+                            tr
+                                td.text-center(colspan="3") 无结果！
+
+                +pagination(search.curPage, page, 'dynqrcode')
+    script(src="/assets/pagination.js")

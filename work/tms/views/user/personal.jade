@@ -1,0 +1,46 @@
+extend ../layout
+block pageCfg
+	- header.menu = 'personal';
+	- header.ngApp = '';
+	
+block content
+	.col-md-offset-two
+		.main
+			.personal
+				h1.main-title 个人中心
+				.col-xs-6
+					form.form-horizontal.mk-mt25(action="/personal/update",method="post")
+						input(type="hidden", name="token", value="#{token}")
+						.form-group
+							label.col-xs-3.control-label(for="username") 账号
+							.col-xs-9
+								input#uid.form-control(type="text",value='#{header.uid}',name="uid",readonly)
+						.form-group
+							label.col-xs-3.control-label(for="passwd") 新密码
+							.col-xs-9
+								input#passwd.form-control(type="password",value='',name="password", required)
+						.form-group
+							label.col-xs-3.control-label(for="repasswd") 确认密码
+							.col-xs-9
+								input#repasswd.form-control(type="password",value='',name="repassword", required)
+						.form-group.message.mk-mt10
+							.col-xs-9.col-xs-offset-3
+								- if(errMsg){
+									p.text-danger 
+										span.glyphicon.glyphicon-remove-circle
+										|  !{errMsg}
+								- }
+								- if(succMsg){
+									p.text-success 
+										span.glyphicon.glyphicon-ok
+										|  !{succMsg}
+								- }
+								
+						//- .form-group.hide
+							label.col-xs-3.control-label(for="personalicon") 头像
+							.col-xs-3
+								a#personalicon.btn.btn-default 上传
+							.col-xs-12.col-xs-offset-3.mk-mt25
+								img.mk-mkl-8(src='#{header.personalicon}')
+						button.mk-mt25.col-xs-2.col-xs-3.btn.btn-primary.mk-btn-primary.pull-right(type="submit") 保存
+		

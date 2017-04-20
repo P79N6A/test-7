@@ -1,0 +1,228 @@
+mixin paginationSmall(cur, total)
+	- cur = cur * 1;
+	- if(total > 1)
+		nav.pull-right
+			ul.pagination.pagination-sm(style="margin:0;")
+				li
+					a !{cur}/!{total}
+				li.J_PagePrevious(class= (cur === 1 ? 'disabled' : ''), data-min='1')
+					a(href="javascript:void(0);") 上一页		
+				li.J_PageNext(class= (cur === total ? 'disabled' : ''), data-max= total)
+					a(href="javascript:void(0);") 下一页
+
+mixin pagination(cur, page, menu)
+	- cur = cur * 1;
+	- if(page.totalPage > 1)
+		nav.text-center
+			div#pagi.mk-pagination.mk-mt10.mk-mb25
+			script.
+				var paramObj = {};
+				try{
+					var params = location.search.substr(1).split('&');
+					params.forEach(function (param) {
+						var arr = param.split('=');
+						paramObj[arr[0]] = arr[1];
+					})
+				} catch (e) {
+					// do sth
+				}
+
+				$('#pagi').pagination(!{page.count}, {
+					items_per_page: 20,
+					current_page: !{cur},
+					link_to:"javascript:void(0)",
+					prev_text:"&laquo;",
+					next_text:"&raquo;",
+					callback: function (page) {
+						if (page != !{cur}) {
+							paramObj['page'] = page;
+							var searchs = [];
+							for(var key in paramObj) {
+								searchs.push(key + '=' + paramObj[key]);
+							}
+
+							location.href = '/!{menu}?' + searchs.join('&');
+						}
+					}
+				})
+					
+mixin pageStatus(data, map)
+	- var id = data.curStatus.id; 
+	- if(id === 'new')
+		span.label.label-new.J_PopupInfo(data-toggle="tooltip", title="创建人：#{data.owner && data.owner.name}<br/>创建时间：#{data.createDate}") !{map[id]}
+	- else if(id === 'editing')
+		span.label.label-editing.J_PopupInfo(data-toggle="tooltip", title="修改人：#{data.curStatus.operator && data.curStatus.operator.name}<br/>修改时间：#{data.curStatus.date}") !{map[id]}
+	- else if(id === 'published')
+		span.label.label-published.J_PopupInfo(data-toggle="tooltip", title="发布人：#{data.curStatus.operator && data.curStatus.operator.name}<br/>发布时间：#{data.curStatus.date}") !{map[id]}
+	- else if(id === 'removed')
+		span.label.label-danger !{map[id]}
+
+mixin pageUrl(data, type)
+	- var url = onlineDomain + data.pageType + '/' + data.path + (data.pageType === 'data' ? '.json' : '.html');
+	- if(type === 'a')
+		a(href= url, target="_blank")&attributes(attributes)= url
+	- else if(type === 'button')
+		- if(data.pageType === 'm')
+			a.mk-btn-sm.J_PopupInfo(role="button", data-toggle="tooltip", title="线上", href= url, target="_blank")&attributes(attributes)
+				span.glyphicon.glyphicon-globe.mk-glyphicon.mk-glyphicon-globe
+			a.J_PopupQCode.mk-btn-sm.mk-mr15(role="button", data-toggle="popover", href='javascript:void(0)' data-qcode= "/qrcode/img?c=" + url)&attributes(attributes)
+				span.glyphicon.glyphicon-qrcode.mk-glyphicon.mk-glyphicon-qrcode
+		- else
+			a.mk-btn-sm.J_PopupInfo.mk-mr15(role="button", data-toggle="tooltip", title="线上", href= url, target="_blank")&attributes(attributes)
+				span.glyphicon.glyphicon-globe.mk-glyphicon.mk-glyphicon-globe
+	- else if(type === 'text')
+		span&attributes(attributes)= url
+
+mixin previewUrl(data, type)
+	- var url = "/page/preview/" + data._id.toString();
+	- if(type === 'a')
+		a(href= url, target="_blank")&attributes(attributes) 
+			| http://tms.hz.ve.cn!{url}
+	- else if(type === 'button')
+		- if(data.pageType === 'm')
+			a.mk-btn-sm.J_PopupInfo(role="button", data-toggle="tooltip", title="预览", href= url, target="_blank")&attributes(attributes)
+				span.glyphicon.glyphicon-eye-open.mk-glyphicon.mk-glyphicon-eye-open
+			a.J_PopupQCode.mk-btn-sm.mk-mr15(role="button", data-toggle="popover", href='javascript:void(0)' data-qcode= "/qrcode/img?c=#{host}" + url)&attributes(attributes)
+				span.glyphicon.glyphicon-qrcode.mk-glyphicon.mk-glyphicon-qrcode
+		- else
+			a.mk-btn-sm.J_PopupInfo.mk-mr15(role="button", data-toggle="tooltip", title="预览", href= url, target="_blank")&attributes(attributes)
+				span.glyphicon.glyphicon-eye-open.mk-glyphicon.mk-glyphicon-eye-open
+	- else if(type === 'text')
+		span&attributes(attributes)
+			| http://tms.hz.ve.cn!{url}
+
+mixin pageOperate(data)
+	- if(data.curStatus.id === 'published' || data.curStatus.id === 'editing')
+		+pageUrl(data, 'button')
+	+previewUrl(data, 'button')
+	- if(header.isLogin)
+		- if(data.curStatus.id !== 'removed')
+			a.J_CopyPageBtn.mk-btn-sm.J_PopupInfo(role="button", data-toggle="tooltip", title="复制", href= '/page/copy/' + data._id.toString())
+				span.glyphicon.glyphicon-duplicate.mk-glyphicon.mk-glyphicon-duplicate
+	- if(header.isLogin && (data.hasKey || header.permission === 'admin' || header.permission === 'coder'))
+		- if(data.isFav)
+			a.J_FavBtn.mk-btn-sm.J_PopupInfo(role="button", data-toggle="tooltip",href="javascript:void(0)", title="取消收藏", data-url= '/page/fav/remove/' + data._id.toString())
+				span.glyphicon.glyphicon-star-empty.mk-glyphicon.mk-glyphicon-star-empty
+		- else
+			a.J_FavBtn.mk-btn-sm.J_PopupInfo(role="button", data-toggle="tooltip", href="javascript:void(0)" title="收藏", data-url= '/page/fav/add/' + data._id.toString())
+				span.glyphicon.glyphicon-star.mk-glyphicon.mk-glyphicon-star
+		a.J_MInfoBtn.mk-btn-sm.J_PopupInfo(href="javascript:void(0)",role="button", title="修改", data-toggle="modal", data-target="#J_ModifyInfoDialog", ng-click="infoData={'id': '#{data._id.toString()}', 'title': '#{data.title}', 'name': '#{data.name||''}', 'white': #{JSON.stringify(data.whiteList || [])}, 'url': '#{onlineDomain}#{data.pageType}/#{data.path + (data.pageType === 'data' ? '.json' : '.html')}'};infoData.whiteText=infoData.white.join('\n')")
+			span.glyphicon.glyphicon-edit.mk-glyphicon.mk-glyphicon-edit
+		- if(data.curStatus.id !== 'removed')
+			a.J_PubPageBtn.mk-btn-sm.J_PopupInfo(role="button", href="javascript:void(0)", data-toggle="tooltip", title="发布", data-url= '/page/publish/' + data._id.toString())
+				span.glyphicon.glyphicon-send.mk-glyphicon.mk-glyphicon-send
+			//- if(data.curStatus.id !== 'new')
+				a.J_RefreshPageBtn.mk-btn-sm.J_PopupInfo(role="button", href="javascript:void(0)", data-toggle="tooltip", title="刷新缓存", data-url= '/page/refresh/' + data._id.toString())
+					span.glyphicon.glyphicon-refresh.mk-glyphicon.mk-glyphicon-refresh
+		- if(data.curStatus.id === 'new' || (header.permission === 'admin' && data.curStatus.id !== 'removed'))
+
+			a.J_DelPageBtn.mk-btn-sm.J_PopupInfo(role="button", href="javascript:void(0)",  data-toggle="tooltip", title="删除", data-url= '/page/remove/' + data._id.toString())
+				span.glyphicon.glyphicon-remove.mk-glyphicon.mk-glyphicon-remove
+
+mixin pageHeaderOperate(data)
+	- if(data.curStatus.id === 'published' || data.curStatus.id === 'editing')
+		+pageUrl(data, 'button')
+	+previewUrl(data, 'button')
+
+	- if(header.isLogin)
+		- if(data.curStatus.id !== 'removed')
+			a.J_CopyPageBtn.btn.btn-warning.btn-xs.J_PopupInfo(role="button", data-toggle="tooltip", title="复制", target="_blank", href= '/page/copy/' + data._id.toString())
+				span.glyphicon.glyphicon-duplicate 复制
+	- if(header.isLogin && (data.hasKey || header.permission === 'admin' || header.permission === 'coder'))
+		- if(data.isFav)
+			button.J_FavBtn.btn.btn-default.btn-xs.J_PopupInfo(type="button", data-toggle="tooltip", title="取消收藏", data-url= '/page/fav/remove/' + data._id.toString())
+				span.glyphicon.glyphicon-star-empty 取消收藏
+		- else
+			button.J_FavBtn.btn.btn-warning.btn-xs.J_PopupInfo(type="button", data-toggle="tooltip", title="收藏", data-url= '/page/fav/add/' + data._id.toString())
+				span.glyphicon.glyphicon-star 收藏
+		button.J_MInfoBtn.btn.btn-info.btn-xs.J_PopupInfo(type="button", title="修改", data-toggle="modal", data-target="#J_ModifyInfoDialog", ng-click="infoData={'id': '#{data._id.toString()}', 'title': '#{data.title}', 'name': '#{data.name||''}', 'white': #{JSON.stringify(data.whiteList || [])}, 'url': '#{onlineDomain}#{data.pageType}/#{data.path + (data.pageType === 'data' ? '.json' : '.html')}'};infoData.whiteText=infoData.white.join('\n')")
+			span.glyphicon.glyphicon-edit 修改
+		- if(data.curStatus.id !== 'removed')
+			button.J_PubPageBtn.btn.btn-success.btn-xs.J_PopupInfo(type="button", data-toggle="tooltip", title="发布", data-url= '/page/publish/' + data._id.toString())
+				span.glyphicon.glyphicon-send 发布
+			- if(data.curStatus.id !== 'new')
+				button.J_RefreshPageBtn.btn.btn-success.btn-xs.J_PopupInfo(type="button", data-toggle="tooltip", title="刷新缓存", data-url= '/page/refresh/' + data._id.toString())
+					span.glyphicon.glyphicon-refresh 刷新缓存
+		- if(data.curStatus.id === 'new' || (header.permission === 'admin' && data.curStatus.id !== 'removed'))
+			button.J_DelPageBtn.btn.btn-danger.btn-xs.J_PopupInfo(type="button", data-toggle="tooltip", title="删除", data-url= '/page/remove/' + data._id.toString())
+				span.glyphicon.glyphicon-remove 删除
+
+mixin pageOperateJs()
+	style.
+		.tag-con{
+			margin-top: 10px;
+		}
+		.tag-con .label{
+			margin-right: 10px;
+		}
+	#J_ModifyInfoDialog.modal.fade(role="dialog", aria-hidden="true")
+		.modal-dialog
+			.modal-content
+				form.form-horizontal(role="form", ng-controller="infoModify", name="infoForm")
+					.modal-header
+						button.close(type="button", data-dismiss="modal")
+							span(aria-hidden="true") &times;
+							span.sr-only Close
+						h4.modal-title 编辑页面基本信息
+					.modal-body
+						.form-group
+							label.col-md-2.control-label 线上地址
+							.col-md-5
+								p.form-control-static {{infoData.url}}
+						.form-group
+							label.col-md-2.control-label 页面名称
+							.col-md-5
+								input.form-control(type="text", name="name", ng-model="infoData.name", required)
+							.col-md-3
+								p.form-control-static.text-danger(ng-show="infoForm.name.$error.required")
+									span.glyphicon.glyphicon-remove-circle
+									|  名称不能为空
+						.form-group
+							label.col-md-2.control-label 页面标题
+							.col-md-5
+								input.form-control(type="text", name="title", ng-model="infoData.title", required)
+							.col-md-3
+								p.form-control-static.text-danger(ng-show="infoForm.title.$error.required")
+									span.glyphicon.glyphicon-remove-circle
+									|  标题不能为空
+						.form-group
+							label.col-md-2.control-label 权限白名单
+							.col-md-5
+								textarea.form-control(rows="5", name="white", ng-model="infoData.whiteText", ng-pattern="whiteReg", ng-keyup="syncWhite()")
+								p.tag-con
+									span.label.label-info(ng-repeat="w in infoData.white") {{w}}
+							.col-md-3
+								p.form-control-static.text-danger(ng-show="infoForm.white.$error.pattern")
+									span.glyphicon.glyphicon-remove-circle
+									|  格式有误，请填写账号，并用换行分隔
+					.modal-footer
+						button.btn.btn-primary(type="button", ng-click="saveInfo()") 保存
+						button.btn.btn-default(type="button", data-dismiss="modal") 取消
+	script(src="/assets/pageoprate.js")
+
+mixin modOperate(data)
+	- if(data.isFav)
+		button.J_FavBtn.btn.btn-default.btn-xs(type="button", data-url= '/mod/fav/remove/' + data._id.toString())
+			span.glyphicon.glyphicon-star-empty
+			|  取消收藏
+	- else
+		button.J_FavBtn.btn.btn-warning.btn-xs(type="button", data-url= '/mod/fav/add/' + data._id.toString())
+			span.glyphicon.glyphicon-star
+			|  收藏
+	a.btn.btn-info.btn-xs(role="button", href= '/mod/modify/' + data._id.toString())
+		span.glyphicon.glyphicon-edit
+		|  修改
+	button.J_DelPageBtn.btn.btn-danger.btn-xs(type="button", data-url= '/mod/remove/' + data._id.toString())
+		span.glyphicon.glyphicon-remove
+		|  删除
+
+		
+block pageCfg
+
+include includes/header
+
+block content
+
+block container
+
+include includes/footer

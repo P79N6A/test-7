@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>编辑页面888</title>
+<link rel="stylesheet" type="text/css" href="/build/pkg/page/index.html_aio_fd698ec.css" />
+<link rel="stylesheet" href="http://assets.mockuai.com/mk/3rd/jquery.tooltip/tooltip.css" type="text/css" />
+style.
+  .header .header-container {
+    -webkit-justify-content: flex-end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    border-bottom: 1px solid #e5e5e5;
+    box-shadow: 0 5px 5px #ebebeb;
+  }
+
+  .header .header-container span a {
+    display: block;
+    height: 48px;
+    line-height: 48px;
+    padding: 0 15px;
+    border-right: 1px solid #eeeeee;
+  }
+
+  .phone-body img {
+    max-width: 100%;
+  }
+//<script src="/assets/lib/angular/angular-sanitize.min.js"></script>
+<script src="/assets/lib/jquery.js"></script>
+<script src="/assets/lib/colorpicker/js/bootstrap-colorpicker.min.js"></script>
+<script src="http://g.tbcdn.cn/kissy/k/1.4.1/seed-min.js"></script>
+<script src="http://g.taojae.com/3rd/underscore-min.js"></script>
+script.
+  window._Global = {};
+</head>
+<body ng-app="app">
+<div class="flex-wrapper-c"><div class="flex-c" ui-view=""></div></div>
+
+if pageData
+  if pageData.previewUrl
+    iframe#J_ViewIframe_proxy(style="display:none;",src="#{pageData.previewUrl}&id=" + pageData._id.toString())
+  else
+    iframe#J_ViewIframe_proxy(style="display:none;",src="/page/preview/" + pageData._id.toString())
+<iframe id="myifr" style="display:none"></iframe>
+if !emptyData
+  div#data-mod(style="display:none", data-mods=JSON.stringify(labeledMods), data-pagedata=JSON.stringify(pageData))
+  script.
+    window._Global = {
+      modList: JSON.parse(document.getElementById('data-mod').getAttribute('data-mods')),
+      pageData: JSON.parse(document.getElementById('data-mod').getAttribute('data-pagedata'))
+    }
+else if type == 'copy'
+  script.
+    window._Global = {
+      pageType: 'copy'
+    }
+
+<script id="tpl-products" type="text/template">
+<div class="products">
+<%if (type == 1) {%>
+<ul class="item-lists-vertical">
+<% _.each(list, function (item, index) { %>
+<li class="item-list">
+<a href="javascript:;" data-href="<%= item.targetUrl %>">
+<div class="pro-img">
+<img class="img" src="<%= item.imageUrl || 'http://img01.taojae.com/party/0834ccdcbc446e95037597fa397cd53d.png' %>" />
+</div>
+<div class="pro-body">
+<p class="<%= (item.wirelessPrice == item.marketPrice) ? 'only-price' : '' %>">
+<%= item.text || '' %>
+</p>
+<div class="price-box">
+<span class="wireless-price"><span class="mark">&yen;</span><%= item.wirelessPrice%></span>
+<% if (item.wirelessPrice != item.marketPrice) {%>
+<span class="discount"><span></span><span><%= Number(item.wirelessPrice*10/item.marketPrice).toFixed(1) %>折</span></span><br/>
+<div class="market-price"><span class="mark">&yen;</span><%= item.marketPrice%></div>
+<% } %>
+</div>
+</div>
+</a>
+</li>
+<% }) %>
+</ul>
+<% } else { %>
+<ul class="item-lists">
+<% _.each(list, function (item, index) { %>
+<li class="item-list">
+<a href="javascript:;" data-href="<%= item.targetUrl %>">
+<div class="pro-img">
+<img class="img" src="<%= item.imageUrl || 'http://img01.taojae.com/party/0834ccdcbc446e95037597fa397cd53d.png' %>" />
+</div>
+<div class="pro-body">
+<p class="<%= (item.wirelessPrice == item.marketPrice) ? 'only-price' : '' %>">
+<%= item.text || '' %>
+</p>
+<div class="price-box">
+<span class="wireless-price"><span class="mark">&yen;</span><%= item.wirelessPrice%></span>
+<% if (item.wirelessPrice != item.marketPrice) {%>
+<span class="discount"><span></span><span><%= Number(item.wirelessPrice*10/item.marketPrice).toFixed(1) %>折</span></span><br/>
+<del class="market-price double-show"><span class="mark">&yen;</span><%= item.marketPrice %>}</del>
+<% } %>
+</div>
+</div>
+</a>
+</li>
+<% }) %>
+</ul>
+<% } %>
+</div>
+</script>
+
+if onlyReadStatus
+  script.
+    window._Global.onlyReadStatus = true;
+
+<script type="text/javascript" src="/build/lib/mod_9740b77.js"></script>
+script(src="/assets/lib/juicer.js")
+<script type="text/javascript" src="/build/bower_components/jquery-form/jquery.form_d5c3acb.js"></script>
+<script type="text/javascript" src="/build/pkg/page/index.html_aio_3a7b03a.js"></script>
+<script type="text/javascript" src="http://assets.mockuai.com/mk/3rd/jquery.tooltip/tooltip.js"></script>
+
+script.
+  // 编辑框中的链接不允许点击
+  $('body').on('click', '.added-wrapper a', function (e) {
+    e.preventDefault();
+    return false;
+  });
+
+  // tooltip 展示
+  setTimeout(function () {
+    $('[title]').tooltip();
+  }, 2000);
+  $('body').on('click', function () {
+    setTimeout(function () {
+      $('[title]').tooltip();
+    }, 2000)
+  });
+
+  // 计算页面的实际高度，iframe自适应会用到
+  function calcPageHeight(doc) {
+    var cHeight = Math.max(doc.body.clientHeight, doc.documentElement.clientHeight);
+    var sHeight = Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight);
+    var height = Math.max(cHeight, sHeight);
+    return height;
+  }
+
+  function getParamsFromUrl() {
+    var query_string = {};
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+
+    for (var i = 0; i < vars.length; i++) {
+      var pair = vars[i].split("=");
+
+      // If first entry with this name
+      if (typeof query_string[pair[0]] === "undefined") {
+        query_string[pair[0]] = pair[1];
+        // If second entry with this name
+      } else if (typeof query_string[pair[0]] === "string") {
+        var arr = [query_string[pair[0]], pair[1]];
+        query_string[pair[0]] = arr;
+        // If third or later entry with this name
+      } else {
+        query_string[pair[0]].push(pair[1]);
+      }
+    }
+    return query_string;
+  }
+  var params = getParamsFromUrl();
+  var parentDomain, myif
+  // iframe 嵌入
+  if (params['from_url']) {
+    if(params['from_url'] === 'undefined'){
+      params['from_url'] = 'boss.mockuai.net:8080';
+    }
+    var doc = document;
+    var height = calcPageHeight(doc);
+    myifr = doc.getElementById('myifr');
+    parentDomain = decodeURIComponent(params['from_url']);
+    if(parentDomain.indexOf('dev') == '-1'){
+      parentDomain += '/bossmanager/html';
+    }
+
+    window.onload = function () {
+      myifr.src = 'http://' + parentDomain + '/pages/iframe_proxy.html?height=' + height;
+    };
+  }
+
+  var goToParentList = function (toList) {
+    if (parentDomain) {
+      var param = toList ? '1' : '';
+      myifr.src = 'http://' + parentDomain + '/pages/iframe_proxy.html?method=goToPageList&param=' + param;
+    } else {
+      location.href = '/page';
+    }
+  };
+  var goToParentTop = function () {
+    if (parentDomain) {
+      myifr.src = 'http://' + parentDomain + '/pages/iframe_proxy.html?method=scrollToTop';
+    } else {
+      // do nothing
+    }
+  };
+
+  var saveTpl = function () {
+    if (confirm('确认要保存吗？')) {
+      var url = location.host + $('.J_PubPageBtn').attr('data-url');
+      if (parentDomain) {
+        myifr.src = 'http://' + parentDomain + '/pages/iframe_proxy.html?method=saveDetailTpl&param=' + url;
+      }
+    }
+  }
+
+  var saveTpl2 = function () {
+    if (confirm('确认要保存吗？')) {
+      var url = $('.J_PubPageBtn').attr('data-url');
+      var tmsid = _Global.pageData._id;
+      var codeBef;
+      var codeAft;
+      var tplName;
+      $.ajax({
+        type: "GET",
+        url: url,
+        dataType: 'jsonp',
+        success: function (msg) {
+          codeBef = msg.codeBef;
+          codeAft = msg.codeAft;
+          tplName = msg.pageName;
+          if (parentDomain) {
+            ifrSrc = 'http://' + parentDomain + '/pages/iframe_proxy.html?method=saveDetailTpl&param=' + tmsid + '&param=' + tplName + '&param=' + codeBef + "&param=" + codeAft;
+            var dbid = $('J_PubPageBtn').attr('dbid');
+            if (dbid) {
+              myifr.src = ifrSrc + "&param=" + dbid;
+            } else {
+              myifr.src = ifrSrc;
+            }
+
+          } else {
+            // do nothing
+          }
+        },
+        error: function (data) {
+          console.log(data);
+          alert('error');
+        }
+      });
+    }
+  };
+
+
+
+
+  require('main');
+</body></html>

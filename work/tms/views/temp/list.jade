@@ -1,0 +1,34 @@
+extend ../layout
+block pageCfg
+    - header.menu = 'temp';
+block content
+    link(rel="stylesheet",href="/assets/list.css")
+    .col-md-offset-two
+        .main
+            .template
+                h1.main-title 常用模板
+                .temps
+                    - listData.forEach(function(item, i){
+                        - var link = item.tplId ? '/page/copy/' + item.tplId.toString() : '/page/add';
+                        - var img = item.tplId ? '/assets/img/tpl/tpl-' + item.tplId.toString() + '.jpg' : '/assets/img/blank.png';
+                        a.col-xs-three.J_temp(href= link)
+                            img(src= img)
+                            span.temp-title !{item.title}
+                            -if(item.tplId == '')
+                                span.mk-temp-add
+                            -else
+                                div.mask.hidden.J_mask
+                                img.preview.hidden.J_preview(src="/qrcode/img?c="+item.demo)
+                    - });
+                    - if(listData.length === 0)
+                        p.text-center 暂无模板
+
+    script.
+        $('.temps .col-xs-three').mouseenter(function(e){
+            $(e.target).parents('.J_temp').children('.J_mask').removeClass('hidden');
+            $(e.target).parents('.J_temp').children('.J_preview').removeClass('hidden');
+        });
+        $('.temps .col-xs-three').mouseleave(function(e){
+            $(e.target).parents('.J_temp').children('.J_mask').addClass('hidden');
+            $(e.target).parents('.J_temp').children('.J_preview').addClass('hidden');
+        });

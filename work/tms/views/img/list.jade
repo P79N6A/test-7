@@ -1,0 +1,122 @@
+extend ../layout
+block pageCfg
+	- header.menu = 'img';
+	
+block container
+	link(rel="stylesheet",href="/assets/list.css")
+	style.
+		.title{
+			position: relative;
+		}
+		.title .desc{
+			display:none;
+			position:absolute;
+			top:0;
+			left:0;
+			z-index:10;
+		}
+		.title:hover .desc{
+			display:block;
+		}
+		.table td{
+			word-break: break-all;
+			word-wrap: break-word;
+			vertical-align: middle!important;
+		}
+		.iframe {
+			margin: 0;
+		}
+
+		.check-box{
+			font-size: 16px;
+			color: #999;
+		}
+
+		.img-item .check-box:after {
+			content: "\e157";
+		}
+		.img-item.checked{
+			background: rgba(82, 215, 247, 0.09)!important;
+		}
+		.img-item.checked .check-box:after {
+			content: "\e067";
+			color: #52D7F7;
+		}
+
+	if (iframe)
+
+		div
+			.main
+				.pages-list
+					.row
+						.col-md-12
+							.wrapper
+								h1.main-title 我的图片
+									a.create_btn.btn.btn-primary.mk-btn.mk-btn-primary.pull-right(role='button', href= iframe ? "/img?iframe=1" : "/img") 图片上传
+
+								table.table
+									thead
+										tr
+											th(style="width: 50px;") 选中
+											th(width="20%") 图片
+											th(width="") 链接
+
+									tbody
+										- listData.forEach(function(item, i){
+											tr.img-item(data-img= item.url)
+												td
+													span.check-box.glyphicon
+												td
+													img(src= item.url, height="40", width="40")
+												td
+													| !{item.url}
+										- });
+										- if(listData.length === 0)
+											tr
+												td(colspan="3") 无结果！
+
+								+pagination(search.curPage, page, 'img/list')
+
+		script(src="/assets/pagination.js")
+		script(src="/assets/popupimglist.js")
+		script.
+			$(function () {
+				lib.imgServer.init();
+			});
+
+	else
+
+		div(class='col-md-offset-two')
+			.main
+				.pages-list
+					.row
+						.col-md-12
+							.wrapper
+								h1.main-title 我的图片
+									a.create_btn.btn.btn-primary.mk-btn.mk-btn-primary.pull-right(role='button', href= iframe ? "/img?iframe=1" : "/img") 图片上传
+
+								table.table
+									thead
+										tr
+											th(width="20%") 图片
+											th(width="") 链接
+
+									tbody
+										- listData.forEach(function(item, i){
+											tr
+												td
+													a.title(href= item.url, target="_blank")
+														img(src= item.url, height="40", width="40")
+														//img.desc(src= item.url, style="max-width:300px;")
+												td
+													| !{item.url}
+										- });
+										- if(listData.length === 0)
+											tr
+												td(colspan="2") 无结果！
+
+								+pagination(search.curPage, page, 'img/list')
+
+		script(src="/assets/pagination.js")
+		
+

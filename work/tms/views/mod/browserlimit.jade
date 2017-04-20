@@ -1,0 +1,5 @@
+script.
+    var isWebKit = !!window.webkitURL || /WebKit/.test(navigator.userAgent);
+    if(!isWebKit){
+        location.href='/outman';
+    }

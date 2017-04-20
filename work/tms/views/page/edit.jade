@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html ng-app="tms">
+<head>
+<meta charset="utf-8">
+<title>魔筷科技</title>
+<link href="/assets/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="/assets/edit.css" rel="stylesheet" type="text/css" />
+<link href="/assets/buildpage.css" rel="stylesheet" type="text/css" />
+<link href="/assets/lib/colorpicker/css/bootstrap-colorpicker.min.css" rel="stylesheet" type="text/css" />
+<script src="/assets/lib/jquery.js"></script>
+<script src="/assets/lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="/assets/lib/angular/angular.js"></script>
+<script src="/assets/lib/angular/angular-sanitize.min.js"></script>
+<script src="/assets/lib/colorpicker/js/bootstrap-colorpicker.min.js"></script>
+<script src="http://g.tbcdn.cn/kissy/k/1.4.1/seed-min.js"></script>
+
+</head>
+
+- var initData = ["pageId='" + pageData._id.toString() + "'"];
+- initData.push("infoData={'id': '" + pageData._id.toString() + "', 'title': '" + pageData.title + "', 'white': " + JSON.stringify(pageData.whiteList || []) + "}");
+- if(pageData.buildType === 'visual')
+	- initData.push("pageModList=" + JSON.stringify(pageData.modList || []));
+	- initData.push("curTag='" + (pageData.pageType === "pc" ? "pc" : "mobile") + "'");
+- else
+	- initData.push("pageCode=" + JSON.stringify(pageData.code));
+
+mixin pageUrl(data, type)
+	- var url = onlineDomain + data.pageType + '/' + data.path + (data.pageType === 'data' ? '.json' : '.html');
+	- if(type === 'a')
+		a(href= url, target="_blank")&attributes(attributes)= url
+	- else if(type === 'button')
+		- if(data.pageType === 'm')
+			span.btn-group.visit-page
+				a.btn.btn-default.btn-sm.J_PopupInfo(role="button", data-toggle="tooltip", title="线上", href= url, target="_blank")&attributes(attributes)
+					span.glyphicon.glyphicon-globe
+				button.J_PopupQCode.btn.btn-default.btn-sm(type="button", data-toggle="popover", data-qcode= "/qrcode/img?c=" + url)&attributes(attributes)
+					span.glyphicon.glyphicon-qrcode
+		- else
+			a.btn.btn-default.btn-xs.J_PopupInfo(role="button", data-toggle="tooltip", title="线上", href= url, target="_blank")&attributes(attributes)
+				span.glyphicon.glyphicon-globe
+	- else if(type === 'text')
+		span&attributes(attributes)= url
+
+mixin pageHeaderOperate(data)
+	- if(data.curStatus.id === 'published' || data.curStatus.id === 'editing')
+		+pageUrl(data, 'button')
+	- if(header.isLogin)
+		- if(data.curStatus.id !== 'removed')
+			a.J_CopyPageBtn.btn.btn-warning.btn-sm.J_PopupInfo(role="button", data-toggle="tooltip", title="复制", target="_blank", href= '/page/copy/' + data._id.toString())
+				span.glyphicon.glyphicon-duplicate
+	- if(header.isLogin && (data.hasKey || header.permission === 'admin' || header.permission === 'coder'))
+		- if(data.isFav)
+			button.J_FavBtn.btn.btn-default.btn-sm.J_PopupInfo(type="button", data-toggle="tooltip", title="取消收藏", data-url= '/page/fav/remove/' + data._id.toString())
+				span.glyphicon.glyphicon-star-empty
+		- else
+			button.J_FavBtn.btn.btn-warning.btn-sm.J_PopupInfo(type="button", data-toggle="tooltip", title="收藏", data-url= '/page/fav/add/' + data._id.toString())
+				span.glyphicon.glyphicon-star
+		- if(data.curStatus.id !== 'removed')
+			button.J_PubPageBtn.btn.btn-success.btn-sm.J_PopupInfo(type="button", data-toggle="tooltip", title="发布", data-url= '/page/publish/' + data._id.toString())
+				span.glyphicon.glyphicon-send
+			- if(data.curStatus.id !== 'new')
+				button.J_RefreshPageBtn.btn.btn-success.btn-sm.J_PopupInfo(type="button", data-toggle="tooltip", title="刷新缓存", data-url= '/page/refresh/' + data._id.toString())
+					span.glyphicon.glyphicon-refresh
+		- if(data.curStatus.id === 'new' || (header.permission === 'admin' && data.curStatus.id !== 'removed'))
+			button.J_DelPageBtn.btn.btn-danger.btn-sm.J_PopupInfo(type="button", data-toggle="tooltip", title="删除", data-url= '/page/remove/' + data._id.toString())
+				span.glyphicon.glyphicon-remove
+
+body.yyz(ng-controller="buildMobile" ng-init= initData.join(';'))
+
+	nav.navbar.navbar-default.navbar-static-top(role="navigation")
+		.navbar-header
+			a(href='/').navbar-brand 魔筷TMS
+			//span.navbar-title!= '构建页面 - ' + '<i>"' + pageData.name + '"</i>'
+		.navbar-main
+			a.main-btn.back-btn(href='javascript:void(0)', onclick='history.back()')
+				span.glyphicon.glyphicon-share-alt
+				返回
+			a.main-btn.refresh-mods(href='javascript:void(0)', ng-click="updateMod()")
+				span.glyphicon.glyphicon-refresh
+				更新模块
+			a.main-btn.refresh-mods(href='javascript:void(0)', ng-click="sync()")
+				span.glyphicon.glyphicon-floppy-save
+				保存
+		.navbar-btn.navbar-right
+			//span.glyphicon.glyphicon-question-sign(style='font-size: 25px;vertical-align: -7px;margin-right:5px;cursor:pointer;',title='帮助')
+			//a.btn.btn-primary.save(href='/') <span class="glyphicon glyphicon-star-empty"></span> 取消收藏
+			//a.btn.btn-primary.publish(href='#') <span class="glyphicon glyphicon-send"></span> 发布
+			+pageHeaderOperate(pageData)
+
+	div#winHeight.main
+		div.col-sm-2.element
+			div#accordion.panel-group
+				- each tag, tagKey in modTagList
+					div.panel.panel-default
+						div.panel-heading.panel-title.collapsed(data-toggle='collapse', data-parent='#accordion', href='#collapse#{tagKey}') #{tag}
+						div.panel-collapse.collapse(id='collapse#{tagKey}',style="height: auto;")
+							ul.panel-body
+								- moduleData[tagKey].forEach(function(m, k){
+								li.module-item(title="#{m.name}", style='background-image: url(#{m.icon})' ng-click= "addModule(" + JSON.stringify(m) + ")")
+									//img(src="http://a.tbcdn.cn/mw/s/common/icons/weapp/5.png")
+									span.add-cover.glyphicon.glyphicon-plus
+								- });
+		// main panel
+		.col-sm-6.posirelative
+			.phone_box
+				.preview-page(data-toggle="modal", data-target="#J_PreveiwDialog", ng-click="sync()")
+					em
+					span 预览
+				.phone_top
+				.phone#phone-root-box
+					#page-root
+						.widget-box(ng-repeat="mod in pageModList")
+							.widget-head
+								p {{mod.name}}
+								ul.opt
+									li.up(ng-click="upModule(mod.id)") 
+										span.glyphicon.glyphicon-arrow-up
+									li.down(ng-click="downModule(mod.id)") 
+										span.glyphicon.glyphicon-arrow-down
+									li.edit(ng-click="editModule(mod.id)", data-toggle="modal", data-target="#J_EditDataDialog") 
+										span.glyphicon.glyphicon-edit
+									li.delete(ng-click="delModule(mod.id)") 
+										span.glyphicon.glyphicon-remove
+							.widget-body(ng-bind-html="secModule(mod.render)")
+				.phone_bottom
+
+
+		// end of main panel
+
+		// config panel
+		.col-sm-4.edit.module_box#J_ModifyInfoDialog(ng-controller="infoModify",  ng-init="infoData={'id': '#{pageData._id.toString()}', 'title': '#{pageData.title}', 'name': '#{pageData.name||''}', 'white': #{JSON.stringify(pageData.whiteList || [])}, 'url': '#{onlineDomain}#{pageData.pageType}/#{pageData.path + (pageData.pageType === 'data' ? '.json' : '.html')}'};infoData.whiteText=infoData.white.join('\n')")
+			//button.J_MInfoBtn.btn.btn-info.btn-sm.J_PopupInfo(type="button", title="修改", ng-click="infoData={'id': '#{data._id.toString()}', 'title': '#{data.title}', 'name': '#{data.name||''}', 'white': #{JSON.stringify(data.whiteList || [])}, 'url': 'http://act.ve.cn/#{data.pageType}/#{data.path + (data.pageType === 'data' ? '.json' : '.html')}'};infoData.whiteText=infoData.white.join('\n')")
+			//	span.glyphicon.glyphicon-edit
+
+			// right nav
+			.rightnav
+				ul
+					li: span#setting-btn.glyphicon.glyphicon-cog.hover(title='设置页面信息', ng-click="displaySetting(!settingDisplayed)")
+			// end of right nav
+
+			section.module.unfold
+				form(role="form", name="infoForm")
+					.setting-header
+						h4.title 编辑页面基本信息
+					.setting-body
+						.form-group
+							label.control-label 线上地址
+							div
+								p.form-control-static {{infoData.url}}
+						.form-group
+							label.control-label 页面名称
+							div
+								input.form-control(type="text", name="name", ng-model="infoData.name", required)
+							div
+								p.form-control-static.text-danger(ng-show="infoForm.name.$error.required")
+									span.glyphicon.glyphicon-remove-circle
+									|  名称不能为空
+						.form-group
+							label.control-label 页面标题
+							div
+								input.form-control(type="text", name="title", ng-model="infoData.title", required)
+							div
+								p.form-control-static.text-danger(ng-show="infoForm.title.$error.required")
+									span.glyphicon.glyphicon-remove-circle
+									|  标题不能为空
+						//-.form-group
+						//-	label.control-label 权限白名单
+						//-	div
+						//-		textarea.form-control(rows="5", name="white", ng-model="infoData.whiteText", ng-pattern="whiteReg", ng-keyup="syncWhite()")
+						//-		p.tag-con
+						//-			span.label.label-info(ng-repeat="w in infoData.white") {{w}}
+						//-	div
+						//-		p.form-control-static.text-danger(ng-show="infoForm.white.$error.pattern")
+						//-			span.glyphicon.glyphicon-remove-circle
+						//-			|  格式有误，请填写工号，并用换行分隔
+					.setting-footer
+						button.btn.btn-primary.mk-btn.mk-btn-primary(type="button", ng-click="saveInfo()") 保存
+						button.btn.btn-default(type="button", ng-click="displaySetting(false)") 取消
+		//- end of config panel
+
+		//- 弹层
+		#J_PreveiwDialog.modal.fade.preview-modal(role="dialog", aria-hidden="true")
+			.modal-dialog
+				.modal-content.phone_box
+					span.close-btn(aria-hidden="true",data-dismiss="modal", title='关闭') &times;
+					.phone_top
+					.phone
+						if pageData.previewUrl
+							iframe#J_ViewIframe(src="#{pageData.previewUrl}&id=" + pageData._id.toString())
+						else
+							iframe#J_ViewIframe(src="/page/preview/" + pageData._id.toString())
+					.phone_bottom
+					if pageData.previewUrl
+						img(src= "/qrcode/img?c=http://tms.taojae.com" + pageData.previewUrl)
+					else
+						img(src= "/qrcode/img?c=http://tms.taojae.com/page/preview/" + pageData._id.toString())
+
+		#J_EditDataDialog.modal.fade(role="dialog", aria-hidden="true")
+			.modal-dialog
+				.modal-content
+					form.form-horizontal.modDataCon(role="form", name="editModForm", ng-controller='editModCtrl')
+						.modal-header
+							button.close(type="button", data-dismiss="modal")
+								span(aria-hidden="true") &times;
+								span.sr-only Close
+							h4.modal-title
+								| 数据编辑 - {{curEditMod.name}}
+						.modal-body
+							div(ng-include="modDataTempUrl", onload="onload()")
+						.modal-footer
+							button.btn.btn-primary(type="button", ng-click="renderModule()") 保存
+							button.btn.btn-default(type="button", data-dismiss="modal") 取消
+</html>
+script(src="/assets/lib/juicer.js")
+script(src="/assets/buildpage.js")
+script(src="/assets/pageoprate.js")
+script(src="/assets/popupimglist.js")
+script.
+	// 页面高度调整
+	var changeSize = function() {
+		var borH = document.documentElement.clientHeight;
+		var navH = 61;
+		document.getElementById('winHeight').style.height=borH-navH+'px';
+		$('.phone').height(borH-navH-135);
+	}
+	changeSize();
+	window.onresize = changeSize;
+	$(function () {
+		lib.imgClient.init({
+			trigger: '.pp-img-btn',
+			onAccept: function (src) {
+				var $trigger = this.$activeTrigger;
+				$trigger.siblings('input').val(src).change();
+			}
+		})
+	})

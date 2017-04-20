@@ -1,0 +1,53 @@
+extend ../layout
+block pageCfg
+	- header.menu = 'qrcode';
+
+block content
+	link(rel="stylesheet",href="/assets/list.css")
+	style.
+		.title{
+			position: relative;
+		}
+		.title .desc{
+			display:none;
+			position:absolute;
+			top:0;
+			left:0;
+			z-index:10;
+		}
+		.title:hover .desc{
+			display:block;
+		}
+	.col-md-offset-two
+		.main
+			.qrcodelist
+				h1.main-title 我的二维码
+					a.mk-btn.btn.btn-primary.mk-btn-primary.pull-right(href="create") 生成二维码
+				table.table.mk-table
+					thead
+						tr
+							th(width="10%") 图片
+							th(width="45%") 链接
+							th(width="45%") 原文
+					tbody
+						tr
+						- listData.forEach(function(item, i){
+							tr
+								td
+									a.title(href= item.url, target="_blank")
+										img.micro(src= item.url, height="20")
+										img.desc(src= item.url, style="max-width:300px;")
+								td
+									| !{item.url}
+								td
+									| !{item.name}
+						- });
+						- if(listData.length === 0)
+							tr
+								td.text-center(colspan="3") 无结果！
+						
+				+pagination(search.curPage, page, 'qrcode/list')
+	script(src="/assets/pagination.js")
+
+		
+

@@ -1,0 +1,59 @@
+extend ../layout
+block pageCfg
+    - header.menu = 'dynqrcode';
+block content
+    .col-md-offset-two
+        .main
+            .qrcodelist
+                h1.main-title 生成活码
+                    a.mk-btn.pull-right.btn.btn-primary.mk-btn-primary(href="/dynqrcode/list") 我的活码
+                .col-sm-9
+                    form.form-horizontal.mk-mt25
+                        .form-group
+                            label(for="").col-sm-2.control-label 名称备注
+                            .col-sm-8
+                                input#J_Name.form-control(type="text",placeholder="")
+                        .form-group
+                            label(for="").col-sm-2.control-label URL
+                            .col-sm-8
+                                input#J_Url.form-control(type="text",placeholder="")
+                            a.col-sm-1.btn.btn-primary.mk-btn-primary#J_CreateQRBtn(type="button") 生成
+                        .form-group
+                            label.col-sm-2.control-label(for="") 二维码URL
+                            .col-sm-8
+                                input.form-control#J_QRUrl(type="text",placeholder="",readonly)
+                        img#J_QRImg.qr-img.col-sm-offset-2(src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAAAAACIM/FCAAACK0lEQVR4AezPQREAAAwCoPXPtlBW8O1BA+5HiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiNREREREREREREREREREREREREREREREREREREREREREREREREREwnxdpbEJhUEY3v8GJu5KGncXAkTOt6d6S/6n9P6QBN6LQQZPuFqFP+HOyytWWTGSzfZp5EeRnSRtAMaSVlhlxOKiVH1Y+VCkpvlSRSBSdVvIv40yYgSaBppZeVDEqQAlPWCtFV90JlVmjFLRJWpi5EGRh+pQ1AsGOrHQnE9xA0IT+7np+Ryp/Cjy3p+IVQV6CtlqYnTQnGHu9hkL1YOK3qn8uf1uFABt3dlraPRuqanAfcYu6kNVj1T+FGno+HMcc1BgxKukhjOxowZQV5TKmyJX1RzQVMRBgRFDFbUwsZOCn5ufypsiPW0AOrqz09Bor+DV0vUzdv17QqXyo0ik0hugrxsbTYzc1vHamdhdXSjrncqXIgMtARjpwEwro4zYU3VcrmjkRZE4V37/xF5TugqNMmLU8q+belY+FBmq2u/3gWchH6jijDJiTNWuaWvlQZFHTpLkgGNJ5RCMMmKuq9wQjDz7P+ISq/8Nz9e/+tZ+HQsAAAAADPK3HshC6EysQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQFYQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBCQAH8YQ/bZUIUVAAAAAElFTkSuQmCC")
+    script.
+        $(function(){
+            $('#J_CreateQRBtn').on('click',function(){
+                var url = $("#J_Url").val();
+                var name = $("#J_Name").val();
+                if(!url){
+                    alert('请输入链接地址!');
+                    return false;
+                }
+                $.ajax({
+                    type: "GET",
+                    url: "/dynqrcode/url",
+                    data:{
+                        "c": url,
+                        "n": name,
+                        "s": 5,
+                        "m": 1
+                    },
+                    dataType: 'json',
+                    success: function(data){
+                        console.log(data);
+                        if(data.success){
+                            $("#J_QRUrl").val(data.url);
+                            $("#J_QRImg").attr('src',data.url);
+                        }else{
+                            alert("请求失败，请重试，失败原因：" + data.err);
+                        }
+                    },
+                    error: function(){
+                        alert("请求失败，请重试~");
+                    }
+                });
+            });
+        });

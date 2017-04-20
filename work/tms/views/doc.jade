@@ -1,0 +1,14 @@
+extend layout
+block pageCfg
+	- header.menu = 'doc';
+	
+block content
+	link(rel="stylesheet",href="/assets/doc.css")
+
+	div.col-md-offset-two
+		.main
+			.pages-list
+				.row
+					.col-md-12
+						.info
+							| !{content}
