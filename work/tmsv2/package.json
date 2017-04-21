@@ -1,0 +1,39 @@
+{
+  "name": "tms-koa",
+  "version": "1.0.0",
+  "description": "tms recostruct use koa",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "tms",
+    "koa",
+    "node",
+    "watsons"
+  ],
+  "author": "zhenjie.pan",
+  "license": "ISC",
+  "dependencies": {
+    "babel-core": "^6.24.1",
+    "fs-promise": "^2.0.2",
+    "kcors": "^1.3.2",
+    "koa": "^2.2.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-compose": "^4.0.0",
+    "koa-cookie": "^1.0.0",
+    "koa-logger": "^2.0.1",
+    "koa-mongo": "^0.7.0",
+    "koa-multer": "^1.0.1",
+    "koa-router": "^7.1.1",
+    "koa-send": "^4.0.0",
+    "koa-session": "^5.0.0",
+    "koa-static": "^3.0.0",
+    "koa-views": "^6.0.2",
+    "lodash": "^4.17.4"
+  },
+  "devDependencies": {
+    "babel": "^6.23.0",
+    "babel-plugin-transform-async-to-generator": "^6.24.1"
+  }
+}
