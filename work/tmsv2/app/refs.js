@@ -12,15 +12,10 @@ const cookie = require('koa-cookie').default;
 const send = require('koa-send');
 const session = require('koa-session');
 const views = require('koa-views');
-const mongo = require('koa-mongo');
-const mongoOpts = require('./config/database');
-const assert = require('assert');
-const debug = require('debug')('app');
 
 const Koa = require('koa');
 const app = new Koa();
 const router = require('./router');
-
 
 // signed cookie keys
 app.keys = ['this is a secret key', 'hello world'];
@@ -35,7 +30,6 @@ app.use(session(app));
 app.use(views(path.join(__dirname, 'views'), {
     extension: 'jade'
 }));
-app.use(mongo(mongoOpts));
 
 //-- custom middlewares
 // error handler
@@ -93,27 +87,6 @@ app.use(async (ctx, next) => {
         ctx.state.engine = 'jade';
         await ctx.render('users');
 
-    } else {
-        await next();
-    }
-});
-
-// mongo
-app.use(async (ctx, next) => {
-    const k = false;
-    if (ctx.path === '/insert') {
-        assert(k, 'k is true , means bad');// 断言为真 则抛异常
-        await ctx.mongo.db('tms').collection('books').insert({name: 'advance js', price: 20});
-        ctx.body = await ctx.mongo.db('tms').collection('books').findOne();
-    } else {
-        await next();
-    }
-});
-app.use(async (ctx, next) => {
-    if (ctx.path === '/remove') {
-        WS.info('before remove..');
-        const res = await ctx.mongo.db('tms').collection('books').remove();
-        ctx.body = res.result;
     } else {
         await next();
     }

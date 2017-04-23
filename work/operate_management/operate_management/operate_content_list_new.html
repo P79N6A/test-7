@@ -220,6 +220,7 @@
             </div>
         </template>
         <div class="form-group form-group-sm">
+        
             <template v-if="opInfo.condition_obj.ios_version">
                 <div class="ios-wrap f-cl">
                     <label class="control-label col-4"><span class="form-required">*</span>IOS：</label>
@@ -266,6 +267,7 @@
                     </div>
                 </div>
             </template>
+
             <template v-if="opInfo.condition_obj.android_channel">
                 <div class="android-wrap f-cl">
                     <label class="control-label col-4"><span class="form-required">*</span>Android渠道：</label>
@@ -281,6 +283,8 @@
                     </div>
                 </div>
             </template>
+
+            
         </div>
         <template v-if="opInfo.resource_type">
             <div class="form-group form-group-sm">
