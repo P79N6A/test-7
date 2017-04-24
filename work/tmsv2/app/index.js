@@ -7,15 +7,13 @@ const config = require('./config');
 const serve = require('koa-static');
 const logger = require('koa-logger');
 const cors = require('kcors');
-const bodyparser = require('./middlewares/bodyparser');
 const cookie = require('koa-cookie').default;
-const send = require('koa-send');
 const session = require('koa-session');
 const views = require('koa-views');
-const mongo = require('koa-mongo');
-const mongoOpts = require('./config/database');
-const assert = require('assert');
-const debug = require('debug')('app');
+const bodyparser = require('./middlewares/bodyparser');
+const mongo = require('./middlewares/mongo');
+const errorListen = require('./middlewares/errorListen');
+const favicon = require('./middlewares/favicon');
 
 const Koa = require('koa');
 const app = new Koa();
@@ -29,153 +27,35 @@ app.keys = ['this is a secret key', 'hello world'];
 app.use(serve(config.staticDir)); //静态文件 
 app.use(logger());
 app.use(bodyparser());
-app.use(cors({ credentials: true, keepHeadersOnError: true }));
+app.use(cors({
+    credentials: true,
+    keepHeadersOnError: true
+}));
 app.use(cookie());
 app.use(session(app));
 app.use(views(path.join(__dirname, 'views'), {
     extension: 'jade'
 }));
-app.use(mongo(mongoOpts));
+app.use(mongo());
 
 //-- custom middlewares
-// error handler
-app.on('error', err => {
-    console.log('xxx==> in error cb...');
-    WS.error('err = %o', err);
-});
-app.use(async (ctx, next) => {
-    try {
-        await next();
-    } catch (err) {
-        ctx.app.emit('error', err);
-    }
-});
-
-// favicon
-app.use(async (ctx, next) => {
-    WS.log(ctx.path, '<--');
-    if (ctx.path.match(/^\/favicon/)) {
-        await send(ctx, ctx.path, {root: path.join(__dirname, '..')});
-    } else {
-        await next();
-    }
-});
-
-// send
-app.use(async (ctx, next) => {
-    WS.log('in target mw..');
-    if (ctx.path === '/fa') {
-        // ctx.type = 'html';
-        await send(ctx, '/uploads/fa.jpg', {root: path.join(__dirname, '../www')});
-    } else {
-        await next();
-    }
-});
-
-// session
-app.use(async (ctx, next) => {
-    if (ctx.path === '/visits') {
-        let n = ctx.session.visits || 0;
-        ctx.session.visits = ++n;
-        ctx.body = ctx.session.visits;
-    } else {
-        await next();
-    }
-});
-
-// views
-app.use(async (ctx, next) => {
-    if (ctx.path === '/users') {
-        ctx.state = {
-            type: 'finallytest',
-            title: 'app'
-        };
-        ctx.state.engine = 'jade';
-        await ctx.render('users');
-
-    } else {
-        await next();
-    }
-});
-
-// mongo
-app.use(async (ctx, next) => {
-    const k = false;
-    if (ctx.path === '/insert') {
-        assert(k, 'k is true , means bad');// 断言为真 则抛异常
-        await ctx.mongo.db('tms').collection('books').insert({name: 'advance js', price: 20});
-        ctx.body = await ctx.mongo.db('tms').collection('books').findOne();
-    } else {
-        await next();
-    }
-});
-app.use(async (ctx, next) => {
-    if (ctx.path === '/remove') {
-        WS.info('before remove..');
-        const res = await ctx.mongo.db('tms').collection('books').remove();
-        ctx.body = res.result;
-    } else {
-        await next();
-    }
-});
+app.use(errorListen());
+app.use(favicon());
 
 // routes
 app.use(router.routes()).use(router.allowedMethods());
 
-
-// cookies
+// 404
 app.use(async(ctx, next) => {
-    ctx.cookies.set('user', 'winry', { signed: true });
-    ctx.cookies.set('role', 'admin');
     await next();
-});
-
-app.use(async(ctx, next) => {
-    // ctx.cookies 原生属性
-    const user = ctx.cookies.get('user', { signed: true });
-    const role = ctx.cookies.get('role');
-    WS.log('user=%s role=%s', user, role);
-    await next();
-});
-
-// get ctx.query
-app.use(async(ctx, next) => {
-    if (Object.keys(ctx.query).length) {
-        ctx.body = JSON.stringify(ctx.query);
-    }
-    await next();
-});
-
-
-app.use(async(ctx, next) => {
-    //- static
-    // ctx.set('content-type', 'text/html');
-    ctx.type = 'html';
-    ctx.body = 'Hello Koa <img src="/assets/images/1.jpg" /> <img src="/fa" />';
-    ctx.body += '<h3>test append content..</h3>';
-
-    /*ctx.type = 'html';
-    ctx.body = (ctx.body || '') + '<h1>good</h1><img src="/images/1.jpg" />';*/
-
-    //-- cors ajax
-    // ctx.body = {name: 'winry', job: 'machine'};
-
-    await next();
-
-    //-- try throw
-    // ctx.throw(400);
-    // throw('test some err.............');
-
-    //-- post data
-    // ctx.body = { code: 1, data: ctx.request.body }
+    ctx.throw(404);
 });
 
 function listen() {
 
     app.listen(config.port);
-    console.log('\n-----------------------------------')
-    console.log('Server is listening on port: %s', config.port);
-    console.log('-----------------------------------\n')
+    WS.lineLog('Server is listening on port: %s', config.port);
+
 }
 
 exports.run = listen;

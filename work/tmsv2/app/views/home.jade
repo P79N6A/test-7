@@ -1,0 +1,41 @@
+
+doctype html5
+html
+  head
+    meta(charset='utf-8')
+    title Hello jade
+
+  body
+    p #{type}:#{engine}
+    p
+        button(id="btn" style="font-size:30px; line-height: 30px;") save data
+    textarea(id="ta" style="width: 80%; font-size: 20px; height: 300px")= data
+    script.
+        var data = document.querySelector('#ta').value;
+        data = JSON.parse(data);
+        console.log('data->', data);
+
+        // send new data
+        function send() {
+            
+            //data.layout_main[0].type = 'normal-' + Math.floor(Math.random() * 1000);
+            data.layout_main[0].type = 'normal'
+            
+            fetch('/pages/save?id=1', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8'
+                },
+                body: JSON.stringify(data)
+            }).then(function(response) {
+                return response.json();
+            }).then(function(result) {
+                console.log('result->', result);
+            });
+        }
+
+        var btn = document.querySelector('#btn');
+        btn.onclick = function() { send(1); };
+
+
+

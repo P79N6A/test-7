@@ -1,7 +1,7 @@
 const config = require('./index');
 
 const dbConfig = {
-    host: 'localhost',
+    host: '10.66.48.163',
     port: 27017,
     user: '',
     pass: '',
@@ -18,12 +18,12 @@ const dbConfig = {
     }
 };
 
-function updateDbConfig () {
+function updateDbConfig() {
     const env = config.isDev ? 'dev' : 'product';
     Object.assign(dbConfig, dbConfig[env]);
 }
 
-function mongoOpts () {
+function mongoOpts() {
     const opts = Object.assign({}, dbConfig);
     delete opts.dev;
     delete opts.product;

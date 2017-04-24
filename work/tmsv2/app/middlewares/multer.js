@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
 const upload = multer({
     storage,
     fileFilter(req, file, cb) {
-        if (file.mimetype.match(/^image\/*/)) {// image
+        if (file.mimetype.match(/^image\/*/)) { // image
             cb(null, true);
         } else {
             WS.error('fail: upload file is not image..');
@@ -25,7 +25,7 @@ const upload = multer({
         }
     },
     limits: {
-        fileSize: 3*1024*1024 // 3M
+        fileSize: 3 * 1024 * 1024 // 3M
     }
 });
 
