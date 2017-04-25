@@ -1,4 +1,8 @@
 node_modules
+
 .mytest/
 .refs.js
 
+err.log
+out.log
+forever.log

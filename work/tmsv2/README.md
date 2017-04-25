@@ -8,9 +8,14 @@ TMS 2.0
     cd tmsv2
     cnpm install  #或者 npm install
     cnpm install -g supervisor
+    cnpm install -g babel-cli
+    cnpm install -g forever
 
 运行
 ------
 
     cd tmsv2/app
-    npm run dev
+    npm run dev #开发
+    npm run build #构建
+    npm run start  #启动
+    npm run stop #停止

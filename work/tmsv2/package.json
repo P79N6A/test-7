@@ -4,7 +4,11 @@
   "description": "tms recostruct use koa",
   "main": "index.js",
   "scripts": {
-    "dev": "supervisor -w app  index.js"
+    "dev": "cross-env NODE_ENV=dev  supervisor -w app  index.js",
+    "postbuild": "node buildTools/index",
+    "build": "babel app --out-dir runtime",
+    "start": "forever start -a -l forever.log -o out.log -e err.log index.js product",
+    "stop": "forever stop index.js & forever list"
   },
   "keywords": [
     "tms",
@@ -37,6 +41,11 @@
   },
   "devDependencies": {
     "babel": "^6.23.0",
-    "babel-plugin-transform-async-to-generator": "^6.24.1"
+    "babel-cli": "^6.24.1",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "supervisor": "^0.12.0"
   }
 }

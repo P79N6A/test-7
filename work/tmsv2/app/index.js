@@ -21,11 +21,11 @@ const router = require('./router');
 
 
 // signed cookie keys
-app.keys = ['this is a secret key', 'hello world'];
+app.keys = ['this is a secret key', 'tms2.0'];
 
 //-- third part middlewares
 app.use(serve(config.staticDir)); //静态文件 
-app.use(logger());
+config.isDev && app.use(logger());
 app.use(bodyparser());
 app.use(cors({
     credentials: true,
@@ -54,7 +54,7 @@ app.use(async(ctx, next) => {
 function listen() {
 
     app.listen(config.port);
-    WS.lineLog('Server is listening on port: %s', config.port);
+    WS.lineLog((config.isDev ? 'Developing' : 'Production' )+ ': Server is listening on port: %s', config.port);
 
 }
 

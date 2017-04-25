@@ -18,8 +18,8 @@ router.get('/home', async(ctx, next) => {
 
 router.get('/save/test', async(ctx, next) => {
     const data = await ctx.mongo.collection('TmsPages').findOne();
-    delete data._id;
     const page_id = data.page_id;
+    delete data._id;
     
     const n = Math.floor(1000 * Math.random());
     data.count = n;
@@ -28,9 +28,11 @@ router.get('/save/test', async(ctx, next) => {
     ctx.body = res.result;
 });
 
+//-- pages
+
 // query
 router.get('/pages/list', async(ctx, next) => {
-    data = {list: [{p1: 'page1'}, {p2: 'page2'}]};
+    const data = {list: [{p1: 'page1'}, {p2: 'page2'}]};
     ctx.body = WS.resJson(true, data);
 });
 
@@ -40,13 +42,13 @@ router.get('/pages/find', async(ctx, next) => {
     WS.assert.notEqual(pageId, null, '参数缺少id');
     
     // data = await ctx.mongo.db('tms').collection('TmsPages').findOne();
-    data = await ctx.mongo.collection('TmsPages').findOne();
+    const data = await ctx.mongo.collection('TmsPages').findOne();
     ctx.body = WS.resJson(true, data);
 });
 
 // create
 router.post('/pages/create', async(ctx, next) => {
-    data = ctx.request.body || {};
+    const data = ctx.request.body || {};
     // insert to db
     ctx.body = WS.resJson(true, {result: 'save ok', id: 22});
 });
@@ -55,7 +57,7 @@ router.post('/pages/create', async(ctx, next) => {
 router.post('/pages/update', async(ctx, next) => {
     // const pageId = ctx.query.id;
     const pageId = 'P101';
-    // ctx.mongo.db
+    ctx.body = WS.resJson(true, {result: 'update ok', id: 33});
 });
 
 
@@ -63,10 +65,14 @@ router.post('/pages/update', async(ctx, next) => {
 router.post('/pages/save', async(ctx, next) => {
     const id = ctx.query.id;
     WS.assert.notEqual(id, null, '参数缺少id');
+
     const pageId = 'P101';
     const res = await ctx.mongo.collection('TmsPages').replaceOne({page_id: pageId}, ctx.request.body);
     ctx.body = res.result;
 });
+
+
+
 
 // upload
 router.post('/upload', upload.single('upfile'), async(ctx, next) => {

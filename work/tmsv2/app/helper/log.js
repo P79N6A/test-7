@@ -8,7 +8,7 @@ function logfactory(type) {
         } else {
             args = [`[${type}]: `, ...args];
         }
-        return console.log.apply(console, args);
+        return console[type].apply(console, args);
     }
 
     return log;
