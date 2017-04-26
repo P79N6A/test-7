@@ -3,51 +3,41 @@ doctype html5
 html
   head
     meta(charset='utf-8')
-    title Hello jade
+    title data send
 
   body
-    p #{type}:#{engine}
-    // comment kept
-    //- comment not kept
-    ul
-        li item A
-        li item B
-
-    // 
-        line one
-        line two
-
-    //-
-        not kept line 1
-        line 2
-
-    p test multiline comment
+    p hello #{engine}
     
-    //- var login = false
-    div(class={loged: login, unloged: !login}) test var setting, and use in attr set..
-
     p
         button(id="btn" style="font-size:30px; line-height: 30px;") save data
     
     textarea(id="ta" style="width: 80%; font-size: 20px; height: 300px")= data
     
     script.
+        var id = "#{id}";
         var data = document.querySelector('#ta').value;
         data = JSON.parse(data);
+        console.info('id->', id);
         console.log('data->', data);
 
+        var btn = document.querySelector('#btn');
+        btn.onclick = send;
+        if(id) {
+            api = '/pages/update?id=' + id;
+            btn.textContent = 'update data';
+        } else {
+            api = '/pages/create';
+            btn.textContent = 'insert data';
+        }
         // send new data
         function send() {
             
-            //data.layout_main[0].type = 'normal-' + Math.floor(Math.random() * 1000);
-            data.layout_main[0].type = 'normal'
-            
-            fetch('/pages/save?id=1', {
+            fetch(api, {
                 method: 'post',
                 headers: {
                     'Content-Type': 'application/json; charset=utf-8'
                 },
-                body: JSON.stringify(data)
+                body: document.querySelector('#ta').value
             }).then(function(response) {
                 return response.json();
             }).then(function(result) {
@@ -55,8 +45,7 @@ html
             });
         }
 
-        var btn = document.querySelector('#btn');
-        btn.onclick = function() { send(1); };
+        
 
 
 

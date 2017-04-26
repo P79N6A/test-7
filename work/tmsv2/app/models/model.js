@@ -1,47 +1,105 @@
-// 基类 Model
+const WS = require('../helper');
 
+/**
+ * 基类 Model
+ */
 class Model {
-    constructor(ctx, col, pk = 'id') {
-        this.col = col;
-        this.pk = pk;
-        this.init(ctx);
+    constructor(col, pk = 'id') {
+        this.col = col; // collection name, eg: TmsPages
+        this.pk = pk; // primary key , eg: page_id
     }
 
-    async init(ctx) {
-        this.collection = await ctx.mongo.collection(this.col);
+    init(ctx) {
+        this.collection = ctx.mongo.collection(this.col);
+        return this;
     }
 
-    async total(condtion = {}) {
-        const total = await this.collection.count(condition);
-        return total;
+    async count() {
+        const count = await this.collection.count();
+        return count;
     }
 
-    query() {
-        
+    newId() {
+        const ts = 'TMS' + Date.now();
+        return WS.md5(ts);
     }
 
-    save() {
-
-    }
-    
-
-    update() {
-
-    }
-    updateOne() {
-
+    async find(cond = {}, project = {}) {
+        const docs = await this.collection.find(cond, project).toArray();
+        return docs;
     }
 
-    create() {
-
+    async findOne(cond = {}, project = {}) {
+        const doc = await this.collection.findOne(cond, project);
+        return doc;
     }
 
-    get() {
+    async findById(id, project = {}) {
+        const cond = {}
+        cond[this.pk] = id;
 
+        const doc = await this.findOne(cond, project);
+        return doc;
     }
 
-    getOne() {
+    async insert(data) {
+        const count = await this.count();
+        data = data instanceof Array ? data : [data];
 
+        data.forEach((item, i) => {// page_id: 'P001'
+            item[this.pk] = this.newId();
+        });
+
+        const result = await this.collection.insertMany(data);
+        return result;
+    }
+
+    async update(cond, data) {
+        const result = await this.collection.updateMany(cond, data);
+        return result;
+    }
+
+    async updateOne(cond, data) {
+        const result = await this.collection.updateOne(cond, data);
+        return result;
+    }
+
+    async updateById(id, data) {
+        const cond = {};
+        cond[this.pk] = id;
+
+        const result = await this.updateOne(cond, data);
+        return result;
+    }
+
+    async replace(cond, data) {
+        const result = await this.collection.replaceMany(cond, data);
+        return result;
+    }
+
+    async replaceOne(cond, data) {
+        const result = await this.collection.replaceOne(cond, data);
+        return result;
+    }
+
+    async replaceById(id, data) {
+        const cond = {};
+        cond[this.pk] = id;
+
+        const result = await this.replaceOne(cond, data);
+        return result;
+    }
+
+    async remove(cond) {
+        const result = await this.collection.removeMany(cond);
+        return result;
+    }
+
+    async removeOne(cond) {
+        const result = await this.collection.removeOne(cond);
+        return result;
     }
 
 }
+
+module.exports = Model;

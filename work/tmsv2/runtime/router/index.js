@@ -19,6 +19,8 @@ var upload = require('../middlewares/multer');
 var WS = require('../helper');
 var config = require('../config');
 
+var pageCtrl = require('../controllers/page');
+
 var router = new Router();
 
 router.get('/', function () {
@@ -43,24 +45,26 @@ router.get('/', function () {
     };
 }());
 
-router.get('/home', function () {
+router.get('/my/savedata', function () {
     var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(ctx, next) {
-        var data;
+        var id, cond, data;
         return _regenerator2.default.wrap(function _callee2$(_context2) {
             while (1) {
                 switch (_context2.prev = _context2.next) {
                     case 0:
-                        _context2.next = 2;
-                        return ctx.mongo.collection('TmsPages').findOne();
+                        id = ctx.query.id || '';
+                        cond = id ? { page_id: id } : {};
+                        _context2.next = 4;
+                        return ctx.mongo.collection('TmsPages').findOne(cond);
 
-                    case 2:
+                    case 4:
                         data = _context2.sent;
 
                         delete data._id;
-                        _context2.next = 6;
-                        return ctx.render('home', { type: 'test-type', engine: 'jade', data: (0, _stringify2.default)(data) });
+                        _context2.next = 8;
+                        return ctx.render('savedata', { engine: 'jade', data: (0, _stringify2.default)(data), id: id });
 
-                    case 6:
+                    case 8:
                     case 'end':
                         return _context2.stop();
                 }
@@ -116,157 +120,23 @@ router.get('/save/test', function () {
 
 //-- pages
 
-// query
-router.get('/pages/list', function () {
-    var _ref4 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4(ctx, next) {
-        var data;
-        return _regenerator2.default.wrap(function _callee4$(_context4) {
-            while (1) {
-                switch (_context4.prev = _context4.next) {
-                    case 0:
-                        data = { list: [{ p1: 'page1' }, { p2: 'page2' }] };
 
-                        ctx.body = WS.resJson(true, data);
+router.get('/pages/query', pageCtrl.query.bind(pageCtrl));
 
-                    case 2:
-                    case 'end':
-                        return _context4.stop();
-                }
-            }
-        }, _callee4, undefined);
-    }));
+router.get('/pages/get', pageCtrl.getById.bind(pageCtrl));
 
-    return function (_x7, _x8) {
-        return _ref4.apply(this, arguments);
-    };
-}());
+router.post('/pages/create', pageCtrl.create.bind(pageCtrl));
 
-// find one
-router.get('/pages/find', function () {
-    var _ref5 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5(ctx, next) {
-        var pageId, data;
-        return _regenerator2.default.wrap(function _callee5$(_context5) {
-            while (1) {
-                switch (_context5.prev = _context5.next) {
-                    case 0:
-                        pageId = ctx.query.id;
+router.post('/pages/update', pageCtrl.replaceById.bind(pageCtrl));
 
-                        WS.assert.notEqual(pageId, null, '参数缺少id');
-
-                        // data = await ctx.mongo.db('tms').collection('TmsPages').findOne();
-                        _context5.next = 4;
-                        return ctx.mongo.collection('TmsPages').findOne();
-
-                    case 4:
-                        data = _context5.sent;
-
-                        ctx.body = WS.resJson(true, data);
-
-                    case 6:
-                    case 'end':
-                        return _context5.stop();
-                }
-            }
-        }, _callee5, undefined);
-    }));
-
-    return function (_x9, _x10) {
-        return _ref5.apply(this, arguments);
-    };
-}());
-
-// create
-router.post('/pages/create', function () {
-    var _ref6 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee6(ctx, next) {
-        var data;
-        return _regenerator2.default.wrap(function _callee6$(_context6) {
-            while (1) {
-                switch (_context6.prev = _context6.next) {
-                    case 0:
-                        data = ctx.request.body || {};
-                        // insert to db
-
-                        ctx.body = WS.resJson(true, { result: 'save ok', id: 22 });
-
-                    case 2:
-                    case 'end':
-                        return _context6.stop();
-                }
-            }
-        }, _callee6, undefined);
-    }));
-
-    return function (_x11, _x12) {
-        return _ref6.apply(this, arguments);
-    };
-}());
-
-// update: update some fields of doc
-router.post('/pages/update', function () {
-    var _ref7 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee7(ctx, next) {
-        var pageId;
-        return _regenerator2.default.wrap(function _callee7$(_context7) {
-            while (1) {
-                switch (_context7.prev = _context7.next) {
-                    case 0:
-                        // const pageId = ctx.query.id;
-                        pageId = 'P101';
-
-                        ctx.body = WS.resJson(true, { result: 'update ok', id: 33 });
-
-                    case 2:
-                    case 'end':
-                        return _context7.stop();
-                }
-            }
-        }, _callee7, undefined);
-    }));
-
-    return function (_x13, _x14) {
-        return _ref7.apply(this, arguments);
-    };
-}());
-
-// save: replace the doc
-router.post('/pages/save', function () {
-    var _ref8 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee8(ctx, next) {
-        var id, pageId, res;
-        return _regenerator2.default.wrap(function _callee8$(_context8) {
-            while (1) {
-                switch (_context8.prev = _context8.next) {
-                    case 0:
-                        id = ctx.query.id;
-
-                        WS.assert.notEqual(id, null, '参数缺少id');
-
-                        pageId = 'P101';
-                        _context8.next = 5;
-                        return ctx.mongo.collection('TmsPages').replaceOne({ page_id: pageId }, ctx.request.body);
-
-                    case 5:
-                        res = _context8.sent;
-
-                        ctx.body = res.result;
-
-                    case 7:
-                    case 'end':
-                        return _context8.stop();
-                }
-            }
-        }, _callee8, undefined);
-    }));
-
-    return function (_x15, _x16) {
-        return _ref8.apply(this, arguments);
-    };
-}());
+router.get('/pages/publish', pageCtrl.publish.bind(pageCtrl));
 
 // upload
 router.post('/upload', upload.single('upfile'), function () {
-    var _ref9 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee9(ctx, next) {
-        return _regenerator2.default.wrap(function _callee9$(_context9) {
+    var _ref4 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4(ctx, next) {
+        return _regenerator2.default.wrap(function _callee4$(_context4) {
             while (1) {
-                switch (_context9.prev = _context9.next) {
+                switch (_context4.prev = _context4.next) {
                     case 0:
                         // WS.log('req.body', ctx.req.body);
                         // WS.log('req.file:', ctx.req.file);
@@ -281,14 +151,14 @@ router.post('/upload', upload.single('upfile'), function () {
 
                     case 1:
                     case 'end':
-                        return _context9.stop();
+                        return _context4.stop();
                 }
             }
-        }, _callee9, undefined);
+        }, _callee4, undefined);
     }));
 
-    return function (_x17, _x18) {
-        return _ref9.apply(this, arguments);
+    return function (_x7, _x8) {
+        return _ref4.apply(this, arguments);
     };
 }());
 

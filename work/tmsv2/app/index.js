@@ -19,7 +19,6 @@ const Koa = require('koa');
 const app = new Koa();
 const router = require('./router');
 
-
 // signed cookie keys
 app.keys = ['this is a secret key', 'tms2.0'];
 

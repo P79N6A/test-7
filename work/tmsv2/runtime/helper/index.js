@@ -1,11 +1,13 @@
 'use strict';
 
 var path = require('path');
+var crypto = require('crypto');
 var _ = require('lodash');
 var config = require('../config');
 var debug = require('debug')('app'); // process.env.DEBUG=* 时, 才打印的信息
 var assert = require('assert'); // 断言失败，则抛出异常
-var logUtils = require('./log');
+var logFns = require('./log');
+var fsFns = require('./fs');
 
 // 文件路径转换为url 以config.staticDir为网站根目录
 function path2url(fpath, ctx) {
@@ -16,24 +18,28 @@ function path2url(fpath, ctx) {
 
 // response data
 function resJson(ok, data) {
-    if (data._id) {
-        delete data._id; // 删除主键
-    }
-
     return {
-        code: ok ? 1 : 0,
+        code: ok ? 10000 : 10001,
         msg: ok ? 'success' : 'fail',
         data: data
     };
 }
 
+// MD5 加密
+function md5(msg) {
+    var newHash = crypto.createHash('md5');
+    newHash.update(msg, 'utf8');
+    return newHash.digest('hex');
+};
+
 var WS = {
     path2url: path2url,
     debug: debug,
     assert: assert,
-    resJson: resJson
+    resJson: resJson,
+    md5: md5
 };
 
-_.assign(WS, logUtils);
+_.assign(WS, logFns, fsFns);
 
 module.exports = WS;
